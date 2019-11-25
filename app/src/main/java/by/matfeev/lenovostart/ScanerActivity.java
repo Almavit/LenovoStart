@@ -559,7 +559,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                                         dialog.cancel();
                                     }
                                 })
-                        .setNegativeButton("Выгрузить",
+                        .setNegativeButton("",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int id) {
