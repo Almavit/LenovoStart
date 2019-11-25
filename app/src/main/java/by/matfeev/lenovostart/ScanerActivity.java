@@ -559,7 +559,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                                         dialog.cancel();
                                     }
                                 })
-                        .setNegativeButton("",
+                        .setNegativeButton("Выгрузить",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int id) {
@@ -576,8 +576,6 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 return null;
         }
     }
-
-
    private int readFileSD() {
 
        String line = "";
