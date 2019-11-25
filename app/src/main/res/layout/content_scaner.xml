@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="by.matfeev.lenovostart.ScanerActivity"
+    tools:showIn="@layout/activity_scaner">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="160dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <TextView
+            android:id="@+id/txtvBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_barcode"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/txtnBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:inputType="number"
+            android:maxLength="13"
+            android:maxLines="13"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/txtvPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_price"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/txtdPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="7"
+            android:inputType="numberDecimal"
+            android:maxLength="7"
+            android:textSize="24sp"
+
+            />
+
+        <TextView
+            android:id="@+id/txtvQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_quantity"
+            android:textSize="24sp"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/txtdQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="7"
+            android:inputType="numberDecimal"
+            android:maxLength="7"
+            android:textSize="24sp"
+            />
+
+        <TextView
+            android:id="@+id/txtvNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="@string/text_number"
+            android:textSize="24sp"
+            tools:text="Порядковый номер" />
+
+        <EditText
+            android:id="@+id/txtnNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="3"
+            android:inputType="number"
+            android:maxLength="3"
+            android:textSize="24sp"
+            />
+
+        <Button
+            android:id="@+id/btnAddPosition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:nextFocusUp="@+id/txtvBarcode"
+            android:onClick="ok"
+            android:text="Добавить позицию"
+
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/btnUploadDelete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="SavDelFileOnClick"
+            android:text="@string/btnUploadDelete"
+            android:textSize="24sp" />
+
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
