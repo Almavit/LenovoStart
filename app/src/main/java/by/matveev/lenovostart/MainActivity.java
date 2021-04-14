@@ -1,26 +1,63 @@
 package by.matveev.lenovostart;
 
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.net.ftp.FTPClient;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+
+import by.matveev.lenovostart.lib.FTPModel;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final int PERMISSION_REQUEST_CODE = 123;
+//    public static Network getNetwork(final Context context, final int transport) {
+//        final ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        for (Network network : connManager.getAllNetworks()) {
+//            NetworkCapabilities networkCapabilities = connManager.getNetworkCapabilities(network);
+//            if (networkCapabilities != null &&
+//                    networkCapabilities.hasTransport(transport) &&
+//                    networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+//                return network;
+//            }
+//        }
+//        return null;
+//    }
+
+//    private static final int PERMISSION_REQUEST_CODE = 123;
 
     Button btnFourField;
     Button btnTwoField;
     Button btnTwoFieldQuan;
     Button btnOneField;
     Button btnEditor;
+    Button btnStartElectron;
+    Button btnSetting;
+    TextView txtLog;
+    EditText txtIp;
+    CheckBox chkWiFi;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +79,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnEditor = (Button) findViewById(R.id.btnTwoFieldNum);
         btnEditor.setOnClickListener(this);
 
+//        btnSaveToServer = (Button) findViewById(R.id.btnSaveToServer);
+//        btnSaveToServer.setOnClickListener(this);
+
+        btnSetting = (Button) findViewById(R.id.btnSetting);
+        btnSetting.setOnClickListener(this);
+
+        btnStartElectron = (Button) findViewById(R.id.btnStartElectron);
+        btnStartElectron.setOnClickListener(this);
+
+        txtLog = (TextView) findViewById(R.id.txtLog);
     }
 
 
      public void onClick(View v) {
-        Intent intent = new Intent(this, by.matfeev.lenovostart.ScanerActivity.class);
+        Intent intent = new Intent(this, ScanerActivity.class);
         //View.INVISIBLE = 4
         //View.VISIBLE = 0
         //View.GONE = 8
@@ -64,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.btnFourField:
                 Toast.makeText(MainActivity.this, getString(R.string.action_item1), Toast.LENGTH_SHORT).show();
+                startActivity(intent);
 
                 break;
             case R.id.btnTwoField:
@@ -73,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("VisibleIntNumber", View.INVISIBLE);
 
                 Toast.makeText(MainActivity.this, getString(R.string.action_item2), Toast.LENGTH_SHORT).show();
+                startActivity(intent);
                 break;
             case R.id.btnOneField:
                 intent.putExtra("VisibleTxtPrice", View.INVISIBLE);
@@ -84,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 Toast.makeText(MainActivity.this, getString(R.string.action_item3), Toast.LENGTH_SHORT).show();
+                startActivity(intent);
                 break;
 
                 //btnTwoFieldQuan
@@ -97,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("VisibleTxtNumber", View.INVISIBLE);
                 intent.putExtra("VisibleIntNumber", View.INVISIBLE);
                 Toast.makeText(MainActivity.this, getString(R.string.action_item2), Toast.LENGTH_SHORT).show();
+                startActivity(intent);
                 break;
             case R.id.btnTwoFieldNum:
                 intent.putExtra("VisibleTxtPrice", View.INVISIBLE);
@@ -104,14 +155,113 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("VisibleTxtQuantity", View.INVISIBLE);
                 intent.putExtra("VisibleIntQuantity", View.INVISIBLE);
                 Toast.makeText(MainActivity.this, getString(R.string.action_item5), Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+                break;
+            case R.id.btnStartElectron:
+                Intent intentStartElectronDocument = new Intent(this, StartElectronDocument.class);
+                startActivity(intentStartElectronDocument);
+                break;
 
-                break;//return;
+            case R.id.btnSetting:
+
+                Intent intentSetting = new Intent(this, SettingActivity.class);
+                startActivity(intentSetting);
+                break;
             default:
                 break;
 
          }
-         startActivity(intent);
+//         startActivity(intent);
     }
+
+////////////////////////////////////
+//ftp
+
+//    public  void ftpConn(String hostAddress, String log, String password) throws FileNotFoundException {
+//        FTPClient fClient = new FTPClient();
+//        // Environment.getExternalStorageDirectory().toString()
+//        //txtLog.setText(Environment.getExternalStorageDirectory() + "/Documents/Dat1.txt");
+//        if (!Environment.getExternalStorageState().equals(
+//                Environment.MEDIA_MOUNTED)) {
+//           // Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
+//           // ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
+//            return;
+//        }
+//        FileInputStream fInput = new FileInputStream( Environment.getExternalStorageDirectory() + "/Documents/Dat1.txt");
+//        String fs = "Yes.txt";
+//        try {
+//            fClient.connect("10.250.1.15",21);
+//
+//            fClient.enterLocalPassiveMode();
+//            fClient.login(log, password);
+//            fClient.storeFile(fs, fInput);
+//            fClient.logout();
+//            fClient.disconnect();
+//            txtLog.setText("Yes ftp");
+//        } catch (IOException ex) {
+//            System.err.println(ex);
+//            txtLog.setText("No ftp");
+//        }
+//    }
+///////////////////////////
+    // сохранить с сайта
+//private void onDownloadComplete(boolean success) {
+//    // файл скачался, можно как-то реагировать
+//    Log.i("***", "************** " + success);
+//}
+//
+//    private class LoadFile extends Thread {
+//        private final String src;
+//        private final File dest;
+//
+//        LoadFile(String src, File dest) {
+//            this.src = src;
+//            this.dest = dest;
+//        }
+//
+//        @Override
+//        public void run() {
+//            try {
+//
+//                URL u = new URL(src);
+//                FileUtils.copyURLToFile(u, dest,1000,1000);
+//                //onDownloadComplete(true);
+//                txtLog.setText("Yes save" + dest.toString());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                //onDownloadComplete(false);
+//               // txtLog.setText("No save" + dest.toString());
+//            }
+//        }
+//    }
+
+///////////////////////////////
+//private boolean executeCommand(String ip){
+//        System.out.println("executeCommand");
+//        Runtime runtime = Runtime.getRuntime();
+//        try {
+//            Process mIpAddrProcess = runtime.exec("/system/bin/ping -c 1 "+ ip);
+//            int mExitValue = mIpAddrProcess.waitFor();
+//            txtLog.setText(" mExitValue "+ mExitValue);
+//            if(mExitValue==0){
+//                txtLog.setText("YES+++");
+//                return true;
+//            }else{
+//                txtLog.setText("No---");
+//                return false;
+//            }
+//        }
+//        catch (InterruptedException ignore) {
+//            ignore.printStackTrace();
+//            System.out.println(" Exception:"+ignore);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.out.println(" Exception:"+e);
+//        } return false;
+//    }
+//////////////
+
+///////////////////////////////  end ping
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

@@ -27,14 +27,14 @@
             android:id="@+id/btnTwoField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Штрих+цена"
+            android:text="Штрих + цена"
             android:textSize="24sp" />
 
         <Button
             android:id="@+id/btnTwoFieldQuan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Штрих+кол-во"
+            android:text="Штрих + кол-во"
             android:textSize="24sp" />
 
         <Button
@@ -48,7 +48,33 @@
             android:id="@+id/btnTwoFieldNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Штрих+№позиции"
+            android:text="Штрих + № позиции"
             android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/btnStartElectron"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Электронные накладные"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/txtLog"
+            android:layout_width="match_parent"
+            android:layout_height="211dp"
+            android:text="..."
+            android:textAlignment="center"
+            android:textSize="36sp"
+            android:textStyle="normal|bold"
+            tools:text="..." />
+
+        <Button
+            android:id="@+id/btnSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Настройки"
+            android:textSize="24sp" />
+
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

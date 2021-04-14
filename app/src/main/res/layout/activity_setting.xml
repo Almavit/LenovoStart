@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingActivity">
+
+    <LinearLayout
+        android:layout_width="395dp"
+        android:layout_height="659dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:hint="Режим работы">
+
+            <EditText
+                android:id="@+id/txtModeWorking"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Режим работы"
+                android:text="1"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/hintAdressServer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Адрес сервера"
+            app:hintEnabled="true">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/txtAdressServer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Адрес сервера"
+                    android:text="10.250.1.4"
+                    android:textAlignment="center"
+                    android:textSize="36sp"
+                    android:textStyle="bold" />
+            </android.support.design.widget.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/hintUserFTP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ползователь FTP"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/txtUserFTP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ползователь FTP"
+                android:text="FTPuser"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/hintPasswordFTP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Пароль FTP"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/txtPasswordFTP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Пароль FTP"
+                android:inputType="textPassword"
+                android:text="12345"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:passwordToggleEnabled="true" />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/hintPathFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Место файла"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/txtPathFile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Пароль FTP"
+                android:text="Documents"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/hintPortFTP"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:hint="порт FTP"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/txtPortFTP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Пароль FTP"
+                android:text="21"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+
+            <Button
+                android:id="@+id/btnLoadSetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Загрузить" />
+
+            <Button
+                android:id="@+id/btnSaveSetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Сохранить" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtlogSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="..."
+            android:textAlignment="center"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

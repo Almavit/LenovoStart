@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/activity_scaner"
-    tools:context="by.matfeev.lenovostart.ScanerActivity">
+    tools:context=".ScanerActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -24,13 +24,13 @@
 
     <include layout="@layout/content_scaner" />
 
- <!--   <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="67dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center|center_horizontal"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email"
-        tools:visibility="gone" />-->
+    <!--   <android.support.design.widget.FloatingActionButton
+           android:id="@+id/fab"
+           android:layout_width="67dp"
+           android:layout_height="32dp"
+           android:layout_gravity="center|center_horizontal"
+           android:layout_margin="@dimen/fab_margin"
+           app:srcCompat="@android:drawable/ic_dialog_email"
+           tools:visibility="gone" />-->
 
 </android.support.design.widget.CoordinatorLayout>

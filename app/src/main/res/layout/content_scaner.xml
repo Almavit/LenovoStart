@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="by.matfeev.lenovostart.ScanerActivity"
+    tools:context=".ScanerActivity"
     tools:showIn="@layout/activity_scaner">
 
     <LinearLayout
@@ -97,15 +97,32 @@
             android:onClick="ok"
             android:text="Добавить позицию"
 
-            android:textSize="24sp" />
+            android:textSize="30sp" />
 
         <Button
-            android:id="@+id/btnUploadDelete"
+            android:id="@+id/btnSaveToServer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="SavDelFileOnClick"
-            android:text="@string/btnUploadDelete"
-            android:textSize="24sp" />
+            android:text="ЗАГРУЗИТЬ НА СЕРВЕР"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/btnDeleteFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="DeleteFile"
+            android:text="УДАЛИТЬ ДАННЫЕ"
+            android:textSize="30sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/txtLogScaner"
+            android:layout_width="match_parent"
+            android:layout_height="69dp"
+            android:text="..."
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="normal|bold" />
 
 
     </LinearLayout>
