@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".electron_document">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txtBarcodeFind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="13"
+                android:inputType="number"
+                android:maxLength="13"
+                android:maxLines="13"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/btnFind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Поиск" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/lnlyLinear"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Назад" />
+
+                    <Button
+                        android:id="@+id/btnExit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Выход" />
+
+                    <Button
+                        android:id="@+id/btnForward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Вперед" />
+                </LinearLayout>
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/txtvNumNakladn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="НОМЕР НАКЛАДНОЙ"-->
+                <!--                android:textSize="16sp" />-->
+
+                <TextView
+                    android:id="@+id/txtNumNakladn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp" />
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/txtvDataNakladn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="Дата"-->
+                <!--                android:textSize="16sp" />-->
+
+                <!--            <EditText-->
+                <!--                android:id="@+id/txtDataNakladn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:inputType="text"-->
+                <!--                android:textSize="24sp" />-->
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/txtvPostNakladn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="Поставщик"-->
+                <!--                android:textSize="16sp" />-->
+
+                <!--            <EditText-->
+                <!--                android:id="@+id/txtPostNakladn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:inputType="text"-->
+                <!--                android:textSize="24sp" />-->
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/txtvPozNakladn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="Позиция"-->
+                <!--                android:textSize="16sp" />-->
+
+                <!--            <EditText-->
+                <!--                android:id="@+id/txtPozNakladn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:inputType="text"-->
+                <!--                android:textSize="24sp" />-->
+
+                <TextView
+                    android:id="@+id/txtvBarcodeNakladn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Штрихкод"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txtBarcodeNakladn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/txtvTovNakladn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Товар"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txtTovNakladn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtvQuanNakladn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Количество       "
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/txtQuanNakladn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="7"
+                        android:inputType="numberDecimal"
+                        android:maxLength="7"
+                        android:maxLines="7"
+                        android:selectAllOnFocus="true"
+                        android:textIsSelectable="true"
+                        android:textSize="48sp" />
+
+                </LinearLayout>
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/txtvStatusNakladn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="Статус"-->
+                <!--                android:textSize="16sp" />-->
+
+                <!--            <EditText-->
+                <!--                android:id="@+id/txtStatusNakladn"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:inputType="text"-->
+                <!--                android:textSize="24sp" />-->
+
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnClearElectron"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Очистить" />
+
+            <Button
+                android:id="@+id/btnAddElectron"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Добавить" />
+
+            <Button
+                android:id="@+id/btnSaveToServerElectron"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Выгрузить" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

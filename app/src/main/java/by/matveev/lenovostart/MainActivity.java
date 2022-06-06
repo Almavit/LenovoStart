@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import by.matveev.lenovostart.lib.FTPModel;
+import by.matveev.lenovostart.lib.WIFIService;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnEditor;
     Button btnStartElectron;
     Button btnSetting;
+    Button btnEditDatTxt;
     TextView txtLog;
     EditText txtIp;
     CheckBox chkWiFi;
@@ -88,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnStartElectron = (Button) findViewById(R.id.btnStartElectron);
         btnStartElectron.setOnClickListener(this);
 
+        btnEditDatTxt = (Button) findViewById(R.id.btnEditDatTxt);
+        btnEditDatTxt.setOnClickListener(this);
+
+
         txtLog = (TextView) findViewById(R.id.txtLog);
     }
 
@@ -109,6 +115,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         switch (v.getId()){
+            case R.id.btnEditDatTxt:
+                Intent intentEditDatTxt = new Intent(this, EditData.class);
+                startActivity(intentEditDatTxt);
+
+                break;
             case R.id.btnFourField:
                 Toast.makeText(MainActivity.this, getString(R.string.action_item1), Toast.LENGTH_SHORT).show();
                 startActivity(intent);
@@ -160,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnStartElectron:
                 Intent intentStartElectronDocument = new Intent(this, StartElectronDocument.class);
                 startActivity(intentStartElectronDocument);
+        
                 break;
 
             case R.id.btnSetting:
@@ -173,7 +185,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          }
 //         startActivity(intent);
     }
+    // Start the  service
+    public void startNewService(View view) {
 
+        startService(new Intent(this, WIFIService.class));
+    }
+
+    // Stop the  service
+    public void stopNewService(View view) {
+
+        stopService(new Intent(this, WIFIService.class));
+    }
 ////////////////////////////////////
 //ftp
 

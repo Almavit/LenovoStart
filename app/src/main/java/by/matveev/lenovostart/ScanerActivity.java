@@ -3,6 +3,7 @@ package by.matveev.lenovostart;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,15 +38,15 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import by.matveev.lenovostart.lib.FTPModel;
 
@@ -79,6 +82,11 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     String sModeWorking;
 
 
+    private static final int MY_REQUEST_CODE = 123;
+
+    private WifiManager wifiManager;
+
+
 
     InputMethodManager imm;// для вывода клавиатуры
     // переменные для диалогового окна Выгрузить - Удалить
@@ -100,6 +108,13 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+
+
+
+
         setContentView(R.layout.activity_scaner);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -340,6 +355,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     public void hideKeyboard() {
         imm.toggleSoftInput(0, 0);
     }
+
     void FocusView(){
         if (txtnBarcode.length() > 0) {
             writeFileSD();
@@ -480,6 +496,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
     }
+
     private void copyFileUsingStream(File source, File dest) {
         InputStream is = null;
         OutputStream os = null;
@@ -779,13 +796,6 @@ public void saveSetting(){
         sPathFile = sPref.getString(PATH_FILE, "");
         sModeWorking = sPref.getString(MODE_WORKING, "");
 
-
-//        txtAdressServer.setText(sAdressServer);
-//        txtUserFTP.setText(sUserFTP);
-//        txtPasswordFTP.setText(sPasswordFTP);
-//        txtPathFile.setText(sPathFile);
-//        txtPortFTP.setText(sPortFTP);
-
     }
 //=================  чтение - запись настроек  =========================
     //===========================   проверка разрешений приложения  ================================
@@ -954,8 +964,10 @@ public void saveSetting(){
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+
         super.onWindowFocusChanged(hasFocus);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -1002,21 +1014,7 @@ public void saveSetting(){
                     try{
                         FTPModel mymodel = new FTPModel();
 
-//                        FTPModel mymymodel = new FTPModel();
-//
-//                        File sdPath = Environment.getExternalStorageDirectory();
-//                        // добавляем свой каталог к пути
-//                        sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD + "/999.csv");
-//
-//
-//                        //FileInputStream fInput = new FileInputStream( Environment.getExternalStorageDirectory() + "/" + DIR_SD);
-//                        String fs = "999.csv";
-//                        boolean ko = mymymodel.downloadAndSaveFile(sAdressServer,Integer.parseInt(sPortFTP),sUserFTP,sPasswordFTP,  fs, sdPath);
-//                        if(ko){
-//                            txtLogScaner.setText("ДАННЫЕ СОХРАНЕНЫ");
-//                        }else{
-//                            txtLogScaner.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
-//                        }
+
                         boolean co = mymodel.connect(sAdressServer,sUserFTP,sPasswordFTP,Integer.parseInt(sPortFTP));
                         if(co){
                             txtLogScaner.setText("ДАННЫЕ СОХРАНЕНЫ");
@@ -1058,4 +1056,6 @@ public void saveSetting(){
         } return false;
     }
 //////////////
+
+    
 }

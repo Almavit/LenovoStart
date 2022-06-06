@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+
+
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText txtAdressServer;
@@ -42,6 +44,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
+        txtModeWorking = (EditText) findViewById(R.id.txtModeWorking);
+        txtModeWorking.setOnClickListener(this);
+
         txtAdressServer = (EditText) findViewById(R.id.txtAdressServer);
         txtAdressServer.setOnClickListener(this);
 
@@ -57,8 +62,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         txtPortFTP = (EditText) findViewById(R.id.txtPortFTP);
         txtPortFTP.setOnClickListener(this);
 
-        txtModeWorking = (EditText) findViewById(R.id.txtModeWorking);
-        txtModeWorking.setOnClickListener(this);
 
         btnSaveSetting = (Button) findViewById(R.id.btnSaveSetting);
         btnSaveSetting.setOnClickListener(this);
@@ -103,12 +106,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         sPathFile = sPref.getString(PATH_FILE, "");
         sModeWorking = sPref.getString(MODE_WORKING, "");
 
-        txtAdressServer.setText(sAdressServer);
-        txtUserFTP.setText(sUserFTP);
-        txtPasswordFTP.setText(sPasswordFTP);
-        txtPathFile.setText(sPathFile);
-        txtPortFTP.setText(sPortFTP);
-        txtModeWorking.setText(sModeWorking);
-
+        if (!txtAdressServer.equals("")) {
+            txtAdressServer.setText(sAdressServer);
+            txtUserFTP.setText(sUserFTP);
+            txtPasswordFTP.setText(sPasswordFTP);
+            txtPathFile.setText(sPathFile);
+            txtPortFTP.setText(sPortFTP);
+            txtModeWorking.setText(sModeWorking);
+        }
     }
 }

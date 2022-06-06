@@ -65,9 +65,8 @@
             android:layout_height="wrap_content"
             android:ems="7"
             android:inputType="numberDecimal"
-            android:maxLength="7"
-            android:textSize="24sp"
-            />
+            android:maxLength="3"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/txtvNumber"

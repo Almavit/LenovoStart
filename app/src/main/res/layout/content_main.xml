@@ -14,7 +14,8 @@
         android:layout_height="659dp"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+        tools:layout_editor_absoluteY="8dp"
+        tools:ignore="MissingConstraints">
 
         <Button
             android:id="@+id/btnFourField"
@@ -51,17 +52,31 @@
             android:text="Штрих + № позиции"
             android:textSize="24sp" />
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:text="..."
+            android:textAlignment="center" />
+
+        <Button
+            android:id="@+id/btnEditDatTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Редактирование файла"
+            android:textSize="24sp" />
+
         <Button
             android:id="@+id/btnStartElectron"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Электронные накладные"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/txtLog"
             android:layout_width="match_parent"
-            android:layout_height="211dp"
+            android:layout_height="wrap_content"
             android:text="..."
             android:textAlignment="center"
             android:textSize="36sp"

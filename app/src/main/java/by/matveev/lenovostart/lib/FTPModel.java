@@ -1,11 +1,6 @@
 package by.matveev.lenovostart.lib;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-
-
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -108,19 +103,15 @@ public class FTPModel {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-
+            boolean success = false;
             try {
                 mFTPClient = new FTPClient();
                 //connect to the host
                 mFTPClient.connect(host, port);
-
                 boolean status = mFTPClient.login(username, password);
-                mFTPClient.setFileType(FTP.BINARY_FILE_TYPE);//  / ASCII_FILE_TYPE
+                mFTPClient.setFileType(FTP.BINARY_FILE_TYPE);//  /ASCII_FILE_TYPE
                 mFTPClient.enterLocalPassiveMode();
-
                 OutputStream outputStream = null;
-                boolean success = false;
-
                 try {
                     outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
                     success = mFTPClient.retrieveFile(filename, outputStream);
@@ -136,8 +127,6 @@ public class FTPModel {
                         outputStream.close();
                     }
                 }
-                return success;
-
             } catch (SocketException e) {
                 e.printStackTrace();
             } catch (FileNotFoundException e) {
@@ -153,14 +142,14 @@ public class FTPModel {
                     }
                     try {
                         mFTPClient.disconnect();
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-            return false;
+            return success;
         }
     }
-
 
 }
