@@ -1,7 +1,6 @@
 package by.matveev.lenovostart;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.SimpleAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.opencsv.CSVReader;
@@ -21,8 +20,6 @@ import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.DBRepository;
@@ -43,6 +40,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     Cursor datBaseCursor;
 
     GridView dbGridEditDat;
+    ListView dbListView;
 
     SQLiteDatabase database;
 
@@ -71,7 +69,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
         dbGridEditDat = (GridView) findViewById(R.id.dbGridEditDat);
 
-
+        dbListView = (ListView) findViewById(R.id.dbListView);
        // Intent intent = new Intent(this, electron_document.class);
 
         AdapterView.OnItemClickListener datitemListener = new AdapterView.OnItemClickListener() {
@@ -218,24 +216,23 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     }
 ///////////////////////////
 
-
     @Override
     public void onClick(View v) {
         final DBRepository repositorys = new DBRepository(getApplicationContext());
         switch (v.getId()) {
             case R.id.btnDonloadDat:
 
-                ArrayAdapter<String> datadapter = new ArrayAdapter<String>(this, R.layout.simple_list_item_dat, repositorys.getDataDat());
+                ArrayAdapter<String> datadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, repositorys.getDataDat());
 
-                String sksksks0 = datadapter.getItem(0);
-                String sksksks1 = datadapter.getItem(1);
-                String sksksks2 = datadapter.getItem(2);
-                String sksksks3 = datadapter.getItem(3);
-                String sksksks4 = datadapter.getItem(4);
-                String sksksks5 = datadapter.getItem(5);
-                String sksksks6 = datadapter.getItem(6);
-                String sksksks7 = datadapter.getItem(7);
-                Integer iSSSsss = datadapter.getCount();
+//                String sksksks0 = datadapter.getItem(0);
+//                String sksksks1 = datadapter.getItem(1);
+//                String sksksks2 = datadapter.getItem(2);
+//                String sksksks3 = datadapter.getItem(3);
+//                String sksksks4 = datadapter.getItem(4);
+//                String sksksks5 = datadapter.getItem(5);
+//                String sksksks6 = datadapter.getItem(6);
+//                String sksksks7 = datadapter.getItem(7);
+//                Integer iSSSsss = datadapter.getCount();
 //                SimpleAdapter adapter = new SimpleAdapter(this,
 //                        repositorys.getDataDat(),
 //                        R.layout.simple_list_item_dat,
@@ -244,8 +241,9 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //                                R.id.text_view_number, R.id.text_view_quantity,
 //                                R.id.text_view_price});
 //
-                datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
-                dbGridEditDat.setAdapter(datadapter);
+              datadapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+                //dbGridEditDat.setAdapter(datadapter);
+                dbListView.setAdapter(datadapter);
 
 //                } catch (Exception e) {
 //                    e.printStackTrace();

@@ -205,14 +205,15 @@ public void ssssss(String sdf){
         switch (v.getId()){
             case R.id.dbGridBase:
                 ArrayAdapter<String> adapters = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countries);
+
                 dbGridBase.setAdapter(adapters);
                 break;
             case R.id.btnAllNumNakl:
                 final DBRepository repository = new DBRepository(this.getApplicationContext());
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_2, repository.getDataAllNakld());
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, repository.getDataAllNakld());
                 adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-                String sdsssss = adapter.getItem(1);
-                Integer iSSS = adapter.getCount();
+//                String sdsssss = adapter.getItem(1);
+//                Integer iSSS = adapter.getCount();
                 dbGridBase.setAdapter(adapter);
                 break;
             case R.id.btnClearBase:

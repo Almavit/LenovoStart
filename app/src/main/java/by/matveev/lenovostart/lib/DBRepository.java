@@ -154,13 +154,19 @@ public class DBRepository {
             iCountFields = cursor.getColumnCount();
             do {
                 iCountFields = cursor.getPosition();
-                String sField = cursor.getString(fieldid.getFieldCode());
-                list.add(cursor.getString(fieldid.getFieldCode()));
-                list.add(cursor.getString(fieldbarcose.getFieldCode()));
-                list.add(cursor.getString(fieldnumber.getFieldCode()));
-                list.add(cursor.getString(fieldquantity.getFieldCode()));
-                list.add(cursor.getString(fieldprice.getFieldCode()));
-             //   list.add(sField);
+                String sField = cursor.getString(fieldid.getFieldCode()) + ';' +
+                        cursor.getString(fieldbarcose.getFieldCode()) + ';' +
+                        cursor.getString(fieldnumber.getFieldCode()) + ';' +
+                        cursor.getString(fieldquantity.getFieldCode()) + ';' +
+                        cursor.getString(fieldprice.getFieldCode());
+
+//                list.add(cursor.getString(fieldid.getFieldCode()));
+//                list.add(cursor.getString(fieldbarcose.getFieldCode()));
+//                list.add(cursor.getString(fieldnumber.getFieldCode()));
+//                list.add(cursor.getString(fieldquantity.getFieldCode()));
+//                list.add(cursor.getString(fieldprice.getFieldCode()));
+//
+                list.add(sField);
             } while (cursor.moveToNext());
         }
         return list;
