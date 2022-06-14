@@ -124,7 +124,6 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                 //               ssssss(parent.getItemAtPosition(position).toString());
                 //startActivity(intent);
                 txtStroka.setText(fgsdfsdfs);
-                txtStroka.getText();
 
             }
         };
