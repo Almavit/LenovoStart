@@ -31,6 +31,10 @@ import by.matveev.lenovostart.lib.DBRepository;
 
 public class EditData extends AppCompatActivity implements View.OnClickListener {
 
+
+    InputStream inputStream;
+
+
     Button btnEditDat;
     Button btnSaveDat;
     Button btnDeleDat;
@@ -185,12 +189,6 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             //чистим БД сканированного
             datFileString = "delete  from " + DBHelper.TABLE_DOCUMENT_DAT ;
             int iDelete = database.delete("Dat",null,null);
-//            datBaseCursor = database.rawQuery(datFileString,null);
-//            iCountField = datBaseCursor.getCount();//количество полей
-//            database.close();
-//            dbHelper.close();
-//            database = dbHelper.getWritableDatabase();
-//            database = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
 
             datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
             iCountField = datBaseCursor.getCount();//количество полей
@@ -220,38 +218,6 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
                // txtLogMessege.setText("");
         }
-
-
-//        Intent datintent = new Intent(this, EditData.class);
-//
-//        AdapterView.OnItemClickListener itemListener = new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-//                Toast.makeText(getApplicationContext(),"Вы выбрали  " + parent.getItemAtPosition(position).toString(),Toast.LENGTH_SHORT).show();
-//                //Intent datintent = new Intent(this, EditData.class);
-//
-//               // datintent.putExtra("VisibletxtNumNakladn", parent.getItemAtPosition(position).toString());
-//              //  startActivity(datintent);
-//
-//                //               ssssss(parent.getItemAtPosition(position).toString());
-//                //startActivity(intent);
-//
-//            }
-//        };
-//
-//        dbGridEditDat.setOnItemClickListener(itemListener);
-
-//        try{
-//
-//            ArrayAdapter<String>  adapter = new ArrayAdapter<String>(this, R.layout.simple_list_item_dat, repositorys.getDataDat());
-//            adapter.setDropDownViewResource(R.layout.simple_list_item_dat);
-//            dbGridEditDat.setAdapter(adapter);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
-//        }
-
     }
 ///////////////////////////
 
@@ -260,38 +226,27 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         final DBRepository repositorys = new DBRepository(getApplicationContext());
         switch (v.getId()) {
             case R.id.btnDonloadDat:
-
-                ArrayAdapter<String> datadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, repositorys.getDataDat());
-
-//                String sksksks0 = datadapter.getItem(0);
-//                String sksksks1 = datadapter.getItem(1);
-//                String sksksks2 = datadapter.getItem(2);
-//                String sksksks3 = datadapter.getItem(3);
-//                String sksksks4 = datadapter.getItem(4);
-//                String sksksks5 = datadapter.getItem(5);
-//                String sksksks6 = datadapter.getItem(6);
-//                String sksksks7 = datadapter.getItem(7);
-//                Integer iSSSsss = datadapter.getCount();
-//                SimpleAdapter adapter = new SimpleAdapter(this,
-//                        repositorys.getDataDat(),
-//                        R.layout.simple_list_item_dat,
-//                        new String[]{"ID", "BARCODE", "NUMBER", "QUANTITY", "PRICE"},
-//                        new int[]{R.id.text_view_id, R.id.text_view_barcode,
-//                                R.id.text_view_number, R.id.text_view_quantity,
-//                                R.id.text_view_price});
-
-              datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
-                //dbGridEditDat.setAdapter(datadapter);
+                ArrayAdapter<String> datadapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, repositorys.getDataDat());
+                datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
                 dbListView.setAdapter(datadapter);
-
-                //dbTableRow.setAdapter(datadapter);
-
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
-//                }
                 break;
+            case R.id.btnDeleDat:
+                List resultList = new ArrayList();
+                String csvLine = null;
+                String sssssss = txtStroka.getText().toString();
+                //BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                while (true){
 
+                    if (!((csvLine = sssssss) != null))
+                        break;
+                   // sssssss = csvLine.split(";");
+                    String[] row = csvLine.split(";");
+                    resultList.add(row);
+                    sssssss = row[0].toString().replaceAll("\\s","");
+
+                }
+                break;
         }
         //
     }

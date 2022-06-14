@@ -13,6 +13,7 @@ public class CSVFile {
     public CSVFile(InputStream inputStream){
         this.inputStream = inputStream;
     }
+
     public List read() throws IOException {
         List resultList = new ArrayList();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
