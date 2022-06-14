@@ -11,15 +11,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.opencsv.CSVReader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.DBRepository;
@@ -30,6 +35,9 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     Button btnSaveDat;
     Button btnDeleDat;
     Button btnDonloadDat;
+
+    TextView txtStroka;
+
     DBHelper dbHelper;
 
     String[] nextLine;
@@ -39,8 +47,14 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     String datFileString;
     Cursor datBaseCursor;
 
-    GridView dbGridEditDat;
     ListView dbListView;
+//
+//    TextView txtTov;
+
+
+//    InputStream inputStream;
+//    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+//    String csvLine;
 
     SQLiteDatabase database;
 
@@ -48,11 +62,18 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     final String DIR_SD = "Documents";
     private static final String ENCODING_WIN1251 = "windows-1251";
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_edit_data);
 
+     //   txtTov  = (TextView) findViewById(R.id.txtTov);
+
+
+        txtStroka = (TextView) findViewById(R.id.txtStroka);
 
         btnEditDat = (Button) findViewById(R.id.btnEditDat);
         btnEditDat.setOnClickListener(this);
@@ -67,29 +88,47 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         btnDonloadDat.setOnClickListener(this);
 
 
-        dbGridEditDat = (GridView) findViewById(R.id.dbGridEditDat);
+   //     dbGridEditDat = (GridView) findViewById(R.id.dbGridEditDat);
 
         dbListView = (ListView) findViewById(R.id.dbListView);
+
+
        // Intent intent = new Intent(this, electron_document.class);
+
+
 
         AdapterView.OnItemClickListener datitemListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(getApplicationContext(),"Вы выбрали "
-                                + parent.getItemAtPosition(position).toString(),
-                        Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(this, electron_document.class);
+                String fgsdfsdfs = parent.getItemAtPosition(position).toString();
+//                Toast.makeText(getApplicationContext(),"Вы выбрали "
+//                                + parent.getItemAtPosition(position).toString(),
+//                        Toast.LENGTH_SHORT).show();
+//                parent.setSelection(position);
+//                List resultList = new ArrayList();
+//                while (true){
+//                    try {
+//                        if (!((csvLine = reader.readLine()) != null)) break;
+//                    } catch (IOException ioException) {
+//                        ioException.printStackTrace();
+//                    }
+//                    String[] row = csvLine.split(";");
+//                    resultList.add(row);
+//                }
+               // txtID_.setText(resultList[0].);
+            //Intent intent = new Intent(this, electron_document.class);
 
 //                intent.putExtra("VisibletxtNumNakladn", parent.getItemAtPosition(position).toString());
 //                startActivity(intent);
 
                 //               ssssss(parent.getItemAtPosition(position).toString());
                 //startActivity(intent);
+                txtStroka.setText(fgsdfsdfs);
 
             }
         };
 
-        dbGridEditDat.setOnItemClickListener(datitemListener);
+        dbListView.setOnItemClickListener(datitemListener);
 
 
 
@@ -240,10 +279,12 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //                        new int[]{R.id.text_view_id, R.id.text_view_barcode,
 //                                R.id.text_view_number, R.id.text_view_quantity,
 //                                R.id.text_view_price});
-//
-              datadapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+
+              datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
                 //dbGridEditDat.setAdapter(datadapter);
                 dbListView.setAdapter(datadapter);
+
+                //dbTableRow.setAdapter(datadapter);
 
 //                } catch (Exception e) {
 //                    e.printStackTrace();
