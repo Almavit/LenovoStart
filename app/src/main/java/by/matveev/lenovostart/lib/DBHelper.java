@@ -34,6 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static  final String TABLE_DOCUMENT = "Document";
     public static  final String TABLE_DOCUMENT_DAT = "Dat";
 //    public static  final String KEY_ID = "_id";
+    public static  final String KEY_Q_COD = "qcod";
     public static  final String KEY_NUM_NAKL = "numnakl";
     public static  final String KEY_DATE = "date";
     public static  final String KEY_NAME_POST = "namepost";
@@ -147,6 +148,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
             String SqlText = "create table if not exists " + TABLE_DOCUMENT + "(" +
 //                KEY_ID + " integer primary key, " +
+                    KEY_Q_COD + " text, " +
                     KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
                     KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
                     KEY_PRICE + " text, " +
