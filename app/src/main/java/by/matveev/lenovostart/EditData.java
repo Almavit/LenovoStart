@@ -1,6 +1,7 @@
 package by.matveev.lenovostart;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -275,9 +277,14 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         }
 
     }
-
-//    void writeFileSD(String PatshDIR_SD, String StrokaWrite) {// запись на SD диск  // подготавливаем переменные
-//
+    public void ToastMessageCenter(String s){
+        Toast toast = Toast.makeText(this, s , Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER , 0, 0);
+        toast.show();
+    }
+    void writeFileSD(String PatshDIR_SD, String StrokaWrite, Context contex, String FileName) {// запись на SD диск  // подготавливаем переменные
+////
+        final String LOG_TAG = "myLogs";
 //        String txtBarcode = txtnBarcode.getText().toString();
 //        String txtNumber = "";
 //        String txtQuantity = "";
@@ -294,38 +301,38 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //            txtPrice = txtdPrice.getText().toString();
 //        String text =  txtBarcode + ";" + txtPrice + ";" + txtQuantity + ";" + txtNumber + ";";
 //        // проверяем доступность SD
-//        if (!Environment.getExternalStorageState().equals(
-//                Environment.MEDIA_MOUNTED)) {
-//            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
-//            ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
-//            return;
-//        }
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
+            ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
+            return;
+        }
 //        // получаем путь к SD
-//        File sdPath = Environment.getExternalStorageDirectory();
+        File sdPath = Environment.getExternalStorageDirectory();
 //        // добавляем свой каталог к пути
-//        sdPath = new File(sdPath.getAbsolutePath() + "/" + PatshDIR_SD);
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + PatshDIR_SD);
 //        // создаем каталог
-//        sdPath.mkdirs();
+        sdPath.mkdirs();
 //
-//        File[] elems = sdPath.listFiles();
+        File[] elems = sdPath.listFiles();
 //
-//        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
-//        int i = 0;
-//        paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
-//        i++;
-//        if (elems != null) {
-//            for (File elem : elems) {
-//                paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
-//                i++;
-//            }
-//        }
-//        MediaScannerConnection.scanFile(ScanerActivity.this, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
+        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
+        int i = 0;
+        paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
+        i++;
+        if (elems != null) {
+            for (File elem : elems) {
+                paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
+                i++;
+            }
+        }
+        MediaScannerConnection.scanFile(this, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
 //        // формируем объект File, который содержит путь к файлу
-//        File sdFile = new File(sdPath, FILENAME_SD);
+        File sdFile = new File(sdPath, FileName);
 //        //File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
 //
 //        // Проверка наличия файла
-//        if (sdFile.exists()){
+        if (sdFile.exists()){
 //            //ToastMessageCenter("Файл в наличии.");
 //            // проверка разрешений
 //            if (!myPremission())  return;
@@ -365,7 +372,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //                ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
 //                return;
 //            }
-//        }//else{ ToastMessageCenter("Файл отсутствует."); }
+        }//else{ ToastMessageCenter("Файл отсутствует."); }
 //        try {
 //            // открываем поток для записи если файла нет
 //            //ToastMessageCenter("Запись");
@@ -396,8 +403,8 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //            e.printStackTrace();
 //            ToastMessageCenter("Ошибка: Файл невозможно открыть.");
 //            return;
-//        }
-//    }
+////        }
+    }
 
 //
 
