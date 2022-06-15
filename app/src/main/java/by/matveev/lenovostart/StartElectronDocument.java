@@ -137,7 +137,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
         //    dbGridBase.setOnClickListener(this);
     }
 
-public void ssssss(String sdf){
+    public void ssssss(String sdf){
 
 //    String nameTov;
 //    String namePostav;
@@ -151,28 +151,28 @@ public void ssssss(String sdf){
 
 //    String s1;
 //    String s2;
-    final DBRepository repositorys = new DBRepository(getApplicationContext());
-    Intent intent = new Intent(this, electron_document.class);
+        final DBRepository repositorys = new DBRepository(getApplicationContext());
+        Intent intent = new Intent(this, electron_document.class);
 
-    intent.putExtra("VisibletxtNumNakladn", sdf);
-    startActivity(intent);
-    SQLiteDatabase database;
+        intent.putExtra("VisibletxtNumNakladn", sdf);
+        startActivity(intent);
+        SQLiteDatabase database;
     //= dbHelper.getWritableDatabase();
   //  ContentValues contentValues = new ContentValues();
 
-    dbHelper.createDataBase();
-    try {
-        dbHelper.openDataBase();
-    } catch (SQLException sqle) {
-        throw sqle;
+        dbHelper.createDataBase();
+        try {
+            dbHelper.openDataBase();
+        } catch (SQLException sqle) {
+            throw sqle;
+        }
+        ArrayAdapter<String> adapter;
+        ArrayList<String> arrayBase;
+        arrayBase = repositorys.getDataNakld(sdf);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_2, repositorys.getDataNakld(sdf));
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_2);
+        dbGridBase.setAdapter(adapter);
     }
-    ArrayAdapter<String> adapter;
-    ArrayList<String> arrayBase;
-    arrayBase = repositorys.getDataNakld(sdf);
-    adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_2, repositorys.getDataNakld(sdf));
-    adapter.setDropDownViewResource(android.R.layout.simple_list_item_2);
-    dbGridBase.setAdapter(adapter);
-}
 
     @Override
     public void onClick(View v) {

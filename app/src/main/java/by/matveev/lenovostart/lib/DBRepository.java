@@ -148,7 +148,7 @@ public class DBRepository {
 
 
         Cursor cursor = db.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
-
+        int iF = cursor.getCount();
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             iCountFields = cursor.getColumnCount();
