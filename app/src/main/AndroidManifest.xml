@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditData"></activity>
+        <activity android:name=".EditData" />
         <activity android:name=".activity_sqlite" />
 
         <service

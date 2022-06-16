@@ -128,7 +128,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
     }
 ///////////////////////////
-
+//01048100620052972123duZSYF+93E>Xy
     @Override
     public void onClick(View v) {
         final DBRepository repositorys = new DBRepository(getApplicationContext());
@@ -141,7 +141,10 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                 dbListView.setAdapter(datadapter);
                 break;
             case R.id.btnSaveDat:
-
+                ArrayAdapter<String> datadapterdat = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, repositorys.getDataDat());
+                datadapterdat.setDropDownViewResource(R.layout.simple_list_item_dat);
+                dbListView.setAdapter(datadapterdat);
                 //writeFileSD(DIR_SD,);
                 break;
             case R.id.btnDeleDat:
@@ -213,8 +216,13 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     }
     //
     public void LoaddbListView(){
-
-
+        final String LOG_TAG = "LoaddbListView";
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
+            ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
+            return;
+        }
         dbHelper = new DBHelper(this);
 
         try {
@@ -293,7 +301,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     }
     void writeFileSD(String PatshDIR_SD, String StrokaWrite, Context contex, String FileName) throws IOException {// запись на SD диск  // подготавливаем переменные
 ////
-        final String LOG_TAG = "myLogs";
+        final String LOG_TAG = "PatshDIR_SD";
 //        String txtBarcode = txtnBarcode.getText().toString();
 //        String txtNumber = "";
 //        String txtQuantity = "";
