@@ -1,14 +1,18 @@
 package by.matveev.lenovostart;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.media.MediaScannerConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,6 +46,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
  //   InputStream inputStream;
 
+    private static final int PERMISSION_REQUEST_CODE = 123;
 
     Button btnEditDat;
     Button btnSaveDat;
@@ -134,6 +139,10 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                         android.R.layout.simple_list_item_1, repositorys.getDataDat());
                 datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
                 dbListView.setAdapter(datadapter);
+                break;
+            case R.id.btnSaveDat:
+
+                //writeFileSD(DIR_SD,);
                 break;
             case R.id.btnDeleDat:
                 List resultList = new ArrayList();
@@ -282,16 +291,16 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         toast.setGravity(Gravity.CENTER , 0, 0);
         toast.show();
     }
-    void writeFileSD(String PatshDIR_SD, String StrokaWrite, Context contex, String FileName) {// запись на SD диск  // подготавливаем переменные
+    void writeFileSD(String PatshDIR_SD, String StrokaWrite, Context contex, String FileName) throws IOException {// запись на SD диск  // подготавливаем переменные
 ////
         final String LOG_TAG = "myLogs";
 //        String txtBarcode = txtnBarcode.getText().toString();
 //        String txtNumber = "";
 //        String txtQuantity = "";
 //        String txtPrice = "";
-//        String textAdd = "";
-//        String line = "";
-//        Integer NumberOfRecords = 0;
+        String textAdd = "";
+        String line = "";
+        Integer NumberOfRecords = 0;
 //        loadSetting();
 //        if (txtnNumber.length() > 0 && txtnNumber.getVisibility() == View.VISIBLE)
 //            txtNumber = txtnNumber.getText().toString();
@@ -335,24 +344,24 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         if (sdFile.exists()){
 //            //ToastMessageCenter("Файл в наличии.");
 //            // проверка разрешений
-//            if (!myPremission())  return;
-//            String lineSeparator = System.getProperty("line.separator");
-//            try {
+            if (!myPremission())  return;
+            String lineSeparator = System.getProperty("line.separator");
+            try {
 //                // открываем поток для чтения
-//                BufferedReader br = new BufferedReader(new FileReader(sdFile));
+                BufferedReader br = new BufferedReader(new FileReader(sdFile));
 //                // пишем данные
 //                //ToastMessageCenter("Файл открыт для чтения.");
 //
-//                StringBuilder builder = new StringBuilder();
-//                NumberOfRecords = 0;
-//                while ((line = br.readLine()) != null) {
-//                    builder.append(line + "\r\n");
-//                    ++NumberOfRecords;
-//                }
-//                textAdd = builder.toString();
+                StringBuilder builder = new StringBuilder();
+                NumberOfRecords = 0;
+                while ((line = br.readLine()) != null) {
+                    builder.append(line + "\r\n");
+                    ++NumberOfRecords;
+                }
+                textAdd = builder.toString();
 //                // закрываем поток
-//                br.close();
-//                Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
+                br.close();
+                Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
 //                btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
 //                //        btnUploadDelete.setEnabled(true);
 //                if (!sModeWorking.equals("1")) {
@@ -367,31 +376,31 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //                //sdFile.renameTo(sdFile); // переименовать файл
 //                //copyFileUsingStream(sdFile, sdFile_copy);// копировать файл
 //
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
-//                return;
-//            }
+            } catch (IOException e) {
+                e.printStackTrace();
+                ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
+                return;
+            }
         }//else{ ToastMessageCenter("Файл отсутствует."); }
-//        try {
-//            // открываем поток для записи если файла нет
-//            //ToastMessageCenter("Запись");
-//            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
-//            // пишем данные
-//            textAdd = textAdd + text ;
+        try {
+            // открываем поток для записи если файла нет
+            //ToastMessageCenter("Запись");
+            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+            // пишем данные
+            textAdd = textAdd + StrokaWrite ;
 //            //bw.write(textAdd);
 //
-//            bw.append(textAdd);
-//            // закрываем поток
-//            bw.close();
-//            ++NumberOfRecords;
-//            //if(sdFile.exists())
-//            //sdFile.renameTo(sdFile); // переименовать файл
-//            //copyFileUsingStream(sdFile, sdFile);// копировать файл
-//            Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
-//            //ToastMessageCenter("Данные сохранены на SD.+");
-//            btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
-//            //     btnUploadDelete.setEnabled(true);
+            bw.append(textAdd);
+            // закрываем поток
+            bw.close();
+            ++NumberOfRecords;
+            //if(sdFile.exists())
+            //sdFile.renameTo(sdFile); // переименовать файл
+            //copyFileUsingStream(sdFile, sdFile);// копировать файл
+            Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
+            //ToastMessageCenter("Данные сохранены на SD.+");
+          //  btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
+            //     btnUploadDelete.setEnabled(true);
 //            if (!sModeWorking.equals("1")) {
 //                //1
 //                btnSaveToServer.setEnabled(false);
@@ -399,14 +408,84 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //                btnSaveToServer.setEnabled(true);
 //            }
 //            btnDeleteFile.setEnabled(true);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            ToastMessageCenter("Ошибка: Файл невозможно открыть.");
-//            return;
-////        }
+        } catch (IOException e) {
+            e.printStackTrace();
+            ToastMessageCenter("Ошибка: Файл невозможно открыть.");
+            return;
+        }
     }
 
 //
+private boolean myPremission(){
+    if (hasPermissions()){
+        // our app has permissions.
+        makeFolder();
+    }
+    else {
+        //our app doesn't have permissions, So i m requesting permissions.
+        requestPermissionWithRationale();
+    }
+    return true;
+}
 
+    private boolean hasPermissions(){
+        int res = 0;
+        //string array of permissions,
+        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        for (String perms : permissions){
+            /*
+             * с помощью метода checkCallingOrSelfPermission в цикле проверяет
+             * предоставленные приложению разрешения и сравнивает их с тем, которое нам необходимо.
+             * При отсутствии разрешения метод будет возвращать false, а при наличии разрешения — true.
+             */
+            res = checkCallingOrSelfPermission(perms);
+            if (!(res == PackageManager.PERMISSION_GRANTED)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+    private void makeFolder(){
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"fandroid");
+
+        if (!file.exists()){
+            Boolean ff = file.mkdir();
+            if (ff){
+                Toast.makeText(this, "Folder created successfully", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "Failed to create folder", Toast.LENGTH_LONG).show();
+            }
+
+        }
+        else {
+            // Toast.makeText(this, "Folder already exist", Toast.LENGTH_LONG).show();//Папка уже существует
+        }
+    }
+    public void requestPermissionWithRationale() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            //final String message = "Storage permission is needed to show files count";
+            //Snackbar.make(this.findViewById(R.id.activity_scaner), message, Snackbar.LENGTH_LONG)
+            //        .setAction("GRANT", new View.OnClickListener() {
+            //   @Override
+            //    public void onClick(View v) {
+            requestPerms();
+            //    }
+            //     })
+            //     .show();
+
+        } else {
+            requestPerms();
+        }
+    }
+    private void requestPerms(){
+        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            requestPermissions(permissions,PERMISSION_REQUEST_CODE);
+        }
+    }
 
 }
