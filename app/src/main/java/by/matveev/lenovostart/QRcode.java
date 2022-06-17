@@ -29,7 +29,7 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
 
         txtQR = (EditText) findViewById(R.id.txtQR);
         txtQRBarcode = (TextView) findViewById(R.id.txtQRBarcode);
-
+        txtQRNameTov = (TextView) findViewById(R.id.txtQRNameTov);
 
         txtQR.setOnKeyListener(new View.OnKeyListener() {
         @Override
