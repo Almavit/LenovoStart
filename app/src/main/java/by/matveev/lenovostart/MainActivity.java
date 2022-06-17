@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnStartElectron;
     Button btnSetting;
     Button btnEditDatTxt;
+    Button btnQR;
     TextView txtLog;
     EditText txtIp;
     CheckBox chkWiFi;
@@ -69,15 +70,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        btnQR = (Button) findViewById(R.id.btnQR);
+        btnQR.setOnClickListener(this);
+
         btnFourField = (Button) findViewById(R.id.btnFourField);
         btnFourField.setOnClickListener(this);
+
         btnTwoField = (Button) findViewById(R.id.btnTwoField);
         btnTwoField.setOnClickListener(this);
+
         btnTwoFieldQuan = (Button) findViewById(R.id.btnTwoFieldQuan);
         btnTwoFieldQuan.setOnClickListener(this);
 
         btnOneField = (Button) findViewById(R.id.btnOneField);
         btnOneField.setOnClickListener(this);
+
         btnEditor = (Button) findViewById(R.id.btnTwoFieldNum);
         btnEditor.setOnClickListener(this);
 
@@ -115,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         switch (v.getId()){
+            case R.id.btnQR:
+                Intent intentQR = new Intent(this, QRcode.class);
+                startActivity(intentQR);
+                break;
             case R.id.btnEditDatTxt:
                 Intent intentEditDatTxt = new Intent(this, EditData.class);
                 startActivity(intentEditDatTxt);
