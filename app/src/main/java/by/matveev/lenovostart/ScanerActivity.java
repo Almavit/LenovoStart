@@ -530,8 +530,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     }
     //================================ копирование  ================================
     public void DeleteFile(View v) {
+
         showDialog(IDD_THREE_BUTTONS);
     }
+
     public void DeleteFilee(View v){
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
@@ -727,7 +729,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
        // Проверка наличия файла
        if (sdFile.exists()) {
            //ToastMessageCenter("Файл в наличии.");
-           // проверка разрешений
+           // проверка разрешений записи на карту памяти
            if (!myPremission())
                return 0;
            try {
