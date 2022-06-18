@@ -4,9 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import by.matveev.lenovostart.lib.DBRepository;
 
 public class QRcode extends AppCompatActivity implements View.OnClickListener{
 
@@ -34,8 +37,16 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
         txtQR.setOnKeyListener(new View.OnKeyListener() {
         @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+            final DBRepository repositorys = new DBRepository(getApplicationContext());
+            String dfdf;
             if(event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)){
-                txtQRBarcode.setText("1234567890123");
+//                ArrayAdapter<String> qradapter = new ArrayAdapter<String>(this,
+//                        android.R.layout.simple_list_item_1, repositorys.getDataDat());
+                //qradapter.setDropDownViewResource(R.layout.simple_list_item_dat);
+                //dbListView.setAdapter(qradapter);
+                dfdf = repositorys.getDataQR().get(1);
+
             }
                 return false;
             }

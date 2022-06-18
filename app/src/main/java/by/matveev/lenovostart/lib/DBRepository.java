@@ -92,10 +92,28 @@ public class DBRepository {
         }
         private int fieldCode;
     }
-    public ArrayList<String>  getDataDocoments(Fields field){
+    ////======================
+    public ArrayList<String>  getDataQR(){
+        String asdf;
+        String[] columnsName = new String[]{KEY_QR_CODE};;
         ArrayList<String> list = new ArrayList<String>();
+        //columnsName = new String[]{fieldsColumns};
+        Fields field = Fields.KEY_QR_CODE;
 
 
+        Cursor cursor = db.query("Document",columnsName , null,null, KEY_BARCODE, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            iCountFields = cursor.getColumnCount();
+            do {
+                iCountFields = cursor.getPosition();
+
+                asdf = cursor.getString(field.getFieldCode());
+
+                list.add(cursor.getString(field.getFieldCode()));
+
+            } while (cursor.moveToNext());
+        }
         return list;
     }
 
