@@ -1,16 +1,12 @@
 package by.matveev.lenovostart.lib;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.ContextWrapper;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import by.matveev.lenovostart.StartElectronDocument;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 
@@ -22,6 +18,7 @@ public class DBRepository {
 
     Integer iCountFields;
 
+    public static  final String KEY_QR_CODE = "qrcode";
     public static  final String KEY_NUM_NAKL = "numnakl";
     public static  final String KEY_DATE = "date";
     public static  final String KEY_NAME_POST = "namepost";
@@ -76,15 +73,16 @@ public class DBRepository {
     }
     //Создадим перечисление с полями таблицы Document.
     public enum Fields {
-        KEY_NUM_NAKL(0), // = "numnakl";
-        KEY_DATE(1),     // = "date";
-        KEY_NAME_POST(2),// = "namepost";
-        KEY_NUM_POZ(3),  // = "numpoz";
-        KEY_BARCODE(4),  // = "barcode";
-        KEY_NAME_TOV(5), // = "nametov";
+        KEY_QR_CODE(0),
+        KEY_NUM_NAKL(1), // = "numnakl";
+        KEY_DATE(2),     // = "date";
+        KEY_NAME_POST(3),// = "namepost";
+        KEY_NUM_POZ(4),  // = "numpoz";
+        KEY_BARCODE(5),  // = "barcode";
+        KEY_NAME_TOV(6), // = "nametov";
         //    KEY_PRICE(0), // = "price";
-        KEY_QUANTITY(6), // = "quantity";
-        KEY_STATUS(7);   // = "status";
+        KEY_QUANTITY(7), // = "quantity";
+        KEY_STATUS(8);   // = "status";
         Fields(int i) {
             this.fieldCode = i;
         }
@@ -94,6 +92,14 @@ public class DBRepository {
         }
         private int fieldCode;
     }
+    public ArrayList<String>  getDataDocoments(Fields field){
+        ArrayList<String> list = new ArrayList<String>();
+
+
+        return list;
+    }
+
+
 
     public ArrayList<String> getDataAllNakld()
     {
@@ -107,9 +113,6 @@ public class DBRepository {
 
 
         Cursor cursor = db.query("Document",columnsName , null,null, KEY_NUM_NAKL, null, null);
-
-       // ) execSQL("select " + KEY_NUM_NAKL + "count(*)" + " from " + TABLE_DOCUMENT + "group by " + KEY_NUM_NAKL);
-        //query("Document", null, null, null, null, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             iCountFields = cursor.getColumnCount();
