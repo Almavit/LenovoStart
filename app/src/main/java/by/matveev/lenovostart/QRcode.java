@@ -46,7 +46,7 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
                 //qradapter.setDropDownViewResource(R.layout.simple_list_item_dat);
                 //dbListView.setAdapter(qradapter);
                 dfdf = repositorys.getDataQR().get(1);
-
+///
             }
                 return false;
             }
