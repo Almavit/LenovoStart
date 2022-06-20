@@ -38,14 +38,16 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
         @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-            final DBRepository repositorys = new DBRepository(getApplicationContext());
-            String dfdf;
             if(event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)){
 //                ArrayAdapter<String> qradapter = new ArrayAdapter<String>(this,
 //                        android.R.layout.simple_list_item_1, repositorys.getDataDat());
                 //qradapter.setDropDownViewResource(R.layout.simple_list_item_dat);
                 //dbListView.setAdapter(qradapter);
+                final DBRepository repositorys = new DBRepository(getApplicationContext());
+                String dfdf;
+                dfdf = repositorys.getDataQR().get(1);
                 dfdf = repositorys.getDataQR().get(2);
+                dfdf = repositorys.getDataQR().get(3);
                 txtQRBarcode.setText(dfdf);
 //                while ((repositorys = repositorys.getDataQR().) != null) {
 //                    iCountStrok++;
@@ -57,6 +59,8 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
         txtQR.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
             public void onFocusChange(View v, boolean hasFocus){
+                        String dfdf="23";
+                        txtQRBarcode.setText(dfdf);
 
             }
          });
@@ -64,7 +68,8 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-
+        String dfdf="1111111111";
+        txtQRBarcode.setText(dfdf);
     }
 
 

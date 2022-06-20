@@ -54,6 +54,7 @@ public class DBRepository {
                 KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );*/
     //    db = new DBHelper(context).getWritableDatabase();
    //     cont = context;
+       // return db;
     }
     //Создадим перечисление с полями таблицы Dat.
     public enum DatFields {
