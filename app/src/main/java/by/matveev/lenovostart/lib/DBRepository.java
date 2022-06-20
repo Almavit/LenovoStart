@@ -99,7 +99,8 @@ public class DBRepository {
 
     public ArrayList<String>  getDataQR(){
         String asdf;
-        String[] columnsName = null;//new String[]{KEY_QR_CODE};;
+        String[] columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL,KEY_DATE, KEY_NAME_POST,
+                KEY_NUM_POZ,KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY,KEY_STATUS};
         ArrayList<String> list = new ArrayList<String>();
         //columnsName = new String[]{fieldsColumns};
         Fields field = Fields.KEY_QR_CODE;
