@@ -47,7 +47,9 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
                 //dbListView.setAdapter(qradapter);
                 dfdf = repositorys.getDataQR().get(2);
                 txtQRBarcode.setText(dfdf);
-///
+//                while ((repositorys = repositorys.getDataQR().) != null) {
+//                    iCountStrok++;
+//                }
             }
                 return false;
             }
