@@ -18,6 +18,8 @@ public class DBRepository {
 
     Integer iCountFields;
 
+    String sssssss;
+
     public static  final String KEY_QR_CODE = "qrcode";
     public static  final String KEY_NUM_NAKL = "numnakl";
     public static  final String KEY_DATE = "date";
@@ -121,23 +123,25 @@ public class DBRepository {
 
     public ArrayList<String> getDataAllNakld()
     {
-        String asdf;
+       // String asdf;
         String naAAA;
         String[] columnsName = null;
-        columnsName = new String[]{KEY_NUM_NAKL};//, "count(*)"
-       // columnsName = "numnakl";
+        columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL};//, "count(*)"
+        //columnsName = "numnakl";
         Fields field = Fields.KEY_NUM_NAKL;
         ArrayList<String> list = new ArrayList<String>();
 
 
         Cursor cursor = db.query("Document",columnsName , null,null, KEY_NUM_NAKL, null, null);
+        iCountFields = cursor.getColumnCount();
+
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
-            iCountFields = cursor.getColumnCount();
+            iCountFields = cursor.getCount();
             do {
-                iCountFields = cursor.getPosition();
-
-                asdf = cursor.getString(field.getFieldCode());
+                //iCountFields = cursor.getPosition();
+                iCountFields = field.getFieldCode();
+                sssssss = cursor.getString(1);
 
                 list.add(cursor.getString(field.getFieldCode()));
 

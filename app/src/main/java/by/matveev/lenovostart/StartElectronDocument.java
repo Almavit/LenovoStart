@@ -301,28 +301,30 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
 //                         }else{
 //                        }
                         if (iCountField != 0){
-                            sValueFieldNumNakldn = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_NUM_NAKL));
+
+                            sValueFieldNumNakldn = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_QR_CODE));
                             sValueFieldBarcode   = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_BARCODE));
                             sValueFieldDate      = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_DATE));
-
-                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[0]);
-                            contentValues.put(DBHelper.KEY_DATE, nextLine[1]);
-                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[2]);
-                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[3]);
-                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[4]);
-                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[5]);
-                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[6]);
-                            contentValues.put(DBHelper.KEY_STATUS, nextLine[7]);
+                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
+                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
+                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
+                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
+                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
+                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
+                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
+                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
+                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
                             database.update(DBHelper.TABLE_DOCUMENT, contentValues, null, null);
                         }else{
-                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[0]);
-                            contentValues.put(DBHelper.KEY_DATE, nextLine[1]);
-                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[2]);
-                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[3]);
-                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[4]);
-                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[5]);
-                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[6]);
-                            contentValues.put(DBHelper.KEY_STATUS, nextLine[7]);
+                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
+                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
+                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
+                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
+                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
+                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
+                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
+                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
+                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
                             database.insert(DBHelper.TABLE_DOCUMENT, null, contentValues);
                         }
 //                        if (sValueFieldNumNakldn.equals(nextLine[0].toString()) &&
