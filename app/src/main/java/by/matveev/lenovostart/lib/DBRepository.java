@@ -95,13 +95,16 @@ public class DBRepository {
         private int fieldCode;
     }
     ////======================
+
+
     public ArrayList<String>  getDataQR(){
         String asdf;
-        String[] columnsName = new String[]{KEY_QR_CODE};;
+        String[] columnsName = null;//new String[]{KEY_QR_CODE};;
         ArrayList<String> list = new ArrayList<String>();
         //columnsName = new String[]{fieldsColumns};
         Fields field = Fields.KEY_QR_CODE;
 
+        //1
 
         Cursor cursor = db.query("Document",columnsName , null,null, KEY_BARCODE, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -110,7 +113,7 @@ public class DBRepository {
             do {
                 iCountFields = cursor.getPosition();
 
-                asdf = cursor.getString(field.getFieldCode());
+                asdf = cursor.getString(2);
 
                 list.add(cursor.getString(field.getFieldCode()));
 
