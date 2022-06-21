@@ -60,15 +60,19 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
                 //final DBRepository repositorys = new DBRepository(getApplicationContext());
                 String[] columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL,KEY_DATE, KEY_NAME_POST,
                         KEY_NUM_POZ,KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY,KEY_STATUS};
-                String aaaaaaaa = txtQR.getText().toString();
-                
-                Cursor cursor = db.query("Document",columnsName , " where " + DBHelper.KEY_QR_CODE + " = " +
-                        txtQR.getText().toString(),null, KEY_BARCODE, null, null);
-                String dfdf = "0000000000000000000";
+                String sqlStroka = txtQR.getText().toString();
 
+
+                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_QR_CODE + " = '" + sqlStroka + "'";
+
+
+                //sqlStroka = " where " + DBHelper.KEY_QR_CODE + " = " + txtQR.getText().toString();
+                Cursor cursor = db.rawQuery(sqlStroka,null);
+                String dfdf = "0000000000000000000";
+                Integer iCountFields = cursor.getCount();
                 if ((cursor != null) && (cursor.getCount() > 0)) {
                     cursor.moveToFirst();
-                    int iCountFields = cursor.getColumnCount();
+
                     do {
                         iCountFields = cursor.getPosition();
 
