@@ -60,8 +60,8 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
                 //final DBRepository repositorys = new DBRepository(getApplicationContext());
                 String[] columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL,KEY_DATE, KEY_NAME_POST,
                         KEY_NUM_POZ,KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY,KEY_STATUS};
-                String sqlStroka = txtQR.getText().toString();
-
+                String sqlStroka = txtQR.getText().toString().replaceAll(" ","");
+// символ \u001D
 
                 sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_QR_CODE + " = '" + sqlStroka + "'";
 
