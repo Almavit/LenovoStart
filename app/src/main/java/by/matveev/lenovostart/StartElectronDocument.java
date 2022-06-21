@@ -70,12 +70,17 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
 
     SQLiteDatabase database;
 
+
+
     final String FILENAME_CSV = "999.csv";
     final String DIR_SD = "Documents";
 
     private static final String FILENAME = "./alphabet.utf8";
     private static final String ENCODING_WIN1251 = "windows-1251";
     private static final String ENCODING_UTF8 = "UTF-8";
+
+
+    String sqlStroka;
 
     public StartElectronDocument() throws IOException {
     }
@@ -85,6 +90,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_start_electron_document);
+
 
 
         progressTextView = (ProgressTextView) findViewById(R.id.progressTextView);
@@ -183,16 +189,16 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
         ContentValues contentValues = new ContentValues();
         Integer iCountStrok;
         Integer iCountField;
-        String sValueCSVNumNakldn = null;
-        String sValueFieldNumNakldn = null;
-        String sValueFieldBarcode = null;
-        String sValueFieldDate = null;
-        String sValueFieldNumPoz = null;
-        String sValueFieldName = null;
-        String sValueFieldQuantity = null;
-        String sValueFieldStatus = null;
-        String sValueFieldPost = null;
-        String sStrok = null;
+//        String sValueCSVNumNakldn = null;
+//        String sValueFieldNumNakldn = null;
+//        String sValueFieldBarcode = null;
+//        String sValueFieldDate = null;
+//        String sValueFieldNumPoz = null;
+//        String sValueFieldName = null;
+//        String sValueFieldQuantity = null;
+//        String sValueFieldStatus = null;
+//        String sValueFieldPost = null;
+//        String sStrok = null;
         String[] countries = null;
        // dbHelper helper = new dbHelper(this);
         dbHelper.createDataBase();
@@ -212,13 +218,29 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                 final DBRepository repository = new DBRepository(this.getApplicationContext());
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, repository.getDataAllNakld());
                 adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-//                String sdsssss = adapter.getItem(1);
-//                Integer iSSS = adapter.getCount();
+
                 dbGridBase.setAdapter(adapter);
                 break;
             case R.id.btnClearBase:
-           //     if
-                database.delete(DBHelper.TABLE_DOCUMENT,null,null);
+                try{
+//                    sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_BARCODE +
+//                            " = '" + nextLine[5].toString() + "' AND " + DBHelper.KEY_NUM_NAKL +
+//                            " = '" + nextLine[1].toString() + "' AND " +
+//                            DBHelper.KEY_DATE + " = '" + nextLine[2].toString() + "'";
+//                    basecursor = database.rawQuery(sqlStroka,null);
+//                    basecursor.moveToFirst();// установка курсора в начало
+//
+                    database = dbHelper.getWritableDatabase();
+                    //Cursor basecursor = database.query(DBHelper.TABLE_DOCUMENT, null, null, null, null, null, null);
+                    //basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT,null);
+                    //iCountField = basecursor.getCount();//количество полей
+
+                    database.delete(DBHelper.TABLE_DOCUMENT,null,null);
+                    txtLogMessege.setBackgroundColor(Color.WHITE);
+                    txtLogMessege.setText(" ТАБЛИЦА ПУСТАЯ ");
+                } catch (SQLException sqle) {
+                    throw sqle;
+                }
                 break;
             case R.id.btnLoad:
                 //загружаем настройки программы
@@ -261,23 +283,27 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
 // OPTION 2: pack the file with the app
                     /* "If you want to package the .csv file with the application and have it install on the internal storage when the app installs, create an assets folder in your project src/main folder (e.g., c:\myapp\app\src\main\assets\), and put the .csv file in there, then reference it like this in your activity:" (from the cited answer) */
                     /* "Если вы хотите упаковать файл .csv вместе с приложением и установить его во внутреннее хранилище при установке приложения, создайте папку assets в вашей папке project src/main (например, c:\myapp\app\src\main\assets \), и поместите туда файл .csv, а затем ссылайтесь на него следующим образом в вашей деятельности:" (из процитированного ответа) */
-                    String csvfileString = this.getApplicationInfo().dataDir + File.pathSeparatorChar  +
-                            FILENAME_CSV;
-                    File csvfiles = new File(csvfileString);
+                   // String csvfileStrin  = this.getApplicationInfo().dataDir + File.pathSeparatorChar  +
+                            //FILENAME_CSV;
+                //    File csvfiles = csvfile;//new File(csvfileString);
 // END OF OPTION 2
                     CSVReader reader = new CSVReader(
                         new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
                         ';', '\'', 0);
-                    sStrok = reader.toString();
+                    //sStrok = reader.toString();
                     // считываем данные с БД
                     database = dbHelper.getWritableDatabase();
                     Cursor basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT,null);
                     // определяем, какие столбцы из курсора будут выводиться в ListView
                     iCountStrok = basecursor.getCount();//количество строк
                     iCountStrok = 0;
+
                     while ((nextLine = reader.readNext()) != null) {
                         iCountStrok++;
+
                     }
+
+
                     reader = new CSVReader(
                             new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
                             ';', '\'', 0);
@@ -288,12 +314,21 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                     while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
                         progressTextView.setValue(iCountStrok);
                         iCountStrok++;
-                        csvfileString = nextLine[4].toString();
-                        csvfileString = "select * from " + DBHelper.TABLE_DOCUMENT +
-                                " where " + DBHelper.KEY_BARCODE + " = '" + nextLine[4].toString() + "' AND " +
-                                DBHelper.KEY_NUM_NAKL + " = '" + nextLine[0].toString() + "' AND " +
-                                DBHelper.KEY_DATE + " = '" + nextLine[1].toString() + "'";
-                        basecursor = database.rawQuery(csvfileString,null);
+                        sqlStroka = nextLine[0].toString(); //QR code
+                        sqlStroka = nextLine[1].toString(); // № invoice
+                        sqlStroka = nextLine[2].toString(); // invoice date
+                        sqlStroka = nextLine[3].toString();//provider
+                        sqlStroka = nextLine[4].toString();// # items in the invoice
+                        sqlStroka = nextLine[5].toString();// ифксщву
+                        sqlStroka = nextLine[6].toString();//name  product
+                        sqlStroka = nextLine[7].toString();// price
+                        sqlStroka = nextLine[8].toString();// status
+
+                         sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_BARCODE +
+                                 " = '" + nextLine[5].toString() + "' AND " + DBHelper.KEY_NUM_NAKL +
+                                 " = '" + nextLine[1].toString() + "' AND " +
+                                DBHelper.KEY_DATE + " = '" + nextLine[2].toString() + "'";
+                        basecursor = database.rawQuery(sqlStroka,null);
                         basecursor.moveToFirst();// установка курсора в начало
                         iCountField = basecursor.getCount();//количество полей
                       //  csvfileString = basecursor.getString(4);
@@ -302,9 +337,9 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
 //                        }
                         if (iCountField != 0){
 
-                            sValueFieldNumNakldn = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_QR_CODE));
-                            sValueFieldBarcode   = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_BARCODE));
-                            sValueFieldDate      = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_DATE));
+//                            sValueFieldNumNakldn = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_QR_CODE));
+//                            sValueFieldBarcode   = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_BARCODE));
+//                            sValueFieldDate      = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_DATE));
                             contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
                             contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
                             contentValues.put(DBHelper.KEY_DATE, nextLine[2]);

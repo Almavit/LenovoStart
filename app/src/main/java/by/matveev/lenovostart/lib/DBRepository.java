@@ -76,7 +76,7 @@ public class DBRepository {
     }
     //Создадим перечисление с полями таблицы Document.
     public enum Fields {
-        KEY_QR_CODE(0),
+        KEY_QR_CODE(0), // = "";
         KEY_NUM_NAKL(1), // = "numnakl";
         KEY_DATE(2),     // = "date";
         KEY_NAME_POST(3),// = "namepost";
