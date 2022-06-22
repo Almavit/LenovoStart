@@ -2,6 +2,7 @@ package by.matveev.lenovostart;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -34,7 +35,7 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
     TextView txtQRNameTov;
     TextView txtQRNamePost;
     TextView txtQRPricePall;
-    EditText txtQRPrice;
+    TextView txtQRPrice;
     TextView txtQRDate;
     TextView txtQRNumNakl;
     TextView txtQRNumPosition;
@@ -49,62 +50,59 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
         txtQR = (EditText) findViewById(R.id.txtQR);
         txtQRBarcode = (TextView) findViewById(R.id.txtQRBarcode);
         txtQRNameTov = (TextView) findViewById(R.id.txtQRNameTov);
+        txtQRBarcode = (TextView) findViewById(R.id.txtQRBarcode);
+        txtQRNameTov = (TextView) findViewById(R.id.txtQRNameTov);
+
+        txtQRNamePost = (TextView) findViewById(R.id.txtQRNamePost);
+        txtQRPricePall = (TextView) findViewById(R.id.txtQRPricePall);
+
+        txtQRPrice = (TextView) findViewById(R.id.txtQRPrice);
+        txtQRDate = (TextView) findViewById(R.id.txtQRDate);
+        txtQRNumNakl = (TextView) findViewById(R.id.txtQRNumNakl);
+      //  txtQRNumPosition = (TextView) findViewById(R.id.txtQRNumPosition);
+
 
         txtQR.setOnKeyListener(new View.OnKeyListener() {
         @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
             if(event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)){
-
+                //txtQR.setText("");
+                txtQR.setBackgroundColor(Color.WHITE);
+                String sqlStroka = txtQR.getText().toString();
                 SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
-                //final DBRepository repositorys = new DBRepository(getApplicationContext());
-                String[] columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL,KEY_DATE, KEY_NAME_POST,
-                        KEY_NUM_POZ,KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY,KEY_STATUS};
-                String sqlStroka = txtQR.getText().toString().replaceAll("\u001D","");
-// символ \u001D
-
-                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_QR_CODE + " = '" + sqlStroka + "'";
-
-
-                //sqlStroka = " where " + DBHelper.KEY_QR_CODE + " = " + txtQR.getText().toString();
+                String[] columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL,KEY_DATE, KEY_NAME_POST,KEY_NUM_POZ,
+                                                    KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY,KEY_STATUS};
+                sqlStroka = txtQR.getText().toString().replaceAll("\n","");// очистить от символа \n
+                txtQR.setText(sqlStroka);
+                sqlStroka = txtQR.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
+                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_QR_CODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
                 Cursor cursor = db.rawQuery(sqlStroka,null);
-                String dfdf = "0000000000000000000";
-                Integer iCountFields = cursor.getCount();
                 if ((cursor != null) && (cursor.getCount() > 0)) {
                     cursor.moveToFirst();
-
-//                    do {
-                    //iCountFields = cursor.getPosition();
-                    dfdf = cursor.getString(0);
-                    dfdf = cursor.getString(1);
-                    dfdf = cursor.getString(2);
-                    dfdf = cursor.getString(3);
-                    dfdf = cursor.getString(4);
-                    dfdf = cursor.getString(5);
-                    dfdf = cursor.getString(6);
-                    dfdf = cursor.getString(7);
-                    dfdf = cursor.getString(8);
-                    dfdf = cursor.getString(9);
+                    //txtQR.setText(cursor.getString(0));
+                    txtQRNumNakl.setText(cursor.getString(1));
+                    txtQRDate.setText(cursor.getString(2));
                     txtQRNamePost.setText(cursor.getString(3));
                     txtQRBarcode.setText(cursor.getString(5));
                     txtQRNameTov.setText(cursor.getString(6));
                     txtQRPricePall.setText(cursor.getString(8));
-                    //txtQRPrice.setText(cursor.getString(5));
-//                    dfdf = cursor.getString(1);
-
-
-
-                        //dfdf = cursor.getString(dfdf.getFieldCode()));
-
-//                    } while (cursor.moveToNext());
+                    txtQRPrice.setText("0.00");
+                    //txtQR.setSelection(1, 33);
+                    txtQR.getText().clear();
+                    db.close();
+                }else{
+                    sqlStroka = txtQR.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
+                    txtQR.setBackgroundColor(Color.RED);
+                    txtQR.getText().clear();;
+                    txtQRNumNakl.setText("");
+                    txtQRDate.setText("");
+                    txtQRNamePost.setText("");
+                    txtQRBarcode.setText("");
+                    txtQRNameTov.setText("");
+                    txtQRPricePall.setText("");
+                    //txtQR.selectAll();
                 }
-//                dfdf = repositorys.getDataQR().get(1);
-//                dfdf = repositorys.getDataQR().get(2);
-//                dfdf = repositorys.getDataQR().get(3);
-              //  txtQRBarcode.setText(dfdf);
-//                while ((repositorys = repositorys.getDataQR().) != null) {
-//                    iCountStrok++;
-//                }
             }
                 return false;
             }
@@ -112,8 +110,9 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
         txtQR.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
             public void onFocusChange(View v, boolean hasFocus){
-                        String dfdf="23";
-                        txtQRBarcode.setText(dfdf);
+                      //  String dfdf="23";
+                      //  txtQRBarcode.setText(dfdf);
+                       // txtQR.selectAll();
 
             }
          });
@@ -121,8 +120,9 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        String dfdf="1111111111";
-        txtQRBarcode.setText(dfdf);
+     //   String dfdf="1111111111";
+     //   txtQRBarcode.setText(dfdf);
+        txtQR.selectAll();
     }
 
 

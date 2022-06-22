@@ -5,9 +5,11 @@
       <map>
         <entry key="..\:/Android/LenovoStart/app/src/main/res/layout/activity_edit_data.xml" value="0.22" />
         <entry key="..\:/Android/LenovoStart/app/src/main/res/layout/activity_electron_document.xml" value="0.1359375" />
+        <entry key="..\:/android/LenovoStart/app/src/main/res/layout/activity_electron_document.xml" value="0.2078125" />
         <entry key="..\:/android/LenovoStart/app/src/main/res/layout/activity_main.xml" value="0.34739583333333335" />
         <entry key="..\:/android/LenovoStart/app/src/main/res/layout/activity_qrcode.xml" value="0.34739583333333335" />
         <entry key="..\:/android/LenovoStart/app/src/main/res/layout/activity_select_control.xml" value="0.17291666666666666" />
+        <entry key="..\:/android/LenovoStart/app/src/main/res/layout/activity_start_electron_document.xml" value="0.2078125" />
         <entry key="..\:/android/LenovoStart/app/src/main/res/layout/content_main.xml" value="0.34739583333333335" />
         <entry key="..\:/android/LenovoStart/app/src/main/res/layout/content_scaner.xml" value="0.25" />
       </map>

@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="#000000"
                 android:textSize="22sp" />
 
             <TextView
@@ -28,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="#000000"
                 android:textSize="22sp" />
         </LinearLayout>
 
@@ -35,6 +37,7 @@
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="#000000"
             android:text="QR код" />
 
         <EditText
@@ -44,45 +47,52 @@
             android:maxLength="33"
             android:maxLines="33"
             android:minEms="33"
+            android:textColor="#000000"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="#000000"
             android:text="Штрихкод" />
 
         <TextView
             android:id="@+id/txtQRBarcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxEms="13"
-            android:maxLength="13"
-            android:maxLines="13"
+            android:maxEms="15"
+            android:maxLength="15"
+            android:maxLines="15"
+            android:textColor="#000000"
             android:textSize="22sp" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="#000000"
             android:text="Наименование товара" />
 
         <TextView
             android:id="@+id/txtQRNameTov"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="#000000"
             android:textSize="22sp" />
 
         <TextView
             android:id="@+id/textView7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="#000000"
             android:text="Поставщик" />
 
         <TextView
             android:id="@+id/txtQRNamePost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="#000000"
             android:textSize="22sp" />
 
         <LinearLayout
@@ -95,6 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="#000000"
                 android:text="Цена товара" />
 
             <TextView
@@ -102,6 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="#000000"
                 android:text="Цена зала" />
 
         </LinearLayout>
@@ -118,6 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0.00"
+                android:textColor="#000000"
                 android:textSize="22sp" />
 
             <TextView
@@ -126,6 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0.00"
+                android:textColor="#000000"
                 android:textSize="22sp" />
         </LinearLayout>
 
@@ -133,6 +147,7 @@
             android:id="@+id/btnQRSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="#000000"
             android:text="Button" />
 
     </LinearLayout>

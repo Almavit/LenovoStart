@@ -319,7 +319,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                         sqlStroka = nextLine[2].toString(); // invoice date
                         sqlStroka = nextLine[3].toString();//provider
                         sqlStroka = nextLine[4].toString();// # items in the invoice
-                        sqlStroka = nextLine[5].toString();// ифксщву
+                        sqlStroka = nextLine[5].toString();// barcode
                         sqlStroka = nextLine[6].toString();//name  product
                         sqlStroka = nextLine[7].toString();// price
                         sqlStroka = nextLine[8].toString();// status
