@@ -60,7 +60,7 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
                 //final DBRepository repositorys = new DBRepository(getApplicationContext());
                 String[] columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL,KEY_DATE, KEY_NAME_POST,
                         KEY_NUM_POZ,KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY,KEY_STATUS};
-                String sqlStroka = txtQR.getText().toString().replaceAll(" ","");
+                String sqlStroka = txtQR.getText().toString().replaceAll("\u001D","");
 // символ \u001D
 
                 sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_QR_CODE + " = '" + sqlStroka + "'";
@@ -73,22 +73,35 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
                 if ((cursor != null) && (cursor.getCount() > 0)) {
                     cursor.moveToFirst();
 
-                    do {
-                        iCountFields = cursor.getPosition();
+//                    do {
+                    //iCountFields = cursor.getPosition();
+                    dfdf = cursor.getString(0);
+                    dfdf = cursor.getString(1);
+                    dfdf = cursor.getString(2);
+                    dfdf = cursor.getString(3);
+                    dfdf = cursor.getString(4);
+                    dfdf = cursor.getString(5);
+                    dfdf = cursor.getString(6);
+                    dfdf = cursor.getString(7);
+                    dfdf = cursor.getString(8);
+                    dfdf = cursor.getString(9);
+                    txtQRNamePost.setText(cursor.getString(3));
+                    txtQRBarcode.setText(cursor.getString(5));
+                    txtQRNameTov.setText(cursor.getString(6));
+                    txtQRPricePall.setText(cursor.getString(8));
+                    //txtQRPrice.setText(cursor.getString(5));
+//                    dfdf = cursor.getString(1);
 
-                        dfdf = cursor.getString(1);
-                        dfdf = cursor.getString(2);
-                        dfdf = cursor.getString(3);
 
 
                         //dfdf = cursor.getString(dfdf.getFieldCode()));
 
-                    } while (cursor.moveToNext());
+//                    } while (cursor.moveToNext());
                 }
 //                dfdf = repositorys.getDataQR().get(1);
 //                dfdf = repositorys.getDataQR().get(2);
 //                dfdf = repositorys.getDataQR().get(3);
-                txtQRBarcode.setText(dfdf);
+              //  txtQRBarcode.setText(dfdf);
 //                while ((repositorys = repositorys.getDataQR().) != null) {
 //                    iCountStrok++;
 //                }

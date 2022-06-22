@@ -65,7 +65,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
     Button btnAllNumNakl;
     Context context;
     Integer iNumCol;
-    EditText txtLogMessege;
+    TextView txtLogMessege;
     ProgressTextView progressTextView;
 
     SQLiteDatabase database;
@@ -103,7 +103,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
 
 
 
-        txtLogMessege = (EditText) findViewById(R.id.txtLogMessege);
+        txtLogMessege = (TextView) findViewById(R.id.txtLogMessege);
         txtLogMessege.setOnClickListener(this);
        // btnUnLoad = (Button) findViewById(R.id.btnUnLoad);
       //  btnUnLoad.setOnClickListener(this);
