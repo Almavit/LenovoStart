@@ -19,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,7 +92,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
 
 
 
-        progressTextView = (ProgressTextView) findViewById(R.id.progressTextView);
+        progressTextView = (ProgressTextView) findViewById(R.id.progressTextViewMain);
         progressTextView.setValue(0); // устанавливаем нужное значение
 
         dbGridBase = (GridView) findViewById(R.id.dbGridBase);
@@ -376,10 +375,12 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
 //                        }else{
 //
 //
-//                            break;
+
 //                            //basecursor.moveToLast();
 //                        }
                     }
+                    database.close();
+                    break;
                 } catch (Exception e) {
                     e.printStackTrace();
                 Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();

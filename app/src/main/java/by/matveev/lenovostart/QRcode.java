@@ -35,7 +35,7 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
     TextView txtQRNameTov;
     TextView txtQRNamePost;
     TextView txtQRPricePall;
-    TextView txtQRPrice;
+  //  TextView txtQRPrice;
     TextView txtQRDate;
     TextView txtQRNumNakl;
     TextView txtQRNumPosition;
@@ -56,7 +56,7 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
         txtQRNamePost = (TextView) findViewById(R.id.txtQRNamePost);
         txtQRPricePall = (TextView) findViewById(R.id.txtQRPricePall);
 
-        txtQRPrice = (TextView) findViewById(R.id.txtQRPrice);
+        //   txtQRPrice = (TextView) findViewById(R.id.txtQRPrice);
         txtQRDate = (TextView) findViewById(R.id.txtQRDate);
         txtQRNumNakl = (TextView) findViewById(R.id.txtQRNumNakl);
       //  txtQRNumPosition = (TextView) findViewById(R.id.txtQRNumPosition);
@@ -87,7 +87,7 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
                     txtQRBarcode.setText(cursor.getString(5));
                     txtQRNameTov.setText(cursor.getString(6));
                     txtQRPricePall.setText(cursor.getString(8));
-                    txtQRPrice.setText("0.00");
+                    //txtQRPrice.setText("0.00");
                     //txtQR.setSelection(1, 33);
                     txtQR.getText().clear();
                     db.close();

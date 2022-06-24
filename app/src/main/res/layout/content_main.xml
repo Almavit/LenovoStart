@@ -10,8 +10,8 @@
     tools:showIn="@layout/activity_main">
 
     <LinearLayout
-        android:layout_width="395dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="8dp"
@@ -62,7 +62,7 @@
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="wrap_content"
             android:text="..."
             android:textAlignment="center" />
 
@@ -70,23 +70,38 @@
             android:id="@+id/btnEditDatTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Редактирование файла"
+            android:text="Редактирование "
             android:textSize="24sp" />
 
         <Button
             android:id="@+id/btnStartElectron"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Контроль товаров"
+            android:text="Накладные"
+            android:textSize="24sp" />
+
+        <by.matveev.lenovostart.lib.ProgressTextView
+            android:id="@+id/progressTextViewMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="@drawable/background"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/btnLoadAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Загрузить все"
             android:textSize="24sp" />
 
         <TextView
             android:id="@+id/txtLog"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="26dp"
             android:text="..."
             android:textAlignment="center"
-            android:textSize="36sp"
+            android:textSize="12sp"
             android:textStyle="normal|bold"
             tools:text="..." />
 

@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
                 android:textColor="#000000"
                 android:textSize="22sp" />
 
@@ -29,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
                 android:textColor="#000000"
                 android:textSize="22sp" />
         </LinearLayout>
@@ -44,7 +46,7 @@
         <EditText
             android:id="@+id/txtQR"
             android:layout_width="match_parent"
-            android:layout_height="68dp"
+            android:layout_height="wrap_content"
             android:maxLength="100"
             android:maxLines="100"
             android:minEms="33"
@@ -63,6 +65,7 @@
             android:id="@+id/txtQRBarcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:maxEms="15"
             android:maxLength="15"
             android:maxLines="15"
@@ -81,8 +84,9 @@
             android:id="@+id/txtQRNameTov"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="left"
             android:textColor="#000000"
-            android:textSize="22sp" />
+            android:textSize="26sp" />
 
         <TextView
             android:id="@+id/textView7"
@@ -96,8 +100,9 @@
             android:id="@+id/txtQRNamePost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="left"
             android:textColor="#000000"
-            android:textSize="22sp" />
+            android:textSize="26sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -113,15 +118,6 @@
                 android:text="Цена товара"
                 android:textColor="#000000" />
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:gravity="bottom"
-                android:text="Цена зала"
-                android:textColor="#000000" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -135,26 +131,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:foregroundGravity="right"
+                android:gravity="right"
                 android:text="0.00"
                 android:textColor="#000000"
-                android:textSize="22sp" />
+                android:textSize="48sp" />
 
-            <TextView
-                android:id="@+id/txtQRPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0.00"
-                android:textColor="#000000"
-                android:textSize="22sp" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btnQRSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:text="Button" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
