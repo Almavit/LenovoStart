@@ -71,8 +71,8 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
                 txtQR.setBackgroundColor(Color.WHITE);
                 String sqlStroka = txtQR.getText().toString();
                 SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
-                String[] columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL,KEY_DATE, KEY_NAME_POST,KEY_NUM_POZ,
-                                                    KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY,KEY_STATUS};
+//                String[] columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL,KEY_DATE, KEY_NAME_POST,KEY_NUM_POZ,
+//                                                    KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY,KEY_STATUS};
                 sqlStroka = txtQR.getText().toString().replaceAll("\n","");// очистить от символа \n
                 txtQR.setText(sqlStroka);
                 sqlStroka = txtQR.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D

@@ -237,7 +237,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 //txtQR.setBackgroundColor(Color.WHITE);
                 String sqlStroka = txtnBarcode.getText().toString();
                 SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
-                String[] columnsName = new String[]{KEY_DATE, KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY};
+                String[] columnsName = new String[]{KEY_PRICE, KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY};
                 sqlStroka = txtnBarcode.getText().toString().replaceAll("\n","");// очистить от символа \n
                 txtnBarcode.setText(sqlStroka);
                 sqlStroka = txtnBarcode.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
@@ -246,6 +246,11 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 Integer iCountursor = cursor.getCount();
                 if ((cursor != null) && (cursor.getCount() > 0)) {
                     cursor.moveToFirst();
+                    String sTextView = cursor.getString(0);
+                    sTextView = txtvBarcode.getText().toString() + "        " + sTextView;
+                    txtvBarcode.setBackgroundColor(0xFF00FF00);
+
+
 //                    //txtQR.setText(cursor.getString(0));
 //                    txtQRNumNakl.setText(cursor.getString(1));
 //                    txtQRDate.setText(cursor.getString(2));
@@ -256,7 +261,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 //                    //txtQRPrice.setText("0.00");
 //                    //txtQR.setSelection(1, 33);
 //                    txtQR.getText().clear();
-                    db.close();
+
                 }else{
                    // sqlStroka = txtQR.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
 //                    txtQR.setBackgroundColor(Color.RED);
@@ -269,7 +274,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 //                    txtQRPricePall.setText("");
                     //txtQR.selectAll();
                 }
-                //
+                db.close();
                 if (txtdPrice.getVisibility() == View.VISIBLE){
                     txtdPrice.setFocusable(true);
                     txtdPrice.selectAll();
