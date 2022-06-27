@@ -9,6 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
@@ -48,10 +51,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.FTPModel;
 
 
 public class ScanerActivity extends AppCompatActivity implements View.OnClickListener{
+
+    public static  final String KEY_QR_CODE = "qrcode";
+    public static  final String KEY_NUM_NAKL = "numnakl";
+    public static  final String KEY_DATE = "date";
+    public static  final String KEY_NAME_POST = "namepost";
+    public static  final String KEY_NUM_POZ = "numpoz";
+    public static  final String KEY_BARCODE = "barcode";
+    public static  final String KEY_NAME_TOV = "nametov";
+    public static  final String KEY_PRICE = "price";
+    public static  final String KEY_QUANTITY = "quantity";
+    public static  final String KEY_STATUS = "status";
 
     EditText txtnBarcode;
     EditText txtdPrice;
@@ -217,7 +232,44 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
             if(event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)){
-                    //
+                //ставить код для выборки из главного перечня
+                //txtQR.setText("");
+                //txtQR.setBackgroundColor(Color.WHITE);
+                String sqlStroka = txtnBarcode.getText().toString();
+                SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
+                String[] columnsName = new String[]{KEY_DATE, KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY};
+                sqlStroka = txtnBarcode.getText().toString().replaceAll("\n","");// очистить от символа \n
+                txtnBarcode.setText(sqlStroka);
+                sqlStroka = txtnBarcode.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
+                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_BARCODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
+                Cursor cursor = db.rawQuery(sqlStroka,null);
+                Integer iCountursor = cursor.getCount();
+                if ((cursor != null) && (cursor.getCount() > 0)) {
+                    cursor.moveToFirst();
+//                    //txtQR.setText(cursor.getString(0));
+//                    txtQRNumNakl.setText(cursor.getString(1));
+//                    txtQRDate.setText(cursor.getString(2));
+//                    txtQRNamePost.setText(cursor.getString(3));
+//                    txtQRBarcode.setText(cursor.getString(5));
+//                    txtQRNameTov.setText(cursor.getString(6));
+//                    txtQRPricePall.setText(cursor.getString(8));
+//                    //txtQRPrice.setText("0.00");
+//                    //txtQR.setSelection(1, 33);
+//                    txtQR.getText().clear();
+                    db.close();
+                }else{
+                   // sqlStroka = txtQR.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
+//                    txtQR.setBackgroundColor(Color.RED);
+//                    txtQR.getText().clear();;
+//                    txtQRNumNakl.setText("");
+//                    txtQRDate.setText("");
+//                    txtQRNamePost.setText("");
+//                    txtQRBarcode.setText("");
+//                    txtQRNameTov.setText("");
+//                    txtQRPricePall.setText("");
+                    //txtQR.selectAll();
+                }
+                //
                 if (txtdPrice.getVisibility() == View.VISIBLE){
                     txtdPrice.setFocusable(true);
                     txtdPrice.selectAll();
