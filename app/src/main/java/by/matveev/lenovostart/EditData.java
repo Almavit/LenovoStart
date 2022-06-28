@@ -3,6 +3,7 @@ package by.matveev.lenovostart;
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -47,6 +48,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
  //   InputStream inputStream;
 
     private static final int PERMISSION_REQUEST_CODE = 123;
+    private SQLiteDatabase db;
 
     Button btnEditDat;
     Button btnSaveDat;
@@ -65,7 +67,22 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     Cursor datBaseCursor;
 
     ListView dbListView;
-//
+
+
+    String sAdressServer;
+    String sUserFTP;
+    String sPasswordFTP;
+    String sPortFTP;
+    String sPathFile;
+    String sModeWorking;
+
+    final String USER_NAME = "user_name";
+    final String USER_PASSWORD = "user_passowrd";
+    final String ADRESS_SERVER = "adress_server";
+    final String PATH_FILE = "path_file";
+    final String PORT_FTP = "21";
+    final String MODE_WORKING = "1";
+
 //    TextView txtTov;
 
 
@@ -77,6 +94,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
     final String FILENAME_DAT_TXT = "Dat1.txt";
     final String DIR_SD = "Documents";
+    public static  final String DAT_TABLE_DOCUMENT = "Dat";
     private static final String ENCODING_WIN1251 = "windows-1251";
 
 
@@ -308,40 +326,34 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
         String[] datcolumnsName = null;
 
-//        datcolumnsName = new String[]{DAT_KEY_ID,DAT_KEY_BARCODE, DAT_KEY_NUMBER, DAT_KEY_QUANTITY, DAT_KEY_PRICE};//,
-//        DBRepository.DatFields fieldid = DBRepository.DatFields.DAT_KEY_ID;
-//        DBRepository.DatFields fieldbarcose = DBRepository.DatFields.DAT_KEY_BARCODE;
-//        DBRepository.DatFields fieldnumber = DBRepository.DatFields.DAT_KEY_NUMBER;
-//        DBRepository.DatFields fieldquantity = DBRepository.DatFields.DAT_KEY_QUANTITY;
-//        DBRepository.DatFields fieldprice = DBRepository.DatFields.DAT_KEY_PRICE;
-//
-//        ArrayList<String> list = new ArrayList<String>();
-//        Cursor cursor = db.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
-//        int iF = cursor.getCount();
-//        if ((cursor != null) && (cursor.getCount() > 0)) {
-//            cursor.moveToFirst();
-//            iCountFields = cursor.getColumnCount();
-//            do {
-//                iCountFields = cursor.getPosition();
-//                String sField = cursor.getString(fieldid.getFieldCode()) + "   ;   " +
-//                        cursor.getString(fieldbarcose.getFieldCode()) + "   ;   " +
-//                        cursor.getString(fieldnumber.getFieldCode()) + "   ;   " +
-//                        cursor.getString(fieldquantity.getFieldCode()) + "   ;   " +
-//                        cursor.getString(fieldprice.getFieldCode());
-//                list.add(sField);
-//            } while (cursor.moveToNext());
-//        }
+       // datcolumnsName = new String[]{DAT_KEY_ID,DAT_KEY_BARCODE, DAT_KEY_NUMBER, DAT_KEY_QUANTITY, DAT_KEY_PRICE};//,
+        DBRepository.DatFields fieldid = DBRepository.DatFields.DAT_KEY_ID;
+        DBRepository.DatFields fieldbarcose = DBRepository.DatFields.DAT_KEY_BARCODE;
+        DBRepository.DatFields fieldnumber = DBRepository.DatFields.DAT_KEY_NUMBER;
+        DBRepository.DatFields fieldquantity = DBRepository.DatFields.DAT_KEY_QUANTITY;
+        DBRepository.DatFields fieldprice = DBRepository.DatFields.DAT_KEY_PRICE;
+
+        ArrayList<String> list = new ArrayList<String>();
+        Cursor cursor = db.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
+        int iF = cursor.getCount();
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            Integer iCountFields = cursor.getColumnCount();
+            do {
+                iCountFields = cursor.getPosition();
+                String text = //cursor.getString(fieldid.getFieldCode()) + "   ;   " +
+                        cursor.getString(fieldbarcose.getFieldCode()) + "   ;   " +
+                        cursor.getString(fieldnumber.getFieldCode()) + "   ;   " +
+                        cursor.getString(fieldquantity.getFieldCode()) + "   ;   " +
+                        cursor.getString(fieldprice.getFieldCode());
+                //list.add(sField);
+            } while (cursor.moveToNext());
+        }
 //====================================================================================================
 
 
-//        loadSetting();
-//        if (txtnNumber.length() > 0 && txtnNumber.getVisibility() == View.VISIBLE)
-//            txtNumber = txtnNumber.getText().toString();
-//        if (txtdQuantity.length() > 0 && txtdQuantity.getVisibility() == View.VISIBLE)
-//            txtQuantity = txtdQuantity.getText().toString();
-//        if (txtdPrice.length() > 0 && txtdPrice.getVisibility() == View.VISIBLE)
-//            txtPrice = txtdPrice.getText().toString();
-//        String text =  txtBarcode + ";" + txtPrice + ";" + txtQuantity + ";" + txtNumber + ";";
+        loadSetting();
+
 //        // проверяем доступность SD
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
@@ -519,6 +531,20 @@ private boolean myPremission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             requestPermissions(permissions,PERMISSION_REQUEST_CODE);
         }
+    }
+    public void loadSetting(){
+
+        SharedPreferences sPref;
+
+        sPref = getSharedPreferences("setting", MODE_PRIVATE);
+
+        sAdressServer = sPref.getString(ADRESS_SERVER, "");
+        sUserFTP = sPref.getString(USER_NAME, "");
+        sPasswordFTP = sPref.getString(USER_PASSWORD, "");
+        sPortFTP = sPref.getString(PORT_FTP, "");
+        sPathFile = sPref.getString(PATH_FILE, "");
+        sModeWorking = sPref.getString(MODE_WORKING, "");
+
     }
 
 }

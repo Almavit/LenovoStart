@@ -19,6 +19,12 @@
             android:orientation="vertical" />
     </ScrollView>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -74,7 +80,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="..."
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="34sp" />
 
         <Button
             android:id="@+id/btnEditDatTxt"
@@ -108,10 +115,10 @@
         <TextView
             android:id="@+id/txtLog"
             android:layout_width="match_parent"
-            android:layout_height="26dp"
+            android:layout_height="wrap_content"
             android:text="..."
             android:textAlignment="center"
-            android:textSize="12sp"
+            android:textSize="34sp"
             android:textStyle="normal|bold"
             tools:text="..." />
 
@@ -124,4 +131,6 @@
 
 
     </LinearLayout>
+
+</ScrollView>
 </android.support.constraint.ConstraintLayout>
