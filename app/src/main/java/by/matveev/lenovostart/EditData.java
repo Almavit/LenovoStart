@@ -133,16 +133,17 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         final DBRepository repositorys = new DBRepository(getApplicationContext());
-
+        ArrayAdapter<String> datadapterdat;
+        ArrayAdapter<String> datadapter;
         switch (v.getId()) {
             case R.id.btnDonloadDat:
-                ArrayAdapter<String> datadapter = new ArrayAdapter<String>(this,
+                datadapter = new ArrayAdapter<String>(this,
                         android.R.layout.simple_list_item_1, repositorys.getDataDat());
                 datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
                 dbListView.setAdapter(datadapter);
                 break;
             case R.id.btnSaveDat:
-                ArrayAdapter<String> datadapterdat = new ArrayAdapter<String>(this,
+                datadapterdat = new ArrayAdapter<String>(this,
                         android.R.layout.simple_list_item_1, repositorys.getDataDat());
                 datadapterdat.setDropDownViewResource(R.layout.simple_list_item_dat);
                 dbListView.setAdapter(datadapterdat);
@@ -177,26 +178,6 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                         // txtLogMessege.setText("");
                 }
                 database = dbHelper.getWritableDatabase();
-
-
-//                SQLiteDatabase checkDB = null;
-//                try {
-//                    checkDB = SQLiteDatabase.openDatabase(DBHelper.DATABASE_NAME, null, SQLiteDatabase.OPEN_READONLY);
-//                } catch (SQLiteException e) {
-//                    //файл базы данных отсутствует
-//                }
-//                if (checkDB != null) {
-//                    //ничего не делаем – файл базы данных уже есть
-//                } else {
-//                    checkDB = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
-//                }
-//                String SqlText = "delete * from " + DBHelper.TABLE_DOCUMENT_DAT + " " + DBHelper.DAT_KEY_ID + "=" + sssssss;
-//                checkDB.execSQL(SqlText );
-//
-//                checkDB.close();
-
-//
-
                 int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT," datid="+sssssss,null);
                 datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
                 iCountField = datBaseCursor.getCount();//количество полей
@@ -204,13 +185,18 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                 database.close();
 
                 txtStroka.setText("");
-                // сохранить в файл Dat1.txt
-             //   dbListView.clear();
 
-//                LoaddbListView();
-//                datadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, repositorys.getDataDat());
-//                datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
-//                dbListView.setAdapter(datadapter);
+                // обновляем таблицу
+                datadapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, repositorys.getDataDat());
+                datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
+                dbListView.setAdapter(datadapter);
+                // обновляем таблицу end
+
+                // Запись в файл Dat1.txt
+
+                // Запись в файл Dat1.txt end
+
                 break;
         }
         //
@@ -300,7 +286,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         toast.setGravity(Gravity.CENTER , 0, 0);
         toast.show();
     }
-    void writeFileSD(String PatshDIR_SD, String StrokaWrite, Context contex, String FileName) throws IOException {// запись на SD диск  // подготавливаем переменные
+    void writeFileSD(String PatshDIR_SD, String FileName) throws IOException {// запись на SD диск  // подготавливаем переменные
 ////
         final String LOG_TAG = "PatshDIR_SD";
 //        String txtBarcode = txtnBarcode.getText().toString();
@@ -396,7 +382,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             //ToastMessageCenter("Запись");
             BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
             // пишем данные
-            textAdd = textAdd + StrokaWrite ;
+////===            textAdd = textAdd + StrokaWrite ;
 //            //bw.write(textAdd);
 //
             bw.append(textAdd);

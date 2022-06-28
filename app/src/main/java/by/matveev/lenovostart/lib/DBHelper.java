@@ -138,6 +138,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public void createDataBase() {
        // String myPath = DATABASE_NAME;
         SQLiteDatabase checkDB = null;
+        try{
+
+
         try {
             checkDB = SQLiteDatabase.openDatabase(DATABASE_NAME, null, SQLiteDatabase.OPEN_READONLY);
         } catch (SQLiteException e) {
@@ -167,7 +170,11 @@ public class DBHelper extends SQLiteOpenHelper {
         checkDB.execSQL(SqlTextDat);
 
             checkDB.close();
-
+        } catch (SQLiteException e) {
+            if (checkDB != null) {
+                checkDB.close();
+            }
+        }
     }
 
     private void CreateBase() {

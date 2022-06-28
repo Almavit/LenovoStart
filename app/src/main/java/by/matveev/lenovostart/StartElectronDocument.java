@@ -222,18 +222,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                 break;
             case R.id.btnClearBase:
                 try{
-//                    sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_BARCODE +
-//                            " = '" + nextLine[5].toString() + "' AND " + DBHelper.KEY_NUM_NAKL +
-//                            " = '" + nextLine[1].toString() + "' AND " +
-//                            DBHelper.KEY_DATE + " = '" + nextLine[2].toString() + "'";
-//                    basecursor = database.rawQuery(sqlStroka,null);
-//                    basecursor.moveToFirst();// установка курсора в начало
-//
                     database = dbHelper.getWritableDatabase();
-                    //Cursor basecursor = database.query(DBHelper.TABLE_DOCUMENT, null, null, null, null, null, null);
-                    //basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT,null);
-                    //iCountField = basecursor.getCount();//количество полей
-
                     database.delete(DBHelper.TABLE_DOCUMENT,null,null);
                     txtLogMessege.setBackgroundColor(Color.WHITE);
                     txtLogMessege.setText(" ТАБЛИЦА ПУСТАЯ ");
@@ -292,9 +281,17 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                     //sStrok = reader.toString();
                     // считываем данные с БД
                     database = dbHelper.getWritableDatabase();
+                    //Cursor basecursor = database.query(DBHelper.TABLE_DOCUMENT, null, null, null, null, null, null);
+                    //basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT,null);
+                    //iCountField = basecursor.getCount();//количество полей
+
+                    database.delete(DBHelper.TABLE_DOCUMENT,null,null);
+
+                    database = dbHelper.getWritableDatabase();
                     Cursor basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT,null);
                     // определяем, какие столбцы из курсора будут выводиться в ListView
                     iCountStrok = basecursor.getCount();//количество строк
+
                     iCountStrok = 0;
 
                     while ((nextLine = reader.readNext()) != null) {

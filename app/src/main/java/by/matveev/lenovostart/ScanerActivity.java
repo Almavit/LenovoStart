@@ -246,9 +246,11 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 Integer iCountursor = cursor.getCount();
                 if ((cursor != null) && (cursor.getCount() > 0)) {
                     cursor.moveToFirst();
-                    String sTextView = cursor.getString(0);
-                    sTextView = txtvBarcode.getText().toString() + "        " + sTextView;
-                    txtvBarcode.setBackgroundColor(0xFF00FF00);
+                    String sTextView = "";
+                    sTextView = cursor.getString(8);//PricePall.setText(cursor.getString(8));
+                    sTextView = "Штрих-код" + "\n" + "ЦЕНА = " + sTextView;
+                    txtvBarcode.setText(sTextView);
+                    txtvBarcode.setBackgroundColor(Color.GREEN);
 
 
 //                    //txtQR.setText(cursor.getString(0));
@@ -273,6 +275,8 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 //                    txtQRNameTov.setText("");
 //                    txtQRPricePall.setText("");
                     //txtQR.selectAll();
+                    txtvBarcode.setText("Штрих-код");
+                    txtvBarcode.setBackgroundColor(Color.WHITE);
                 }
                 db.close();
                 if (txtdPrice.getVisibility() == View.VISIBLE){

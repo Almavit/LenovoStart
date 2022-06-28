@@ -21,7 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/text_barcode"
-            android:textSize="24sp" />
+            android:textColor="#000000"
+            android:textSize="34sp" />
 
         <EditText
             android:id="@+id/txtnBarcode"
@@ -31,6 +32,7 @@
             android:inputType="number"
             android:maxLength="13"
             android:maxLines="13"
+            android:textColor="#000000"
             android:textSize="24sp" />
 
         <TextView
@@ -38,6 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/text_price"
+            android:textColor="#000000"
             android:textSize="24sp" />
 
         <EditText
@@ -47,15 +50,16 @@
             android:ems="7"
             android:inputType="numberDecimal"
             android:maxLength="7"
-            android:textSize="24sp"
+            android:textColor="#000000"
 
-            />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/txtvQuantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/text_quantity"
+            android:textColor="#000000"
             android:textSize="24sp"
             android:visibility="visible" />
 
@@ -66,6 +70,7 @@
             android:ems="7"
             android:inputType="numberDecimal"
             android:maxLength="3"
+            android:textColor="#000000"
             android:textSize="24sp" />
 
         <TextView
@@ -74,6 +79,7 @@
             android:layout_height="wrap_content"
 
             android:text="@string/text_number"
+            android:textColor="#000000"
             android:textSize="24sp"
             tools:text="Порядковый номер" />
 
@@ -84,8 +90,8 @@
             android:ems="3"
             android:inputType="number"
             android:maxLength="3"
-            android:textSize="24sp"
-            />
+            android:textColor="#000000"
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/btnAddPosition"
@@ -96,6 +102,7 @@
             android:onClick="ok"
             android:text="Добавить позицию"
 
+            android:textColor="#000000"
             android:textSize="30sp" />
 
         <Button
@@ -103,6 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="ЗАГРУЗИТЬ НА СЕРВЕР"
+            android:textColor="#000000"
             android:textSize="30sp" />
 
         <Button
@@ -111,18 +119,21 @@
             android:layout_height="wrap_content"
             android:onClick="DeleteFile"
             android:text="УДАЛИТЬ ДАННЫЕ"
+            android:textColor="#000000"
             android:textSize="30sp"
             android:textStyle="normal" />
 
         <TextView
             android:id="@+id/txtLogScaner"
             android:layout_width="match_parent"
-            android:layout_height="69dp"
+            android:layout_height="wrap_content"
             android:text="..."
             android:textAlignment="center"
+            android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="normal|bold" />
 
 
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

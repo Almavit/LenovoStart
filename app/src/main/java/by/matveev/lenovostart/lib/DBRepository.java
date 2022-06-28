@@ -175,8 +175,6 @@ public class DBRepository {
         DatFields fieldprice = DatFields.DAT_KEY_PRICE;
 
         ArrayList<String> list = new ArrayList<String>();
-
-
         Cursor cursor = db.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
         int iF = cursor.getCount();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -190,15 +188,6 @@ public class DBRepository {
                         cursor.getString(fieldquantity.getFieldCode()) + "   ;   " +
                         cursor.getString(fieldprice.getFieldCode());
                  list.add(sField);
-
-//                list.add(cursor.getString(fieldid.getFieldCode()));
-//                list.add(cursor.getString(fieldbarcose.getFieldCode()));
-//                list.add(cursor.getString(fieldnumber.getFieldCode()));
-//                list.add(cursor.getString(fieldquantity.getFieldCode()));
-//                list.add(cursor.getString(fieldprice.getFieldCode()));
-
-
-
             } while (cursor.moveToNext());
         }
         return list;
