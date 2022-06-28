@@ -296,6 +296,44 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         String textAdd = "";
         String line = "";
         Integer NumberOfRecords = 0;
+
+
+//==================================================================================================
+        Integer id;
+        String barcode;
+        String number;
+        String quantity;
+        String price;
+        Integer iFields;
+
+        String[] datcolumnsName = null;
+
+//        datcolumnsName = new String[]{DAT_KEY_ID,DAT_KEY_BARCODE, DAT_KEY_NUMBER, DAT_KEY_QUANTITY, DAT_KEY_PRICE};//,
+//        DBRepository.DatFields fieldid = DBRepository.DatFields.DAT_KEY_ID;
+//        DBRepository.DatFields fieldbarcose = DBRepository.DatFields.DAT_KEY_BARCODE;
+//        DBRepository.DatFields fieldnumber = DBRepository.DatFields.DAT_KEY_NUMBER;
+//        DBRepository.DatFields fieldquantity = DBRepository.DatFields.DAT_KEY_QUANTITY;
+//        DBRepository.DatFields fieldprice = DBRepository.DatFields.DAT_KEY_PRICE;
+//
+//        ArrayList<String> list = new ArrayList<String>();
+//        Cursor cursor = db.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
+//        int iF = cursor.getCount();
+//        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            iCountFields = cursor.getColumnCount();
+//            do {
+//                iCountFields = cursor.getPosition();
+//                String sField = cursor.getString(fieldid.getFieldCode()) + "   ;   " +
+//                        cursor.getString(fieldbarcose.getFieldCode()) + "   ;   " +
+//                        cursor.getString(fieldnumber.getFieldCode()) + "   ;   " +
+//                        cursor.getString(fieldquantity.getFieldCode()) + "   ;   " +
+//                        cursor.getString(fieldprice.getFieldCode());
+//                list.add(sField);
+//            } while (cursor.moveToNext());
+//        }
+//====================================================================================================
+
+
 //        loadSetting();
 //        if (txtnNumber.length() > 0 && txtnNumber.getVisibility() == View.VISIBLE)
 //            txtNumber = txtnNumber.getText().toString();
