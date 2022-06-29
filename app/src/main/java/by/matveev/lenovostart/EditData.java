@@ -212,7 +212,11 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                 // обновляем таблицу end
 
                 // Запись в файл Dat1.txt
-
+                try {
+                    writeFileSD(DIR_SD, FILENAME_DAT_TXT);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 // Запись в файл Dat1.txt end
 
                 break;
@@ -323,7 +327,8 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         String quantity;
         String price;
         Integer iFields;
-
+        StringBuilder sbText  = new StringBuilder();
+        String text = "";
         String[] datcolumnsName = null;
 
        // datcolumnsName = new String[]{DAT_KEY_ID,DAT_KEY_BARCODE, DAT_KEY_NUMBER, DAT_KEY_QUANTITY, DAT_KEY_PRICE};//,
@@ -334,6 +339,8 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         DBRepository.DatFields fieldprice = DBRepository.DatFields.DAT_KEY_PRICE;
 
         ArrayList<String> list = new ArrayList<String>();
+        db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
+
         Cursor cursor = db.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
         int iF = cursor.getCount();
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -341,12 +348,12 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             Integer iCountFields = cursor.getColumnCount();
             do {
                 iCountFields = cursor.getPosition();
-                String text = //cursor.getString(fieldid.getFieldCode()) + "   ;   " +
-                        cursor.getString(fieldbarcose.getFieldCode()) + "   ;   " +
-                        cursor.getString(fieldnumber.getFieldCode()) + "   ;   " +
-                        cursor.getString(fieldquantity.getFieldCode()) + "   ;   " +
-                        cursor.getString(fieldprice.getFieldCode());
-                //list.add(sField);
+                text = //cursor.getString(fieldid.getFieldCode()) + "   ;   " +
+                        cursor.getString(fieldbarcose.getFieldCode()) + ";" +
+                        cursor.getString(fieldnumber.getFieldCode()) + ";" +
+                        cursor.getString(fieldquantity.getFieldCode()) + ";" +
+                        cursor.getString(fieldprice.getFieldCode()) + "\r\n";
+                sbText.append(text);
             } while (cursor.moveToNext());
         }
 //====================================================================================================
@@ -403,24 +410,10 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                     builder.append(line + "\r\n");
                     ++NumberOfRecords;
                 }
-                textAdd = builder.toString();
+              ///  textAdd = builder.toString();
 //                // закрываем поток
                 br.close();
                 Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
-//                btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
-//                //        btnUploadDelete.setEnabled(true);
-//                if (!sModeWorking.equals("1")) {
-//                    btnSaveToServer.setEnabled(false);
-//                }else{
-//                    btnSaveToServer.setEnabled(true);
-//                }
-//                btnDeleteFile.setEnabled(true);
-//
-//                //ToastMessageCenter( "Чтение");
-//                //if(sdFile.exists())
-//                //sdFile.renameTo(sdFile); // переименовать файл
-//                //copyFileUsingStream(sdFile, sdFile_copy);// копировать файл
-//
             } catch (IOException e) {
                 e.printStackTrace();
                 ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
@@ -432,7 +425,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             //ToastMessageCenter("Запись");
             BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
             // пишем данные
-////===            textAdd = textAdd + StrokaWrite ;
+            textAdd = sbText.toString();//list.toString();//text;//Add + text ;
 //            //bw.write(textAdd);
 //
             bw.append(textAdd);
