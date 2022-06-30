@@ -393,33 +393,33 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //        //File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
 //
 //        // Проверка наличия файла
-        if (sdFile.exists()){
+//?        if (sdFile.exists()){
 //            //ToastMessageCenter("Файл в наличии.");
 //            // проверка разрешений
-            if (!myPremission())  return;
-            String lineSeparator = System.getProperty("line.separator");
-            try {
+           if (!myPremission())  return;
+//?            String lineSeparator = System.getProperty("line.separator");
+//?            try {
 //                // открываем поток для чтения
-                BufferedReader br = new BufferedReader(new FileReader(sdFile));
+//?                BufferedReader br = new BufferedReader(new FileReader(sdFile));
 //                // пишем данные
 //                //ToastMessageCenter("Файл открыт для чтения.");
 //
-                StringBuilder builder = new StringBuilder();
-                NumberOfRecords = 0;
-                while ((line = br.readLine()) != null) {
-                    builder.append(line + "\r\n");
-                    ++NumberOfRecords;
-                }
+//?                StringBuilder builder = new StringBuilder();
+// ?               NumberOfRecords = 0;
+//?                while ((line = br.readLine()) != null) {
+//?                    builder.append(line + "\r\n");
+//?                    ++NumberOfRecords;
+// ?               }
               ///  textAdd = builder.toString();
 //                // закрываем поток
-                br.close();
-                Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
-            } catch (IOException e) {
-                e.printStackTrace();
-                ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
-                return;
-            }
-        }//else{ ToastMessageCenter("Файл отсутствует."); }
+//                br.close();
+// ?               Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
+// ?           } catch (IOException e) {
+// ?               e.printStackTrace();
+// /               ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
+// ?               return;
+// ?           }
+//?       }//else{ ToastMessageCenter("Файл отсутствует."); }
         try {
             // открываем поток для записи если файла нет
             //ToastMessageCenter("Запись");
