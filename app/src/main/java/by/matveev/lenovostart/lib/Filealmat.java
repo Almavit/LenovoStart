@@ -3,8 +3,12 @@ package by.matveev.lenovostart.lib;
 import android.app.Activity;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
+import android.util.Log;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Filealmat {
     public String PatshFile;
@@ -17,7 +21,7 @@ public class Filealmat {
 
     public int  writeFileSD(String PatshDIR_SD, String FileName,StringBuilder addText){
         int returnerror = 0;
-
+        String textAdd = "";
 
         //loadSetting(); добавить класс
         // проверяем доступность SD
@@ -52,7 +56,37 @@ public class Filealmat {
 
 
 
-
+        try {
+            // открываем поток для записи если файла нет
+            //ToastMessageCenter("Запись");
+            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+            // пишем данные
+            textAdd = addText.toString();//list.toString();//text;//Add + text ;
+//            //bw.write(textAdd);
+//
+            bw.append(textAdd);
+            // закрываем поток
+            bw.close();
+           // ++NumberOfRecords;
+            //if(sdFile.exists())
+            //sdFile.renameTo(sdFile); // переименовать файл
+            //copyFileUsingStream(sdFile, sdFile);// копировать файл
+            Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
+            //ToastMessageCenter("Данные сохранены на SD.+");
+            //  btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
+            //     btnUploadDelete.setEnabled(true);
+//            if (!sModeWorking.equals("1")) {
+//                //1
+//                btnSaveToServer.setEnabled(false);
+//            }else{
+//                btnSaveToServer.setEnabled(true);
+//            }
+//            btnDeleteFile.setEnabled(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            /////ToastMessageCenter("Ошибка: Файл невозможно открыть.");
+            returnerror = -2;
+        }
 
 
         return returnerror;
