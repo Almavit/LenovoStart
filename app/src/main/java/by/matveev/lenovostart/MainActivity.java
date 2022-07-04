@@ -45,6 +45,7 @@ import java.net.URL;
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.FTPModel;
 import by.matveev.lenovostart.lib.Filealmat;
+import by.matveev.lenovostart.lib.MyPremission;
 import by.matveev.lenovostart.lib.ProgressTextView;
 import by.matveev.lenovostart.lib.WIFIService;
 
@@ -107,11 +108,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText txtIp;
     CheckBox chkWiFi;
 
+
+    MyPremission almPremission;
+    Filealmat MyFileToSD;
     private static final int PERMISSION_REQUEST_CODE = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MyFileToSD = new Filealmat();
+        MyFileToSD.NameFile = "Dat1.txt";
+        MyFileToSD.writeFileSD();
+
+        almPremission = new MyPremission();
+        if (!almPremission.myPremission(this))  {
+            return;
+        }else{
+
+        }
+
 
         setContentView(R.layout.activity_main);
 
@@ -142,9 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressTextViewMain = (ProgressTextView) findViewById(R.id.progressTextViewMain);
         progressTextViewMain.setValue(0); // устанавливаем нужное значение
 
-        Filealmat MyFileToSD = new Filealmat();
-        MyFileToSD.NameFile = "Dat1.txt";
-        MyFileToSD.writeFileSD();
+
 
 //        btnSaveToServer = (Button) findViewById(R.id.btnSaveToServer);
 //        btnSaveToServer.setOnClickListener(this);
