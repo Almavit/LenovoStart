@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.opencsv.CSVReader;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.File;
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         MyFileToSD = new Filealmat();
         MyFileToSD.NameFile = "Dat1.txt";
-        MyFileToSD.writeFileSD();
+        MyFileToSD.writeFileSD("","", null);
 
         almPremission = new MyPremission();
         if (!almPremission.myPremission(this))  {

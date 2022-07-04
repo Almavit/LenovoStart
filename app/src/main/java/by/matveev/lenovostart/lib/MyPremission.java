@@ -20,6 +20,7 @@ public class MyPremission {
 
 
     public boolean myPremission(Activity activity){
+        int CodError;
         if (hasPermissions(activity)){
             // our app has permissions.
             makeFolder(activity);
@@ -27,6 +28,10 @@ public class MyPremission {
         else {
             //our app doesn't have permissions, So i m requesting permissions.
             requestPermissionWithRationale(activity);
+        }
+
+        if (-1 != ExternalStorageState(activity)){
+            return false;
         }
         return true;
     }
@@ -49,11 +54,6 @@ public class MyPremission {
 
         return true;
     }
-
-//    private int checkCallingOrSelfPermission(String perms) {
-//        return 0;
-//    }
-
 
     private void makeFolder(Activity activity){
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"fandroid");
@@ -87,8 +87,16 @@ public class MyPremission {
         }
     }
 
-//    private void requestPermissions(String[] permissions, int permissionRequestCode) {
-//    }
+    public int ExternalStorageState(Activity activity){
+        //        // проверяем доступность SD
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            //Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
+            Toast.makeText(activity,"SD-карта не доступна: " + Environment.getExternalStorageState(), Toast.LENGTH_LONG).show();
+            return -2;
+        }
+        return 0;
+    }
 
 
 }
