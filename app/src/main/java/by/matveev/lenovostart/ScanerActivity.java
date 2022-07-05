@@ -1118,6 +1118,9 @@ public void saveSetting(){
             txtLogScaner.setText(" Ошибка:" + e);
         } return false;
     }
+
+    private class writeFileSD {
+    }
 //////////////
 
     

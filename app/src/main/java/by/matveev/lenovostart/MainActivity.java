@@ -119,8 +119,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
 
         MyFileToSD = new Filealmat();
-        MyFileToSD.NameFile = "Dat1.txt";
-        MyFileToSD.writeFileSD("","", null);
+        //MyFileToSD.NameFile = "Dat1.txt";
+        MyFileToSD.writeFileSD("Documents","Dat1.txt", null);
 
         almPremission = new MyPremission();
         if (!almPremission.myPremission(this))  {
