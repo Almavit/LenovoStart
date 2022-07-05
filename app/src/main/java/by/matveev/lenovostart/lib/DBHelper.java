@@ -33,6 +33,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static  final String DATABASE_NAME = Environment.getExternalStorageDirectory()+ "/" + DIR_SD + "/" + "base/"  + "DocumentDB.db";
     public static  final String TABLE_DOCUMENT = "Document";
     public static  final String TABLE_DOCUMENT_DAT = "Dat";
+    public static  final String TABLE_DOCUMENT_PRICE = "Price";
 //    public static  final String KEY_ID = "_id";
     public static  final String KEY_QR_CODE = "qrcode";
     public static  final String KEY_NUM_NAKL = "numnakl";
@@ -51,6 +52,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public static  final String DAT_KEY_QUANTITY = "datquantity";
     public static  final String DAT_KEY_POSITION = "datposition";
 
+    //public static  final String PRICE_NUM_NAKL = "numnakl";
+    //public static  final String KEY_DATE = "date";
+    //public static  final String KEY_NAME_POST = "namepost";
+    //public static  final String KEY_NUM_POZ = "numpoz";
+    public static  final String PRICE_BARCODE = "barcode";
+    public static  final String PRICE_NAME_TOV = "nametov";
+    public static  final String PRICE_PRICE = "price";
+    //public static  final String KEY_QUANTITY = "quantity";
+    //public static  final String KEY_STATUS = "status";
 
 
     private SQLiteDatabase dataBase;
@@ -170,6 +180,17 @@ public class DBHelper extends SQLiteOpenHelper {
         checkDB.execSQL(SqlTextDat);
 
             checkDB.close();
+
+            checkDB.close();
+            // checkDB = null;
+            checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
+
+            String SqlTextPrice = "create table if not exists " + TABLE_DOCUMENT_PRICE + "(" + PRICE_BARCODE + " text, " +
+                    PRICE_NAME_TOV + " text, " + PRICE_PRICE + " text)";
+            checkDB.execSQL(SqlTextPrice);
+
+            checkDB.close();
+
         } catch (SQLiteException e) {
             if (checkDB != null) {
                 checkDB.close();
