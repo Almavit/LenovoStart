@@ -23,7 +23,7 @@ public class Filealmat {
         int returnerror = 0;
         String textAdd = "";
 
-        //loadSetting(); добавить класс
+        //loadSetting(); //добавить класс
         // проверяем доступность SD
         MyPremission almPremission = new MyPremission();
         if (!almPremission.myPremission(activity))  {

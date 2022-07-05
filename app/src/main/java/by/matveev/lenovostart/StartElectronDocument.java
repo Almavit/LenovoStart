@@ -266,7 +266,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                             DIR_SD + "/" + FILENAME_CSV);
 // END OF OPTION 1
                     dbHelper = new DBHelper(this);
-                    SQLiteDatabase db = dbHelper.getReadableDatabase();
+                   //? SQLiteDatabase db = dbHelper.getReadableDatabase();
                     //Environment.getExternalStorageDirectory()
 // OPTION 2: pack the file with the app
                     /* "If you want to package the .csv file with the application and have it install on the internal storage when the app installs, create an assets folder in your project src/main folder (e.g., c:\myapp\app\src\main\assets\), and put the .csv file in there, then reference it like this in your activity:" (from the cited answer) */
@@ -358,23 +358,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                             contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
                             database.insert(DBHelper.TABLE_DOCUMENT, null, contentValues);
                         }
-//                        if (sValueFieldNumNakldn.equals(nextLine[0].toString()) &&
-//                                sValueFieldBarcode.equals(nextLine[4].toString()) &&
-//                                sValueFieldDate.equals(nextLine[1].toString())) {
 
-//                            //
-//                            String strasd = DBHelper.KEY_NUM_NAKL + " = " + "'" + sValueCSVNumNakldn + "'" + " AND " +
-//                                    DBHelper.KEY_DATE + " = " + "'" + sValueFieldDate + "'" + " AND " +
-//                                    DBHelper.KEY_BARCODE + " = " + "'" + sValueFieldBarcode + "'";
-//                            db.delete(DBHelper.TABLE_DOCUMENT, strasd, null);
-//                            //db.execSQL("delete from " + DBHelper.TABLE_DOCUMENT + " where " + strasd);
-//
-//                        }else{
-//
-//
-
-//                            //basecursor.moveToLast();
-//                        }
                     }
                     database.close();
                     break;

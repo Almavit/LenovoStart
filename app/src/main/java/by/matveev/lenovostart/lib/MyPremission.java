@@ -35,6 +35,7 @@ public class MyPremission {
         }
         return true;
     }
+
     private boolean hasPermissions(Context context){
         int res = 0;
         //string array of permissions,
