@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,7 +14,7 @@ import java.io.IOException;
 public class Filealmat {
     public String PatshFile;
     public String NameFile;
-    public String NameDirectory;
+    public String NameDirectory = "Documents";
     final String LOG_TAG = "PatshDIR_SD";
     public Activity activity;
 
@@ -90,5 +91,30 @@ public class Filealmat {
 
 
         return returnerror;
+    }
+
+    public boolean makeFolder(Activity activity,String namedirectoryDocuments){
+        String sDirectory = "";
+        if (namedirectoryDocuments == ""){
+            sDirectory = NameDirectory;
+        }else{
+            sDirectory = namedirectoryDocuments;
+        }
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),sDirectory);
+
+        if (!file.exists()){
+            Boolean ff = file.mkdir();
+            if (ff){
+                Toast.makeText(activity, "Folder created successfully", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(activity, "Failed to create folder", Toast.LENGTH_LONG).show();
+            }
+
+        }
+        else {
+            // Toast.makeText(this, "Folder already exist", Toast.LENGTH_LONG).show();//Папка уже существует
+        }
+        return true;
     }
 }
