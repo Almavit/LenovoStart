@@ -24,6 +24,8 @@ public class FTPModel {
     public FTPClient ftp = null;
 
 
+
+
     public boolean connect(String host, String username, String password, int port) {
 
         try {

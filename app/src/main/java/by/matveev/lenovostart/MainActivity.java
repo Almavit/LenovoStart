@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
 import by.matveev.lenovostart.lib.DBHelper;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    private static final int PERMISSION_REQUEST_CODE = 123;
 
     SQLiteDatabase database;
+    SQLiteDatabase db;
 
     final String FILENAME_CSV = "999.csv";
     final String DIR_SD = "Documents";
@@ -330,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
      public void onClick(View v) {
         Intent intent = new Intent(this, ScanerActivity.class);
-         DBHelper dbHelper = new DBHelper(this);
+         DBHelper dbHelper;// = new DBHelper(this);
          //SQLiteDatabase database;
          //= dbHelper.getWritableDatabase();
          ContentValues contentValues = new ContentValues();
@@ -419,11 +421,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     txtLog.setBackgroundColor(Color.RED);
                     break;
                 }
+                try {
+                    if (LoadSaveCsvToDB(DIR_SD,"price.csv","select * from " + DBHelper.TABLE_DOCUMENT_PRICE,DBHelper.TABLE_DOCUMENT_PRICE)){
+                        txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
+                        txtLog.setBackgroundColor(Color.GREEN);
+                    }else{
+                        txtLog.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
+                        txtLog.setBackgroundColor(Color.RED);
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 //подключаемся к FTP серверу
                 FTPModel mymodel = new FTPModel();
+                // получает корневой каталог
                 File sdPath = Environment.getExternalStorageDirectory();
-                // добавляем свой каталог устройства к пути
+                // добавляем свой каталог устройства к пути куда загружаем файл с сервера
                 sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD + "/" + FILENAME_CSV);
                 // загрузка csv файла с FTP сервера
                 boolean ko = mymodel.downloadAndSaveFile(sAdressServer, Integer.parseInt(sPortFTP),
@@ -446,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             DIR_SD + "/" + FILENAME_CSV);
 // END OF OPTION 1
                     dbHelper = new DBHelper(this);
-                    SQLiteDatabase db = dbHelper.getReadableDatabase();
+                    //SQLiteDatabase db = dbHelper.getReadableDatabase();
                     //Environment.getExternalStorageDirectory()
 // OPTION 2: pack the file with the app
                     /* "If you want to package the .csv file with the application and have it install on the internal storage when the app installs, create an assets folder in your project src/main folder (e.g., c:\myapp\app\src\main\assets\), and put the .csv file in there, then reference it like this in your activity:" (from the cited answer) */
@@ -546,6 +564,73 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public boolean LoadSaveCsvToDB(String DirName, String FileNameCSV, String SqlStroka, String TableName) throws IOException {
+        boolean returnstatus = true;
+        ContentValues ScontentValues = new ContentValues();
+        //SQLiteDatabase db;
+        //подключаемся к FTP серверу
+        FTPModel mymodel = new FTPModel();
+        // получает корневой каталог
+        File sdPath = Environment.getExternalStorageDirectory();
+        // добавляем свой каталог устройства к пути куда загружаем файл с сервера
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName + "/" + FileNameCSV);
+        // загрузка csv файла с FTP сервера
+        boolean ko = mymodel.downloadAndSaveFile(sAdressServer, Integer.parseInt(sPortFTP),
+                sUserFTP, sPasswordFTP, FILENAME_CSV, sdPath);
+        if (ko) {
+
+        } else {
+            return false;// не загрузилось
+        }
+//////////////////////////////////
+        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
+                DirName + "/" + FileNameCSV);
+// END OF OPTION 1
+        DBHelper dbHelper = new DBHelper(this);
+        db = dbHelper.getWritableDatabase();//getReadableDatabase
+        db.delete(TableName,null,null);
+        db.close();
+        db = dbHelper.getWritableDatabase();
+        Cursor basecursor = db.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+        Integer iCount = basecursor.getCount();
+        CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+                ';', '\'', 0);
+        //sStrok = reader.toString();
+        // считываем данные с БД
+        //db = dbHelper.getWritableDatabase();
+       // db = dbHelper.getWritableDatabase();
+
+        while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
+            ScontentValues = ScontentValues(nextLine);
+//            ScontentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
+//            ScontentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
+//            ScontentValues.put(DBHelper.KEY_DATE, nextLine[2]);
+//            ScontentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
+//            ScontentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
+//            ScontentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
+//            ScontentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
+//            ScontentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
+//            ScontentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
+            db.insert(DBHelper.TABLE_DOCUMENT, null, ScontentValues);
+        }
+        db.close();
+
+        return returnstatus;
+    }
+    public ContentValues ScontentValues(String[] csvreader){
+
+        ContentValues ScontentValues = new ContentValues();
+        ScontentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
+        ScontentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
+        ScontentValues.put(DBHelper.KEY_DATE, nextLine[2]);
+        ScontentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
+        ScontentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
+        ScontentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
+        ScontentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
+        ScontentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
+        ScontentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
+        return ScontentValues;
+    }
 
     public void loadSetting() {
 

@@ -59,6 +59,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static  final String PRICE_BARCODE = "barcode";
     public static  final String PRICE_NAME_TOV = "nametov";
     public static  final String PRICE_PRICE = "price";
+    public static  final String PRICE_DATA = "data";
     //public static  final String KEY_QUANTITY = "quantity";
     //public static  final String KEY_STATUS = "status";
 
@@ -186,7 +187,7 @@ public class DBHelper extends SQLiteOpenHelper {
             checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
 
             String SqlTextPrice = "create table if not exists " + TABLE_DOCUMENT_PRICE + "(" + PRICE_BARCODE + " text, " +
-                    PRICE_NAME_TOV + " text, " + PRICE_PRICE + " text)";
+                    PRICE_NAME_TOV + " text, " + PRICE_PRICE + " text, " + PRICE_DATA +  " text)";
             checkDB.execSQL(SqlTextPrice);
 
             checkDB.close();
