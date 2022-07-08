@@ -421,6 +421,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     txtLog.setBackgroundColor(Color.RED);
                     break;
                 }
+//===============================
                 try {
                     if (LoadSaveCsvToDB(DIR_SD,"price.csv","select * from " + DBHelper.TABLE_DOCUMENT_PRICE,DBHelper.TABLE_DOCUMENT_PRICE)){
                         txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
@@ -436,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
+//===============================
                 //подключаемся к FTP серверу
                 FTPModel mymodel = new FTPModel();
                 // получает корневой каталог
