@@ -237,17 +237,18 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 //txtQR.setBackgroundColor(Color.WHITE);
                 String sqlStroka = txtnBarcode.getText().toString();
                 SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
-                String[] columnsName = new String[]{KEY_PRICE, KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY};
+                //String[] columnsName = new String[]{KEY_PRICE, KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY};
                 sqlStroka = txtnBarcode.getText().toString().replaceAll("\n","");// очистить от символа \n
                 txtnBarcode.setText(sqlStroka);
                 sqlStroka = txtnBarcode.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
-                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_BARCODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
+                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT_PRICE + " where " + DBHelper.KEY_BARCODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
                 Cursor cursor = db.rawQuery(sqlStroka,null);
                 Integer iCountursor = cursor.getCount();
+                db.close();
                 if ((cursor != null) && (cursor.getCount() > 0)) {
                     cursor.moveToFirst();
                     String sTextView = "";
-                    sTextView = cursor.getString(8);//PricePall.setText(cursor.getString(8));
+                    sTextView = cursor.getString(2);//PricePall.setText(cursor.getString(8));
                     sTextView = "Штрих-код" + "\n" + "ЦЕНА = " + sTextView;
                     txtvBarcode.setText(sTextView);
                     txtvBarcode.setBackgroundColor(Color.GREEN);

@@ -42,7 +42,7 @@ public class Setting {
 
 
     ///////////////////////////////
-    private boolean executeCommand(String ip){
+    public boolean executeCommand(String ip){
         System.out.println("executeCommand");
         Runtime runtime = Runtime.getRuntime();
         try {
@@ -67,5 +67,7 @@ public class Setting {
             //txtLogMessege.setText(" Ошибка:" + e);
         } return false;
     }
+
+
 
 }

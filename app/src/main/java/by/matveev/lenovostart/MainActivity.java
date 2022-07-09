@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     SQLiteDatabase database;
     SQLiteDatabase db;
+    Setting setting;
 
     final String FILENAME_CSV = "999.csv";
     final String DIR_SD = "Documents";
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //MyFileToSD.NameFile = "Dat1.txt";
 //        MyFileToSD.writeFileSD("Documents","Dat1.txt", null);
         filealmat = new Filealmat();
+        setting = new Setting();
         MyPremission almPremission = new MyPremission();
 //
         Boolean Premis = true;
@@ -416,14 +418,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
             case R.id.btnLoadAll:
-                loadSetting();
-                if (!executeCommand(sAdressServer)) {
-                    txtLog.setBackgroundColor(Color.RED);
-                    break;
-                }
+                //loadSetting();
+                //Filealmat filealmat = new Filealmat();
+
+//                if (!setting.executeCommand(sAdressServer)) {
+//                    txtLog.setBackgroundColor(Color.RED);
+//                    break;
+//                }
 //===============================
                 try {
-                    if (LoadSaveCsvToDB(DIR_SD,"price.csv","select * from " + DBHelper.TABLE_DOCUMENT_PRICE,DBHelper.TABLE_DOCUMENT_PRICE)){
+                    if (filealmat.LoadSaveCsvToDB(this, DIR_SD,"price.csv",
+                            "select * from " + DBHelper.TABLE_DOCUMENT_PRICE,DBHelper.TABLE_DOCUMENT_PRICE)){
                         txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
                         txtLog.setBackgroundColor(Color.GREEN);
                     }else{
@@ -435,6 +440,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 //===============================
@@ -564,114 +571,114 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
         }
     }
+//
+//    public boolean LoadSaveCsvToDB(String DirName, String FileNameCSV, String SqlStroka, String TableName) throws IOException {
+//        boolean returnstatus = true;
+//        ContentValues ScontentValues = new ContentValues();
+//        //SQLiteDatabase db;
+//        //подключаемся к FTP серверу
+//        FTPModel mymodel = new FTPModel();
+//        // получает корневой каталог
+//        File sdPath = Environment.getExternalStorageDirectory();
+//        // добавляем свой каталог устройства к пути куда загружаем файл с сервера
+//        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName + "/" + FileNameCSV);
+//        // загрузка csv файла с FTP сервера
+//        boolean ko = mymodel.downloadAndSaveFile(sAdressServer, Integer.parseInt(sPortFTP),
+//                sUserFTP, sPasswordFTP, FILENAME_CSV, sdPath);
+//        if (ko) {
+//
+//        } else {
+//            return false;// не загрузилось
+//        }
+////////////////////////////////////
+//        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
+//                DirName + "/" + FileNameCSV);
+//// END OF OPTION 1
+//        DBHelper dbHelper = new DBHelper(this);
+//        db = dbHelper.getWritableDatabase();//getReadableDatabase
+//        db.delete(TableName,null,null);
+//        db.close();
+//        db = dbHelper.getWritableDatabase();
+//        Cursor basecursor = db.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+//        Integer iCount = basecursor.getCount();
+//        CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+//                ';', '\'', 0);
+//        //sStrok = reader.toString();
+//        // считываем данные с БД
+//        //db = dbHelper.getWritableDatabase();
+//       // db = dbHelper.getWritableDatabase();
+//
+//        while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
+//            ScontentValues = ScontentValues(nextLine);
+////            ScontentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
+////            ScontentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
+////            ScontentValues.put(DBHelper.KEY_DATE, nextLine[2]);
+////            ScontentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
+////            ScontentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
+////            ScontentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
+////            ScontentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
+////            ScontentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
+////            ScontentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
+//            db.insert(DBHelper.TABLE_DOCUMENT, null, ScontentValues);
+//        }
+//        db.close();
+//
+//        return returnstatus;
+//    }
+//    public ContentValues ScontentValues(String[] csvreader){
+//
+//        ContentValues ScontentValues = new ContentValues();
+//        ScontentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
+//        ScontentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
+//        ScontentValues.put(DBHelper.KEY_DATE, nextLine[2]);
+//        ScontentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
+//        ScontentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
+//        ScontentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
+//        ScontentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
+//        ScontentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
+//        ScontentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
+//        return ScontentValues;
+//    }
 
-    public boolean LoadSaveCsvToDB(String DirName, String FileNameCSV, String SqlStroka, String TableName) throws IOException {
-        boolean returnstatus = true;
-        ContentValues ScontentValues = new ContentValues();
-        //SQLiteDatabase db;
-        //подключаемся к FTP серверу
-        FTPModel mymodel = new FTPModel();
-        // получает корневой каталог
-        File sdPath = Environment.getExternalStorageDirectory();
-        // добавляем свой каталог устройства к пути куда загружаем файл с сервера
-        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName + "/" + FileNameCSV);
-        // загрузка csv файла с FTP сервера
-        boolean ko = mymodel.downloadAndSaveFile(sAdressServer, Integer.parseInt(sPortFTP),
-                sUserFTP, sPasswordFTP, FILENAME_CSV, sdPath);
-        if (ko) {
-
-        } else {
-            return false;// не загрузилось
-        }
-//////////////////////////////////
-        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
-                DirName + "/" + FileNameCSV);
-// END OF OPTION 1
-        DBHelper dbHelper = new DBHelper(this);
-        db = dbHelper.getWritableDatabase();//getReadableDatabase
-        db.delete(TableName,null,null);
-        db.close();
-        db = dbHelper.getWritableDatabase();
-        Cursor basecursor = db.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-        Integer iCount = basecursor.getCount();
-        CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-                ';', '\'', 0);
-        //sStrok = reader.toString();
-        // считываем данные с БД
-        //db = dbHelper.getWritableDatabase();
-       // db = dbHelper.getWritableDatabase();
-
-        while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
-            ScontentValues = ScontentValues(nextLine);
-//            ScontentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-//            ScontentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-//            ScontentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-//            ScontentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-//            ScontentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-//            ScontentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-//            ScontentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-//            ScontentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-//            ScontentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-            db.insert(DBHelper.TABLE_DOCUMENT, null, ScontentValues);
-        }
-        db.close();
-
-        return returnstatus;
-    }
-    public ContentValues ScontentValues(String[] csvreader){
-
-        ContentValues ScontentValues = new ContentValues();
-        ScontentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-        ScontentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-        ScontentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-        ScontentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-        ScontentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-        ScontentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-        ScontentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-        ScontentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-        ScontentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-        return ScontentValues;
-    }
-
-    public void loadSetting() {
-
-        SharedPreferences sPref;
-
-        sPref = getSharedPreferences("setting", MODE_PRIVATE);
-
-        sAdressServer = sPref.getString(ADRESS_SERVER, "");
-        sUserFTP = sPref.getString(USER_NAME, "");
-        sPasswordFTP = sPref.getString(USER_PASSWORD, "");
-        sPortFTP = sPref.getString(PORT_FTP, "");
-        sPathFile = sPref.getString(PATH_FILE, "");
-        sModeWorking = sPref.getString(MODE_WORKING, "");
-    }
+//    public void loadSetting() {
+//
+//        SharedPreferences sPref;
+//
+//        sPref = getSharedPreferences("setting", MODE_PRIVATE);
+//
+//        sAdressServer = sPref.getString(ADRESS_SERVER, "");
+//        sUserFTP = sPref.getString(USER_NAME, "");
+//        sPasswordFTP = sPref.getString(USER_PASSWORD, "");
+//        sPortFTP = sPref.getString(PORT_FTP, "");
+//        sPathFile = sPref.getString(PATH_FILE, "");
+//        sModeWorking = sPref.getString(MODE_WORKING, "");
+//    }
     ///////////////////////////////
-    private boolean executeCommand(String ip){
-        System.out.println("executeCommand");
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process mIpAddrProcess = runtime.exec("/system/bin/ping -c 1 "+ ip);
-            int mExitValue = mIpAddrProcess.waitFor();
-            txtLog.setText(" mExitValue " + mExitValue);
-            if(mExitValue==0){
-                txtLog.setText("ЕСТЬ СВЯЗЬ");
-                return true;
-            }else{
-                txtLog.setText("НЕТ СВЯЗИ");
-                return false;
-            }
-        }
-        catch (InterruptedException ignore) {
-            ignore.printStackTrace();
-            System.out.println(" Exception:" + ignore);
-            txtLog.setText(" Ошибка:" + ignore);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(" Exception:" + e);
-            txtLog.setText(" Ошибка:" + e);
-        } return false;
-    }
+//    private boolean executeCommand(String ip){
+//        System.out.println("executeCommand");
+//        Runtime runtime = Runtime.getRuntime();
+//        try {
+//            Process mIpAddrProcess = runtime.exec("/system/bin/ping -c 1 "+ ip);
+//            int mExitValue = mIpAddrProcess.waitFor();
+//            txtLog.setText(" mExitValue " + mExitValue);
+//            if(mExitValue==0){
+//                txtLog.setText("ЕСТЬ СВЯЗЬ");
+//                return true;
+//            }else{
+//                txtLog.setText("НЕТ СВЯЗИ");
+//                return false;
+//            }
+//        }
+//        catch (InterruptedException ignore) {
+//            ignore.printStackTrace();
+//            System.out.println(" Exception:" + ignore);
+//            txtLog.setText(" Ошибка:" + ignore);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.out.println(" Exception:" + e);
+//            txtLog.setText(" Ошибка:" + e);
+//        } return false;
+//    }
     //////////////
     // Start the  service
     public void startNewService(View view) {
