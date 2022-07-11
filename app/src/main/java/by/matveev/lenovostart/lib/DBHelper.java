@@ -320,14 +320,18 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean SaveDataPrice(Context contex,String TableName, String SqlStroka,CSVReader reader) throws IOException, InterruptedException {
         DBHelper dbHelper = new DBHelper(contex);
         String[] nextLine = null;
-        dataBase = dbHelper.getWritableDatabase();//getReadableDatabase
-        dataBase.delete(TableName,null,null);
-        dataBase.close();
-        dataBase = dbHelper.getWritableDatabase();
-        Cursor basecursor = dataBase.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+        SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
+        Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
         Integer iCount = basecursor.getCount();
-        dataBase.close();
-        dataBase = dbHelper.getWritableDatabase();
+        dbdb.close();
+        dbdb = dbHelper.getWritableDatabase();
+        dbdb.delete(TableName,null,null);
+        dbdb.close();
+        dbdb = dbHelper.getWritableDatabase();
+        basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+        iCount = basecursor.getCount();
+        dbdb.close();
+        dbdb = dbHelper.getWritableDatabase();
 //        CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
 //                ';', '\'', 0);
         //sStrok = reader.toString();
@@ -341,19 +345,19 @@ public class DBHelper extends SQLiteOpenHelper {
 //            nextLine[1] = nextLine[1].replaceAll("\n","");
 //            nextLine[2] = nextLine[2].replaceAll("\n","");
 //            nextLine[3] = nextLine[3].replaceAll("\n","");
-            if (nextLine[1].length() > 71){
-                String S1 = nextLine[0];
-                String S2 = nextLine[1];
-                String S3 = nextLine[2];
-                String S4 = nextLine[3];
-            }
+//            if (nextLine[1].length() > 71){
+//                String S1 = nextLine[0];
+//                String S2 = nextLine[1];
+//                String S3 = nextLine[2];
+//                String S4 = nextLine[3];
+//            }
 
             //Thread.sleep(5000);
             ScontentValues = ContentValuesPriceCsv(nextLine);
-            dataBase.insert(DBHelper.TABLE_DOCUMENT, null, ScontentValues);
-            nextLine = null;
+            dbdb.insert(TableName, null, ScontentValues);
+             //nextLine = null;
         }
-        dataBase.close();
+        dbdb.close();
             return true;
     }
 

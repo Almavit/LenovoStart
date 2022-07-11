@@ -418,7 +418,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
             case R.id.btnLoadAll:
-                //loadSetting();
+                Setting setting = new Setting();
+                setting.loadSetting(this);
                 //Filealmat filealmat = new Filealmat();
 
 //                if (!setting.executeCommand(sAdressServer)) {
@@ -452,8 +453,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // добавляем свой каталог устройства к пути куда загружаем файл с сервера
                 sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD + "/" + FILENAME_CSV);
                 // загрузка csv файла с FTP сервера
-                boolean ko = mymodel.downloadAndSaveFile(sAdressServer, Integer.parseInt(sPortFTP),
-                        sUserFTP, sPasswordFTP, FILENAME_CSV, sdPath);
+                boolean ko = mymodel.downloadAndSaveFile(setting.sAdressServer, Integer.parseInt(setting.sPortFTP),
+                        setting.sUserFTP, setting.sPasswordFTP, FILENAME_CSV, sdPath);
                 if (ko) {
                     // Toast.makeText(context, "Файл данных загружен", Toast.LENGTH_LONG).show();
                     txtLog.setText("ДАННЫЕ ЗАГРУЖЕНЫ");
