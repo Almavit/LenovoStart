@@ -38,42 +38,49 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Четыре поля"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btnTwoField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Штрих + цена"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btnTwoFieldQuan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Штрих + кол-во"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btnOneField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Штрихкод"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btnTwoFieldNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Штрих + № позиции"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnQrBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="QR + ШТРИХКОД"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btnQR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="QR код"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textView"
@@ -88,14 +95,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Редактирование "
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btnStartElectron"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Накладные"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <by.matveev.lenovostart.lib.ProgressTextView
             android:id="@+id/progressTextViewMain"
@@ -110,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Загрузить все"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/txtLog"
@@ -118,7 +125,7 @@
             android:layout_height="wrap_content"
             android:text="..."
             android:textAlignment="center"
-            android:textSize="34sp"
+            android:textSize="20sp"
             android:textStyle="normal|bold"
             tools:text="..." />
 
@@ -127,7 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Настройки"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
 
     </LinearLayout>

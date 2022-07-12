@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnEditDatTxt;
     Button btnQR;
     Button btnLoadAll;
+    Button btnQrBarcode;
+
     TextView txtLog;
     EditText txtIp;
     CheckBox chkWiFi;
@@ -152,6 +154,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        btnQrBarcode = (Button) findViewById(R.id.btnQrBarcode);
+        btnQrBarcode.setOnClickListener(this);
 
         btnQR = (Button) findViewById(R.id.btnQR);
         btnQR.setOnClickListener(this);
@@ -403,6 +408,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("VisibleIntQuantity", View.INVISIBLE);
                 Toast.makeText(MainActivity.this, getString(R.string.action_item5), Toast.LENGTH_SHORT).show();
                 startActivity(intent);
+                break;
+            case R.id.btnQrBarcode:
+
                 break;
             case R.id.btnStartElectron:
                 Intent intentStartElectronDocument = new Intent(this, StartElectronDocument.class);

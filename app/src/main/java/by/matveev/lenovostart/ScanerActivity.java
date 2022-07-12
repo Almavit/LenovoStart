@@ -249,7 +249,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                     cursor.moveToFirst();
                     String sTextView = "";
                     sTextView = cursor.getString(2);//PricePall.setText(cursor.getString(8));
-                    sTextView = "Штрих-код" + "\n" + "ЦЕНА = " + sTextView;
+                    sTextView = "Штрих-код" + "\n" + "ЦЕНА = " + sTextView + "   |  " + cursor.getString(3);
                     txtvBarcode.setText(sTextView);
                     txtvBarcode.setBackgroundColor(Color.GREEN);
 
