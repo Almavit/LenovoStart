@@ -419,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnLoadAll:
                 Setting setting = new Setting();
-                setting.loadSetting(this);
+//              setting.loadSetting(this);
                 //Filealmat filealmat = new Filealmat();
 
 //                if (!setting.executeCommand(sAdressServer)) {
@@ -447,129 +447,130 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 //===============================
                 //подключаемся к FTP серверу
-                FTPModel mymodel = new FTPModel();
-                // получает корневой каталог
-                File sdPath = Environment.getExternalStorageDirectory();
-                // добавляем свой каталог устройства к пути куда загружаем файл с сервера
-                sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD + "/" + FILENAME_CSV);
-                // загрузка csv файла с FTP сервера
-                boolean ko = mymodel.downloadAndSaveFile(setting.sAdressServer, Integer.parseInt(setting.sPortFTP),
-                        setting.sUserFTP, setting.sPasswordFTP, FILENAME_CSV, sdPath);
-                if (ko) {
-                    // Toast.makeText(context, "Файл данных загружен", Toast.LENGTH_LONG).show();
-                    txtLog.setText("ДАННЫЕ ЗАГРУЖЕНЫ");
-                    txtLog.setBackgroundColor(Color.GREEN);
-                } else {
-                    //Toast.makeText(context, "Файл данных не загружен", Toast.LENGTH_LONG).show();
-                    txtLog.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
-                    txtLog.setBackgroundColor(Color.RED);
-                    break;
-                }
+//                FTPModel mymodel = new FTPModel();
+//                // получает корневой каталог
+//                File sdPath = Environment.getExternalStorageDirectory();
+//                // добавляем свой каталог устройства к пути куда загружаем файл с сервера
+//                sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD + "/" + FILENAME_CSV);
+//                // загрузка csv файла с FTP сервера
+//                boolean ko = mymodel.downloadAndSaveFile(setting.sAdressServer, Integer.parseInt(setting.sPortFTP),
+//                        setting.sUserFTP, setting.sPasswordFTP, FILENAME_CSV, sdPath);
+//                if (ko) {
+//                    // Toast.makeText(context, "Файл данных загружен", Toast.LENGTH_LONG).show();
+//                    txtLog.setText("ДАННЫЕ ЗАГРУЖЕНЫ");
+//                    txtLog.setBackgroundColor(Color.GREEN);
+//                } else {
+//                    //Toast.makeText(context, "Файл данных не загружен", Toast.LENGTH_LONG).show();
+//                    txtLog.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
+//                    txtLog.setBackgroundColor(Color.RED);
+//                    break;
+//                }
 ////////////////////////////   распаковка CSV    ////////////////////////////////////
-                try {
-// OPTION 1: if the file is in the sd
-
-                    File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
-                            DIR_SD + "/" + FILENAME_CSV);
-// END OF OPTION 1
-                    dbHelper = new DBHelper(this);
-                    //SQLiteDatabase db = dbHelper.getReadableDatabase();
-                    //Environment.getExternalStorageDirectory()
-// OPTION 2: pack the file with the app
-                    /* "If you want to package the .csv file with the application and have it install on the internal storage when the app installs, create an assets folder in your project src/main folder (e.g., c:\myapp\app\src\main\assets\), and put the .csv file in there, then reference it like this in your activity:" (from the cited answer) */
-                    /* "Если вы хотите упаковать файл .csv вместе с приложением и установить его во внутреннее хранилище при установке приложения, создайте папку assets в вашей папке project src/main (например, c:\myapp\app\src\main\assets \), и поместите туда файл .csv, а затем ссылайтесь на него следующим образом в вашей деятельности:" (из процитированного ответа) */
-                    // String csvfileStrin  = this.getApplicationInfo().dataDir + File.pathSeparatorChar  +
-                    //FILENAME_CSV;
-                    //    File csvfiles = csvfile;//new File(csvfileString);
-// END OF OPTION 2
-                    CSVReader reader = new CSVReader(
-                            new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-                            ';', '\'', 0);
-                    //sStrok = reader.toString();
-                    // считываем данные с БД
-                    database = dbHelper.getWritableDatabase();
-                    Cursor basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT, null);
-                    // определяем, какие столбцы из курсора будут выводиться в ListView
-                    Integer iCountStrok = basecursor.getCount();//количество строк
-                    iCountStrok = 0;
-
-                    while ((nextLine = reader.readNext()) != null) {
-                        iCountStrok++;
-
-                    }
-
-
-                    reader = new CSVReader(
-                            new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-                            ';', '\'', 0);
-                    progressTextViewMain.setMaxValue(iCountStrok);
-                    Integer iCountField = basecursor.getColumnCount();//количество полей
-                    basecursor.moveToFirst();// установка курсора в начало
-                    iCountStrok = 1;
-                    while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
-                        progressTextViewMain.setValue(iCountStrok);
-                        iCountStrok++;
-                        String sqlStroka = nextLine[0].toString(); //QR code
-                        sqlStroka = nextLine[1].toString(); // № invoice
-                        sqlStroka = nextLine[2].toString(); // invoice date
-                        sqlStroka = nextLine[3].toString();//provider
-                        sqlStroka = nextLine[4].toString();// # items in the invoice
-                        sqlStroka = nextLine[5].toString();// barcode
-                        sqlStroka = nextLine[6].toString();//name  product
-                        sqlStroka = nextLine[7].toString();// price
-                        sqlStroka = nextLine[8].toString();// status
-
-                        sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_BARCODE +
-                                " = '" + nextLine[5].toString() + "' AND " + DBHelper.KEY_NUM_NAKL +
-                                " = '" + nextLine[1].toString() + "' AND " +
-                                DBHelper.KEY_DATE + " = '" + nextLine[2].toString() + "'";
-                        basecursor = database.rawQuery(sqlStroka, null);
-                        basecursor.moveToFirst();// установка курсора в начало
-                        iCountField = basecursor.getCount();//количество полей
-                        //  csvfileString = basecursor.getString(4);
-//                        if(basecursor.isAfterLast()){
-//                         }else{
+//                try {
+//// OPTION 1: if the file is in the sd
+//
+//                    File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
+//                            DIR_SD + "/" + FILENAME_CSV);
+//// END OF OPTION 1
+//                    dbHelper = new DBHelper(this);
+//                    //SQLiteDatabase db = dbHelper.getReadableDatabase();
+//                    //Environment.getExternalStorageDirectory()
+//// OPTION 2: pack the file with the app
+//                    /* "If you want to package the .csv file with the application and have it install on the internal storage when the app installs, create an assets folder in your project src/main folder (e.g., c:\myapp\app\src\main\assets\), and put the .csv file in there, then reference it like this in your activity:" (from the cited answer) */
+//                    /* "Если вы хотите упаковать файл .csv вместе с приложением и установить его во внутреннее хранилище при установке приложения, создайте папку assets в вашей папке project src/main (например, c:\myapp\app\src\main\assets \), и поместите туда файл .csv, а затем ссылайтесь на него следующим образом в вашей деятельности:" (из процитированного ответа) */
+//                    // String csvfileStrin  = this.getApplicationInfo().dataDir + File.pathSeparatorChar  +
+//                    //FILENAME_CSV;
+//                    //    File csvfiles = csvfile;//new File(csvfileString);
+//// END OF OPTION 2
+//                    CSVReader reader = new CSVReader(
+//                            new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+//                            ';', '\'', 0);
+//                    //sStrok = reader.toString();
+//                    // считываем данные с БД
+//                    database = dbHelper.getWritableDatabase();
+//                    Cursor basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT, null);
+//                    // определяем, какие столбцы из курсора будут выводиться в ListView
+//                    Integer iCountStrok = basecursor.getCount();//количество строк
+//                    iCountStrok = 0;
+//
+//                    while ((nextLine = reader.readNext()) != null) {
+//                        iCountStrok++;
+//
+//                    }
+//
+//
+//                    reader = new CSVReader(
+//                            new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+//                            ';', '\'', 0);
+//                    progressTextViewMain.setMaxValue(iCountStrok);
+//                    Integer iCountField = basecursor.getColumnCount();//количество полей
+//                    basecursor.moveToFirst();// установка курсора в начало
+//                    iCountStrok = 1;
+//                    while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
+//                        progressTextViewMain.setValue(iCountStrok);
+//                        iCountStrok++;
+//                        String sqlStroka = nextLine[0].toString(); //QR code
+//                        sqlStroka = nextLine[1].toString(); // № invoice
+//                        sqlStroka = nextLine[2].toString(); // invoice date
+//                        sqlStroka = nextLine[3].toString();//provider
+//                        sqlStroka = nextLine[4].toString();// # items in the invoice
+//                        sqlStroka = nextLine[5].toString();// barcode
+//                        sqlStroka = nextLine[6].toString();//name  product
+//                        sqlStroka = nextLine[7].toString();// price
+//                        sqlStroka = nextLine[8].toString();// status
+//
+//                        sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_BARCODE +
+//                                " = '" + nextLine[5].toString() + "' AND " + DBHelper.KEY_NUM_NAKL +
+//                                " = '" + nextLine[1].toString() + "' AND " +
+//                                DBHelper.KEY_DATE + " = '" + nextLine[2].toString() + "'";
+//                        basecursor = database.rawQuery(sqlStroka, null);
+//                        basecursor.moveToFirst();// установка курсора в начало
+//                        iCountField = basecursor.getCount();//количество полей
+//                        //  csvfileString = basecursor.getString(4);
+////                        if(basecursor.isAfterLast()){
+////                         }else{
+////                        }
+//                        if (iCountField != 0) {
+//
+////                            sValueFieldNumNakldn = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_QR_CODE));
+////                            sValueFieldBarcode   = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_BARCODE));
+////                            sValueFieldDate      = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_DATE));
+//                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
+//                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
+//                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
+//                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
+//                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
+//                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
+//                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
+//                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
+//                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
+//                            database.update(DBHelper.TABLE_DOCUMENT, contentValues, null, null);
+//                        } else {
+//                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
+//                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
+//                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
+//                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
+//                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
+//                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
+//                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
+//                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
+//                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
+//                            database.insert(DBHelper.TABLE_DOCUMENT, null, contentValues);
 //                        }
-                        if (iCountField != 0) {
-
-//                            sValueFieldNumNakldn = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_QR_CODE));
-//                            sValueFieldBarcode   = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_BARCODE));
-//                            sValueFieldDate      = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_DATE));
-                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-                            database.update(DBHelper.TABLE_DOCUMENT, contentValues, null, null);
-                        } else {
-                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-                            database.insert(DBHelper.TABLE_DOCUMENT, null, contentValues);
-                        }
-
-                    }
-                    database.close();
-                    txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
-                    txtLog.setBackgroundColor(Color.GREEN);
-                    break;
-
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//
+//                    }
+//                    database.close();
+//                    txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
+//                    txtLog.setBackgroundColor(Color.GREEN);
+//                    break;
+//
+//
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+                //===========================================
         }
     }
 //

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.List;
 //import static android.content.ContextWrapper.*;
 //import static android.content.Context.*;
 
@@ -339,6 +340,8 @@ public class DBHelper extends SQLiteOpenHelper {
         //db = dbHelper.getWritableDatabase();
         // db = dbHelper.getWritableDatabase();
         Integer ISSSSS = 0;
+        List sdsdsdsdsd = reader.readAll();
+        String dddd = sdsdsdsdsd.toString();
         while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
             ISSSSS++;
 //            nextLine[0] = nextLine[0].replaceAll("\n","");
