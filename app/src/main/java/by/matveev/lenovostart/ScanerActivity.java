@@ -1120,8 +1120,8 @@ public void saveSetting(){
         } return false;
     }
 
-    private class writeFileSD {
-    }
+//    private class writeFileSD {
+//    }
 //////////////
 
     

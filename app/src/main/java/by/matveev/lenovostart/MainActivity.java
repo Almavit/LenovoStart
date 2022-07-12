@@ -428,6 +428,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                }
 //===============================
                 try {
+                    txtLog.setText("       ...       ");
+                    txtLog.setBackgroundColor(Color.WHITE);
                     if (filealmat.LoadSaveCsvToDB(this, DIR_SD,"price.csv",
                             "select * from " + DBHelper.TABLE_DOCUMENT_PRICE,DBHelper.TABLE_DOCUMENT_PRICE)){
                         txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
