@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.btnQrBarcode:
-
+                Toast.makeText(MainActivity.this, "Функция недоступна", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btnStartElectron:
                 Intent intentStartElectronDocument = new Intent(this, StartElectronDocument.class);

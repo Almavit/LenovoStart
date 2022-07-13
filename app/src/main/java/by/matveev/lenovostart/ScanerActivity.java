@@ -53,6 +53,7 @@ import java.util.List;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.FTPModel;
+import by.matveev.lenovostart.lib.Filealmat;
 
 
 public class ScanerActivity extends AppCompatActivity implements View.OnClickListener{
@@ -445,6 +446,9 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         String textAdd = "";
         String line = "";
         Integer NumberOfRecords = 0;
+        StringBuilder addText = new StringBuilder();
+
+
         loadSetting();
         if (txtnNumber.length() > 0 && txtnNumber.getVisibility() == View.VISIBLE)
            txtNumber = txtnNumber.getText().toString();
@@ -453,111 +457,130 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         if (txtdPrice.length() > 0 && txtdPrice.getVisibility() == View.VISIBLE)
            txtPrice = txtdPrice.getText().toString();
         String text =  txtBarcode + ";" + txtPrice + ";" + txtQuantity + ";" + txtNumber + ";";
-        // проверяем доступность SD
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
-            ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
+
+        addText.insert(0,text);
+        Filealmat filealmat = new Filealmat();
+        if (filealmat.writeFileSD(this,this,DIR_SD,FILENAME_SD,addText) != 0){
             return;
-        }
-        // получаем путь к SD
-        File sdPath = Environment.getExternalStorageDirectory();
-        // добавляем свой каталог к пути
-        sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
-        // создаем каталог
-        sdPath.mkdirs();
-
-        File[] elems = sdPath.listFiles();
-
-        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
-        int i = 0;
-        paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
-        i++;
-        if (elems != null) {
-            for (File elem : elems) {
-                paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
-                i++;
-            }
-        }
-        MediaScannerConnection.scanFile(ScanerActivity.this, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
-        // формируем объект File, который содержит путь к файлу
-        File sdFile = new File(sdPath, FILENAME_SD);
-        //File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
-
-        // Проверка наличия файла
-        if (sdFile.exists()){
-            //ToastMessageCenter("Файл в наличии.");
-            // проверка разрешений
-            if (!myPremission())  return;
-            String lineSeparator = System.getProperty("line.separator");
-            try {
-                // открываем поток для чтения
-                BufferedReader br = new BufferedReader(new FileReader(sdFile));
-                // пишем данные
-                //ToastMessageCenter("Файл открыт для чтения.");
-
-                StringBuilder builder = new StringBuilder();
-                NumberOfRecords = 0;
-                while ((line = br.readLine()) != null) {
-                    builder.append(line + "\r\n");
-                    ++NumberOfRecords;
-                }
-                textAdd = builder.toString();
-                // закрываем поток
-                br.close();
-                Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
-                btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
-        //        btnUploadDelete.setEnabled(true);
-                if (!sModeWorking.equals("1")) {
-                    btnSaveToServer.setEnabled(false);
-                }else{
-                    btnSaveToServer.setEnabled(true);
-                }
-                btnDeleteFile.setEnabled(true);
-
-                //ToastMessageCenter( "Чтение");
-                //if(sdFile.exists())
-                  //sdFile.renameTo(sdFile); // переименовать файл
-                    //copyFileUsingStream(sdFile, sdFile_copy);// копировать файл
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
-                return;
-            }
-        }//else{ ToastMessageCenter("Файл отсутствует."); }
-        try {
-            // открываем поток для записи если файла нет
-            //ToastMessageCenter("Запись");
-            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
-            // пишем данные
-            textAdd = textAdd + text ;
-            //bw.write(textAdd);
-
-            bw.append(textAdd);
-            // закрываем поток
-            bw.close();
-                   ++NumberOfRecords;
-            //if(sdFile.exists())
-                //sdFile.renameTo(sdFile); // переименовать файл
-               //copyFileUsingStream(sdFile, sdFile);// копировать файл
-            Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
-            //ToastMessageCenter("Данные сохранены на SD.+");
-            btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
-       //     btnUploadDelete.setEnabled(true);
+        }else{
+            btnAddPosition.setText("Добавить позицию (" + filealmat.NumberOfRecords + ")");
             if (!sModeWorking.equals("1")) {
-                //1
                 btnSaveToServer.setEnabled(false);
             }else{
                 btnSaveToServer.setEnabled(true);
             }
             btnDeleteFile.setEnabled(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            ToastMessageCenter("Ошибка: Файл невозможно открыть.");
-            return;
+
         }
+
+//
+//        // проверяем доступность SD
+//        if (!Environment.getExternalStorageState().equals(
+//                Environment.MEDIA_MOUNTED)) {
+//            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
+//            ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
+//            return;
+//        }
+//        // получаем путь к SD
+//        File sdPath = Environment.getExternalStorageDirectory();
+//        // добавляем свой каталог к пути
+//        sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
+//        // создаем каталог
+//        sdPath.mkdirs();
+//
+//        File[] elems = sdPath.listFiles();
+//
+//        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
+//        int i = 0;
+//        paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
+//        i++;
+//        if (elems != null) {
+//            for (File elem : elems) {
+//                paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
+//                i++;
+//            }
+//        }
+//        MediaScannerConnection.scanFile(ScanerActivity.this, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
+//        // формируем объект File, который содержит путь к файлу
+//        File sdFile = new File(sdPath, FILENAME_SD);
+//        //File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
+//
+//        // Проверка наличия файла
+//        if (sdFile.exists()){
+//            //ToastMessageCenter("Файл в наличии.");
+//            // проверка разрешений
+//            if (!myPremission())  return;
+//            String lineSeparator = System.getProperty("line.separator");
+//            try {
+//                // открываем поток для чтения
+//                BufferedReader br = new BufferedReader(new FileReader(sdFile));
+//                // пишем данные
+//                //ToastMessageCenter("Файл открыт для чтения.");
+//
+//                StringBuilder builder = new StringBuilder();
+//                NumberOfRecords = 0;
+//                while ((line = br.readLine()) != null) {
+//                    builder.append(line + "\r\n");
+//                    ++NumberOfRecords;
+//                }
+//                textAdd = builder.toString();
+//                // закрываем поток
+//                br.close();
+//                Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
+//                btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
+//        //        btnUploadDelete.setEnabled(true);
+//                if (!sModeWorking.equals("1")) {
+//                    btnSaveToServer.setEnabled(false);
+//                }else{
+//                    btnSaveToServer.setEnabled(true);
+//                }
+//                btnDeleteFile.setEnabled(true);
+//
+//                //ToastMessageCenter( "Чтение");
+//                //if(sdFile.exists())
+//                  //sdFile.renameTo(sdFile); // переименовать файл
+//                    //copyFileUsingStream(sdFile, sdFile_copy);// копировать файл
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
+//                return;
+//            }
+//        }//else{ ToastMessageCenter("Файл отсутствует."); }
+//        try {
+//            // открываем поток для записи если файла нет
+//            //ToastMessageCenter("Запись");
+//            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+//            // пишем данные
+//            textAdd = textAdd + text ;
+//            //bw.write(textAdd);
+//
+//            bw.append(textAdd);
+//            // закрываем поток
+//            bw.close();
+//                   ++NumberOfRecords;
+//            //if(sdFile.exists())
+//                //sdFile.renameTo(sdFile); // переименовать файл
+//               //copyFileUsingStream(sdFile, sdFile);// копировать файл
+//            Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
+//            //ToastMessageCenter("Данные сохранены на SD.+");
+//            btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
+//       //     btnUploadDelete.setEnabled(true);
+//            if (!sModeWorking.equals("1")) {
+//                //1
+//                btnSaveToServer.setEnabled(false);
+//            }else{
+//                btnSaveToServer.setEnabled(true);
+//            }
+//            btnDeleteFile.setEnabled(true);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            ToastMessageCenter("Ошибка: Файл невозможно открыть.");
+//            return;
+//        }
     }
+
+//================================================================
 
     private void copyFileUsingStream(File source, File dest) {
         InputStream is = null;

@@ -32,7 +32,7 @@ public class MyPremission {
             requestPermissionWithRationale(activity);
         }
 
-        if (-1 != ExternalStorageState(activity)){
+        if (0 != ExternalStorageState(activity)){
             return false;
         }
         return true;

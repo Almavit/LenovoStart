@@ -12,9 +12,11 @@ import android.widget.Toast;
 
 import com.opencsv.CSVReader;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,12 +28,15 @@ public class Filealmat {
     final String LOG_TAG = "PatshDIR_SD";
     public Activity activity;
     private static final String ENCODING_WIN1251 = "windows-1251";
+    public Integer NumberOfRecords = 0;
 
 
-
-    public int  writeFileSD(String PatshDIR_SD, String FileName,StringBuilder addText){
+    public int  writeFileSD(Activity activity, Context contex, String PatshDIR_SD, String FileName,StringBuilder addText){
         int returnerror = 0;
         String textAdd = "";
+        String line = "";
+        Setting setting = new Setting();
+        setting.loadSetting(contex);
 
         //loadSetting(); //добавить класс
         // проверяем доступность SD
@@ -65,33 +70,57 @@ public class Filealmat {
         File sdFile = new File(sdPath, FileName);
 
 
+// Проверка наличия файла
+        if (sdFile.exists()){
+            //Файл в наличии
+            try {
+                // открываем поток для чтения
+                BufferedReader br = new BufferedReader(new FileReader(sdFile));
+                // пишем данные
+                //ToastMessageCenter("Файл открыт для чтения.");
 
+                StringBuilder builder = new StringBuilder();
+                NumberOfRecords = 0;
+                while ((line = br.readLine()) != null) {
+                    builder.append(line + "\r\n");
+                    ++NumberOfRecords;
+                }
+                textAdd = builder.toString();
+                // закрываем поток
+                br.close();
+
+                Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
+                //btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
+                //        btnUploadDelete.setEnabled(true);
+//                if (!setting.sModeWorking.equals("1")) {
+//                    btnSaveToServer.setEnabled(false);
+//                }else{
+//                    btnSaveToServer.setEnabled(true);
+//                }
+//                btnDeleteFile.setEnabled(true);
+
+                //ToastMessageCenter( "Чтение");
+                //if(sdFile.exists())
+                //sdFile.renameTo(sdFile); // переименовать файл
+                //copyFileUsingStream(sdFile, sdFile_copy);// копировать файл
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                //ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
+                return -1;
+            }
+        }
         try {
             // открываем поток для записи если файла нет
             //ToastMessageCenter("Запись");
             BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
             // пишем данные
-            textAdd = addText.toString();//list.toString();//text;//Add + text ;
-//            //bw.write(textAdd);
-//
+            textAdd = textAdd + addText.toString();//list.toString();//text;//Add + text ;
             bw.append(textAdd);
             // закрываем поток
             bw.close();
-           // ++NumberOfRecords;
-            //if(sdFile.exists())
-            //sdFile.renameTo(sdFile); // переименовать файл
-            //copyFileUsingStream(sdFile, sdFile);// копировать файл
+            ++NumberOfRecords;
             Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
-            //ToastMessageCenter("Данные сохранены на SD.+");
-            //  btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
-            //     btnUploadDelete.setEnabled(true);
-//            if (!sModeWorking.equals("1")) {
-//                //1
-//                btnSaveToServer.setEnabled(false);
-//            }else{
-//                btnSaveToServer.setEnabled(true);
-//            }
-//            btnDeleteFile.setEnabled(true);
         } catch (IOException e) {
             e.printStackTrace();
             /////ToastMessageCenter("Ошибка: Файл невозможно открыть.");
@@ -128,8 +157,9 @@ public class Filealmat {
     }
 
 
-
+//сохранение данные из файла csv в БД SQLite
     public boolean LoadSaveCsvToDB(Context context, String DirName, String FileNameCSV, String SqlStroka, String TableName) throws IOException, InterruptedException {
+
         boolean returnstatus = true;
         ContentValues ScontentValues = new ContentValues();
         Setting setting = new Setting();
@@ -168,34 +198,10 @@ public class Filealmat {
         if (!dbHelper.SaveDataPrice(context,TableName,SqlStroka,reader)){
             return false;
         }
-//
-//        db = dbHelper.getWritableDatabase();//getReadableDatabase
-//        db.delete(TableName,null,null);
-//        db.close();
-//        db = dbHelper.getWritableDatabase();
-//        Cursor basecursor = db.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-//        Integer iCount = basecursor.getCount();
-//        CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-//                ';', '\'', 0);
-//        //sStrok = reader.toString();
-//        // считываем данные с БД
-//        //db = dbHelper.getWritableDatabase();
-//        // db = dbHelper.getWritableDatabase();
-//
-//        while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
-//            ScontentValues = ScontentValues(nextLine);
-////            ScontentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-////            ScontentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-////            ScontentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-////            ScontentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-////            ScontentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-////            ScontentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-////            ScontentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-////            ScontentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-////            ScontentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-//            db.insert(DBHelper.TABLE_DOCUMENT, null, ScontentValues);
-//        }
-//        db.close();
+        dbHelper.close();
+        reader.close();
+        csvfile.exists();
+        ScontentValues.clear();
 
         return returnstatus;
     }
