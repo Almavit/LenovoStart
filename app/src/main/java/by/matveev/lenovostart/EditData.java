@@ -142,7 +142,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
         dbListView.setOnItemClickListener(datitemListener);
 
-        LoaddbListView();
+        //LoaddbListView();
 
     }
 ///////////////////////////
@@ -155,6 +155,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         ArrayAdapter<String> datadapter;
         switch (v.getId()) {
             case R.id.btnDonloadDat:
+                LoaddbListView();
                 datadapter = new ArrayAdapter<String>(this,
                         android.R.layout.simple_list_item_1, repositorys.getDataDat());
                 datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
@@ -226,15 +227,33 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     //
     public void LoaddbListView(){
         final String LOG_TAG = "LoaddbListView";
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
-            ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
-            return;
-        }
+        ContentValues datContentValues = new ContentValues();
         dbHelper = new DBHelper(this);
 
+//        if (!Environment.getExternalStorageState().equals(
+//                Environment.MEDIA_MOUNTED)) {
+//            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
+//            ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
+//            return;
+//        }
+
         try {
+
+            File csvfile = new File(Environment.getExternalStorageDirectory()+ "/" + DIR_SD + "/" + FILENAME_DAT_TXT);
+
+            datFileString = this.getApplicationInfo().dataDir + File.pathSeparatorChar  + FILENAME_DAT_TXT;
+            File csvfiles = new File(datFileString);
+            CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),';', '\n', 0);
+            String sStrok = reader.toString();
+            iCountStrok = 0;
+            while ((nextLine = reader.readNext()) != null) {
+                iCountStrok++;
+            }
+
+            reader = new CSVReader(
+                    new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+                    ';', '\n', 0);
+
 
             dbHelper.createDataBase();
             try {
@@ -243,32 +262,15 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                 throw sqle;
             }
 
-            File csvfile = new File(Environment.getExternalStorageDirectory()+ "/" +
-                    DIR_SD + "/" + FILENAME_DAT_TXT);
-            ContentValues datContentValues = new ContentValues();
             SQLiteDatabase db = dbHelper.getReadableDatabase();
             /* "If you want to package the .csv file with the application and have it install on the internal storage when the app installs, create an assets folder in your project src/main folder (e.g., c:\myapp\app\src\main\assets\), and put the .csv file in there, then reference it like this in your activity:" (from the cited answer) */
             /* "Если вы хотите упаковать файл .csv вместе с приложением и установить его во внутреннее хранилище при установке приложения, создайте папку assets в вашей папке project src/main (например, c:\myapp\app\src\main\assets \), и поместите туда файл .csv, а затем ссылайтесь на него следующим образом в вашей деятельности:" (из процитированного ответа) */
-            datFileString = this.getApplicationInfo().dataDir + File.pathSeparatorChar  +
-                    FILENAME_DAT_TXT;
-            File csvfiles = new File(datFileString);
 
-            CSVReader reader = new CSVReader(
-                    new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-                    ';', '\'', 0);
-            String sStrok = reader.toString();
             // считываем данные с БД
             database = dbHelper.getWritableDatabase();
             datBaseCursor = database.rawQuery("select * from " + dbHelper.TABLE_DOCUMENT_DAT,null);
             // определяем, какие столбцы из курсора будут выводиться в ListView
             iCountStrok = datBaseCursor.getCount(); //количество строк
-            iCountStrok = 0;
-            while ((nextLine = reader.readNext()) != null) {
-                iCountStrok++;
-            }
-            reader = new CSVReader(
-                    new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-                    ';', '\'', 0);
             //progressTextView.setMaxValue(iCountStrok);
             iCountField = datBaseCursor.getColumnCount();//количество полей
             datBaseCursor.moveToFirst();// установка курсора в начало
@@ -296,7 +298,9 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             database.close();
 
         } catch (Exception e) {
-            database.close();
+            if(null != database) {
+                database.close();
+            }
             e.printStackTrace();
             Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
             // txtLogMessege.setText("");

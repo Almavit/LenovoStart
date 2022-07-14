@@ -16,10 +16,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 public class Filealmat {
     public String PatshFile;
@@ -28,6 +30,7 @@ public class Filealmat {
     final String LOG_TAG = "PatshDIR_SD";
     public Activity activity;
     private static final String ENCODING_WIN1251 = "windows-1251";
+    private CSVReader reader;
     public Integer NumberOfRecords = 0;
 
 
@@ -156,19 +159,14 @@ public class Filealmat {
         return true;
     }
 
-
-//сохранение данные из файла csv в БД SQLite
-    public boolean LoadSaveCsvToDB(Context context, String DirName, String FileNameCSV, String SqlStroka, String TableName) throws IOException, InterruptedException {
-
-        boolean returnstatus = true;
-        ContentValues ScontentValues = new ContentValues();
+//  получить данные из csv файла
+    public boolean LoadCsvFile(Context context, String DirName, String FileNameCSV) throws FileNotFoundException, UnsupportedEncodingException {
         Setting setting = new Setting();
-
         if (!setting.loadSetting(context)){
             return false;
         }
         if (!setting.executeCommand(setting.sAdressServer)) {
-           // txtLog.setBackgroundColor(Color.RED);
+            // txtLog.setBackgroundColor(Color.RED);
             return false;
         }
         //SQLiteDatabase db;
@@ -190,18 +188,33 @@ public class Filealmat {
         File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
                 DirName + "/" + FileNameCSV);
 
-        CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+        reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
                 ';', '\n', 0);
 
-// END OF OPTION 1
-        DBHelper dbHelper = new DBHelper(context);
-        if (!dbHelper.SaveDataPrice(context,TableName,SqlStroka,reader)){
-            return false;
-        }
-        dbHelper.close();
-        reader.close();
         csvfile.exists();
-        ScontentValues.clear();
+        return true;
+    }
+
+//сохранение данные из файла csv в БД SQLite
+    public boolean LoadSaveCsvToDB(Context context, String DirName, String FileNameCSV, String SqlStroka, String TableName) throws IOException, InterruptedException {
+
+        boolean returnstatus = true;
+        ContentValues ScontentValues = new ContentValues();
+        Setting setting = new Setting();
+
+        if (!LoadCsvFile(context, DirName, FileNameCSV)){
+            return false;
+        }else{
+            DBHelper dbHelper = new DBHelper(context);
+            if (!dbHelper.SaveDataPrice(context,TableName,SqlStroka,reader)){
+                return false;
+            }
+            dbHelper.close();
+            reader.close();
+            ScontentValues.clear();
+        }
+
+
 
         return returnstatus;
     }

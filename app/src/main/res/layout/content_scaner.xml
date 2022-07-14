@@ -123,6 +123,13 @@
             android:textSize="30sp"
             android:textStyle="normal" />
 
+        <Button
+            android:id="@+id/btnEditDatTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="РЕДАКТИРОВАНИЕ"
+            android:textSize="30sp" />
+
         <TextView
             android:id="@+id/txtLogScaner"
             android:layout_width="match_parent"

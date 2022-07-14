@@ -91,13 +91,6 @@
             android:textSize="34sp" />
 
         <Button
-            android:id="@+id/btnEditDatTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Редактирование "
-            android:textSize="20sp" />
-
-        <Button
             android:id="@+id/btnStartElectron"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

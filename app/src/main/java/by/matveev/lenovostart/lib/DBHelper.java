@@ -322,6 +322,8 @@ public class DBHelper extends SQLiteOpenHelper {
         DBHelper dbHelper = new DBHelper(contex);
         String[] nextLine = null;
         SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
+
+
         Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
         Integer iCount = basecursor.getCount();
         dbdb.close();
@@ -333,35 +335,48 @@ public class DBHelper extends SQLiteOpenHelper {
         iCount = basecursor.getCount();
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
-//        CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-//                ';', '\'', 0);
-        //sStrok = reader.toString();
-        // считываем данные с БД
-        //db = dbHelper.getWritableDatabase();
-        // db = dbHelper.getWritableDatabase();
         Integer ISSSSS = 0;
 //        List sdsdsdsdsd = reader.readAll();
 //        String dddd = sdsdsdsdsd.toString();
         while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
             ISSSSS++;
-//            nextLine[0] = nextLine[0].replaceAll("\n","");
-//            nextLine[1] = nextLine[1].replaceAll("\n","");
-//            nextLine[2] = nextLine[2].replaceAll("\n","");
-//            nextLine[3] = nextLine[3].replaceAll("\n","");
-//            if (nextLine[1].length() > 71){
-//                String S1 = nextLine[0];
-//                String S2 = nextLine[1];
-//                String S3 = nextLine[2];
-//                String S4 = nextLine[3];
-//            }
-
-            //Thread.sleep(5000);
             ScontentValues = ContentValuesPriceCsv(nextLine);
             dbdb.insert(TableName, null, ScontentValues);
              //nextLine = null;
         }
         dbdb.close();
             return true;
+    }
+
+    public boolean SaveDataDat(Context contex,String TableName, String SqlStroka,CSVReader reader) throws IOException, InterruptedException {
+        DBHelper dbHelper = new DBHelper(contex);
+        String[] nextLine = null;
+        SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
+
+
+        Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+        Integer iCount = basecursor.getCount();
+        dbdb.close();
+        dbdb = dbHelper.getWritableDatabase();
+        dbdb.delete(TableName,null,null);
+        dbdb.close();
+        dbdb = dbHelper.getWritableDatabase();
+        basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+        iCount = basecursor.getCount();
+        dbdb.close();
+        dbdb = dbHelper.getWritableDatabase();
+        Integer ISSSSS = 0;
+//        List sdsdsdsdsd = reader.readAll();
+//        String dddd = sdsdsdsdsd.toString();
+        while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
+            ISSSSS++;
+            nextLine = nextLine;
+            ScontentValues = ContentValuesDat(nextLine);
+            dbdb.insert(TableName, null, ScontentValues);
+            //nextLine = null;
+        }
+        dbdb.close();
+        return true;
     }
 
     public ContentValues ContentValuesQRCsv(String[] csvreader){
@@ -380,24 +395,28 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return ScontentValues;
     }
+    public ContentValues ContentValuesDat(String[] csvreader){
+
+        ContentValues ScontentValues = new ContentValues();
+
+        ScontentValues.put(DBHelper.DAT_KEY_ID, csvreader[1]);
+        ScontentValues.put(DBHelper.DAT_KEY_BARCODE, csvreader[2]);
+        ScontentValues.put(DBHelper.DAT_KEY_POSITION, csvreader[3]);
+        ScontentValues.put(DBHelper.DAT_KEY_QUANTITY, csvreader[4]);
+        ScontentValues.put(DBHelper.DAT_KEY_PRICE, csvreader[5]);
+
+        return ScontentValues;
+    }
     public ContentValues ContentValuesPriceCsv(String[] csvreader){
 
-//        try {
+
             ContentValues ScontentValues = new ContentValues();
-//            String S1 = csvreader[0];
-//            String S2 = csvreader[1];
-//            String S3 = csvreader[2];
-//            String S4 = csvreader[3];
-//            Integer bar = Integer.parseInt(S1);
-//            String sBar = String.valueOf(bar);
+
             ScontentValues.put(DBHelper.PRICE_BARCODE, csvreader[0]);
             ScontentValues.put(DBHelper.PRICE_NAME_TOV, csvreader[1]);
             ScontentValues.put(DBHelper.PRICE_PRICE, csvreader[2]);
             ScontentValues.put(DBHelper.PRICE_DATA, csvreader[3]);
-//
-//        }finally {
-//
-//        }
+
         return ScontentValues;
     }
 }

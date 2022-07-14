@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnEditor;
     Button btnStartElectron;
     Button btnSetting;
-    Button btnEditDatTxt;
+
     Button btnQR;
     Button btnLoadAll;
     Button btnQrBarcode;
@@ -193,8 +193,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnStartElectron = (Button) findViewById(R.id.btnStartElectron);
         btnStartElectron.setOnClickListener(this);
 
-        btnEditDatTxt = (Button) findViewById(R.id.btnEditDatTxt);
-        btnEditDatTxt.setOnClickListener(this);
+
 
 
         txtLog = (TextView) findViewById(R.id.txtLog);
@@ -355,11 +354,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnQR:
                 Intent intentQR = new Intent(this, QRcode.class);
                 startActivity(intentQR);
-                break;
-            case R.id.btnEditDatTxt:
-                Intent intentEditDatTxt = new Intent(this, EditData.class);
-                startActivity(intentEditDatTxt);
-
                 break;
             case R.id.btnFourField:
                 Toast.makeText(MainActivity.this, getString(R.string.action_item1), Toast.LENGTH_SHORT).show();

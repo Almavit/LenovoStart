@@ -82,6 +82,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     //Button btnUploadDelete;
     Button btnDeleteFile;
     Button btnSaveToServer;
+    Button btnEditDatTxt;
 
     final String USER_NAME = "user_name";
     final String USER_PASSWORD = "user_passowrd";
@@ -186,6 +187,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         btnDeleteFile = (Button) findViewById(R.id.btnDeleteFile);
         btnSaveToServer = (Button) findViewById(R.id.btnSaveToServer);
         btnSaveToServer.setOnClickListener(this);
+
+        btnEditDatTxt = (Button) findViewById(R.id.btnEditDatTxt);
+        btnEditDatTxt.setOnClickListener(this);
+
         Intent intent = getIntent();
 
         //txtIpConnection.setVisibility(VisibleTxtNumber);
@@ -729,6 +734,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 //        final File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
         loadSetting();
         switch (id) {
+
             case IDD_THREE_BUTTONS:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Выберите действие")
@@ -1089,6 +1095,11 @@ public void saveSetting(){
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.btnEditDatTxt:
+                Intent intentEditDatTxt = new Intent(this, EditData.class);
+                startActivity(intentEditDatTxt);
+
+                break;
             case R.id.btnSaveToServer:
                 if (!Environment.getExternalStorageState().equals(
                         Environment.MEDIA_MOUNTED)) {
