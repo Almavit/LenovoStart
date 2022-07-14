@@ -354,16 +354,16 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
 
 
-        Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-        Integer iCount = basecursor.getCount();
+      //  Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+     //   Integer iCount = basecursor.getCount();
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
         dbdb.delete(TableName,null,null);
         dbdb.close();
-        dbdb = dbHelper.getWritableDatabase();
-        basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-        iCount = basecursor.getCount();
-        dbdb.close();
+     //   dbdb = dbHelper.getWritableDatabase();
+      //  basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+     //   iCount = basecursor.getCount();
+     //   dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
         Integer ISSSSS = 0;
 //        List sdsdsdsdsd = reader.readAll();

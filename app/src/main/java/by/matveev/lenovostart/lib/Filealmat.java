@@ -161,7 +161,7 @@ public class Filealmat {
 
 //  получить данные из csv файла
     public boolean LoadCsvFile(Context context, String DirName, String FileNameCSV) throws FileNotFoundException, UnsupportedEncodingException {
-        Setting setting = new Setting();
+        Setting setting = new Setting();12
         if (!setting.loadSetting(context)){
             return false;
         }

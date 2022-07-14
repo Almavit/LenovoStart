@@ -41,6 +41,7 @@ import java.util.List;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.DBRepository;
+import by.matveev.lenovostart.lib.Filealmat;
 
 public class EditData extends AppCompatActivity implements View.OnClickListener {
 
@@ -254,7 +255,9 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                     new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
                     ';', '\n', 0);
 
-
+          //  Filealmat filealmat = new Filealmat();
+//            dbH
+            dbHelper.SaveDataDat(this, dbHelper.TABLE_DOCUMENT_DAT, "", reader);
             dbHelper.createDataBase();
             try {
                 dbHelper.openDataBase();
