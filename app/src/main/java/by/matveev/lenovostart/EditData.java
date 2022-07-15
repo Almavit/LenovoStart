@@ -184,28 +184,28 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
                 dbHelper = new DBHelper(this);
 
-                try {
-                        dbHelper.createDataBase();
-                        try {
-                            dbHelper.openDataBase();
-                        } catch (SQLException sqle) {
-                            throw sqle;
-                        }
-                } catch (Exception e) {
-                        database.close();
-                        e.printStackTrace();
-                        Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
-                        // txtLogMessege.setText("");
-                }
+//                try {
+//                        dbHelper.createDataBase();
+//                        try {
+//                            dbHelper.openDataBase();
+//                        } catch (SQLException sqle) {
+//                            throw sqle;
+//                        }
+//                } catch (Exception e) {
+//                        database.close();
+//                        e.printStackTrace();
+//                        Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
+//                        // txtLogMessege.setText("");
+//                }
                 database = dbHelper.getWritableDatabase();
-                int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT," datid="+sssssss,null);
+                int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT," datid=" + sssssss,null);
                 datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
                 iCountField = datBaseCursor.getCount();//количество полей
 
                 database.close();
 
                 txtStroka.setText("");
-
+                LoaddbListView();
                 // обновляем таблицу
                 datadapter = new ArrayAdapter<String>(this,
                         android.R.layout.simple_list_item_1, repositorys.getDataDat());
@@ -230,91 +230,34 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         final String LOG_TAG = "LoaddbListView";
         ContentValues datContentValues = new ContentValues();
         dbHelper = new DBHelper(this);
-
-//        if (!Environment.getExternalStorageState().equals(
-//                Environment.MEDIA_MOUNTED)) {
-//            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
-//            ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
-//            return;
-//        }
-
+        Filealmat filealmat = new Filealmat();
         try {
 
-            File csvfile = new File(Environment.getExternalStorageDirectory()+ "/" + DIR_SD + "/" + FILENAME_DAT_TXT);
-
-            datFileString = this.getApplicationInfo().dataDir + File.pathSeparatorChar  + FILENAME_DAT_TXT;
-            File csvfiles = new File(datFileString);
-            CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),';', '\n', 0);
-            String sStrok = reader.toString();
-            iCountStrok = 0;
-            while ((nextLine = reader.readNext()) != null) {
-                iCountStrok++;
-            }
-
-            reader = new CSVReader(
-                    new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-                    ';', '\n', 0);
-
-          //  Filealmat filealmat = new Filealmat();
-//            dbH
-            dbHelper.SaveDataDat(this, dbHelper.TABLE_DOCUMENT_DAT, "", reader);
-            dbHelper.createDataBase();
-            try {
-                dbHelper.openDataBase();
-            } catch (SQLException sqle) {
-                throw sqle;
-            }
-
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            /* "If you want to package the .csv file with the application and have it install on the internal storage when the app installs, create an assets folder in your project src/main folder (e.g., c:\myapp\app\src\main\assets\), and put the .csv file in there, then reference it like this in your activity:" (from the cited answer) */
-            /* "Если вы хотите упаковать файл .csv вместе с приложением и установить его во внутреннее хранилище при установке приложения, создайте папку assets в вашей папке project src/main (например, c:\myapp\app\src\main\assets \), и поместите туда файл .csv, а затем ссылайтесь на него следующим образом в вашей деятельности:" (из процитированного ответа) */
-
-            // считываем данные с БД
-            database = dbHelper.getWritableDatabase();
-            datBaseCursor = database.rawQuery("select * from " + dbHelper.TABLE_DOCUMENT_DAT,null);
-            // определяем, какие столбцы из курсора будут выводиться в ListView
-            iCountStrok = datBaseCursor.getCount(); //количество строк
-            //progressTextView.setMaxValue(iCountStrok);
-            iCountField = datBaseCursor.getColumnCount();//количество полей
-            datBaseCursor.moveToFirst();// установка курсора в начало
-            iCountStrok = 0;
-            //чистим БД сканированного
-            datFileString = "delete  from " + DBHelper.TABLE_DOCUMENT_DAT ;
-            int iDelete = database.delete("Dat",null,null);
-
-            datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
-            iCountField = datBaseCursor.getCount();//количество полей
-            datBaseCursor.moveToFirst();// установка курсора в начало
-            while ((nextLine = reader.readNext()) != null) {// считываем данные с Dat1.txt  файла
-                iCountStrok++;
-                datFileString = nextLine[0].toString();
-
-
-                datContentValues.put(DBHelper.DAT_KEY_ID, Integer.toString(iCountStrok));
-                datContentValues.put(DBHelper.DAT_KEY_BARCODE, nextLine[0]);
-                datContentValues.put(DBHelper.DAT_KEY_POSITION, nextLine[1]);
-                datContentValues.put(DBHelper.DAT_KEY_QUANTITY, nextLine[2]);
-                datContentValues.put(DBHelper.DAT_KEY_PRICE, nextLine[3]);
-                database.insert(DBHelper.TABLE_DOCUMENT_DAT, null, datContentValues);
-
-            }//end while
-            database.close();
+            filealmat.LoadCsvFile(this,DIR_SD, FILENAME_DAT_TXT);
+            dbHelper.SaveDataDat(this, dbHelper.TABLE_DOCUMENT_DAT, "", filealmat.reader);
 
         } catch (Exception e) {
-            if(null != database) {
-                database.close();
+            if(null != dbHelper) {
+                dbHelper.close();
             }
+
             e.printStackTrace();
             Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
             // txtLogMessege.setText("");
         }
-
+            if(null != dbHelper) {
+                dbHelper.close();
+            }
     }
+
+
     public void ToastMessageCenter(String s){
         Toast toast = Toast.makeText(this, s , Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER , 0, 0);
         toast.show();
     }
+
+
     void writeFileSD(String PatshDIR_SD, String FileName) throws IOException {// запись на SD диск  // подготавливаем переменные
 ////
         final String LOG_TAG = "PatshDIR_SD";

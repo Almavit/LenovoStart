@@ -30,7 +30,7 @@ public class Filealmat {
     final String LOG_TAG = "PatshDIR_SD";
     public Activity activity;
     private static final String ENCODING_WIN1251 = "windows-1251";
-    private CSVReader reader;
+    public CSVReader reader;
     public Integer NumberOfRecords = 0;
 
 
@@ -160,8 +160,8 @@ public class Filealmat {
     }
 
 //  получить данные из csv файла
-    public boolean LoadCsvFile(Context context, String DirName, String FileNameCSV) throws FileNotFoundException, UnsupportedEncodingException {
-        Setting setting = new Setting();12
+    public boolean LoadCsvFile(Context context, String DirName, String FileNameCSV) throws IOException {
+        Setting setting = new Setting();
         if (!setting.loadSetting(context)){
             return false;
         }
@@ -190,7 +190,7 @@ public class Filealmat {
 
         reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
                 ';', '\n', 0);
-
+        //String[] nextLine = reader.readNext();
         csvfile.exists();
         return true;
     }

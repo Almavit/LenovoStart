@@ -175,13 +175,14 @@ public class DBRepository {
         DatFields fieldprice = DatFields.DAT_KEY_PRICE;
 
 //        DBHelper dbHelper = new DBHelper(contex);
-        db.close();
-//        dbdb = dbHelper.getWritableDatabase();
-        db.delete(DAT_TABLE_DOCUMENT,null,null);
-        db.close();
+        //db.close();
+        //db = dbHelper.getWritableDatabase();
+        //db.delete(DAT_TABLE_DOCUMENT,null,null);
+        //db.close();
 
-        ArrayList<String> list = new ArrayList<String>();
         Cursor cursor = db.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
+        ArrayList<String> list = new ArrayList<String>();
+
         int iF = cursor.getCount();
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();

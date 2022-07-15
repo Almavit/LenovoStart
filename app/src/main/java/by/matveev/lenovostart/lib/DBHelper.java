@@ -350,33 +350,43 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean SaveDataDat(Context contex,String TableName, String SqlStroka,CSVReader reader) throws IOException, InterruptedException {
         DBHelper dbHelper = new DBHelper(contex);
-        String[] nextLine = null;
+        String[] nextLine =  null;
+        String[] sID = new String[1];
         SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
 
-
-      //  Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-     //   Integer iCount = basecursor.getCount();
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
         dbdb.delete(TableName,null,null);
         dbdb.close();
-     //   dbdb = dbHelper.getWritableDatabase();
-      //  basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-     //   iCount = basecursor.getCount();
-     //   dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
         Integer ISSSSS = 0;
-//        List sdsdsdsdsd = reader.readAll();
-//        String dddd = sdsdsdsdsd.toString();
+
+
         while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
             ISSSSS++;
-            nextLine = nextLine;
+            String str = Integer.toString(ISSSSS);
+
+            sID[0] = str;
+
+            nextLine = concatArray(sID,nextLine);
+
             ScontentValues = ContentValuesDat(nextLine);
             dbdb.insert(TableName, null, ScontentValues);
             //nextLine = null;
         }
         dbdb.close();
         return true;
+    }
+    // метод для склеивания двух строковых массивов
+    private String[] concatArray(String[] a, String[] b) {
+        if (a == null)
+            return b;
+        if (b == null)
+            return a;
+        String[] r = new String[a.length + b.length];
+        System.arraycopy(a, 0, r, 0, a.length);
+        System.arraycopy(b, 0, r, a.length, b.length);
+        return r;
     }
 
     public ContentValues ContentValuesQRCsv(String[] csvreader){
@@ -399,11 +409,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         ContentValues ScontentValues = new ContentValues();
 
-        ScontentValues.put(DBHelper.DAT_KEY_ID, csvreader[1]);
-        ScontentValues.put(DBHelper.DAT_KEY_BARCODE, csvreader[2]);
-        ScontentValues.put(DBHelper.DAT_KEY_POSITION, csvreader[3]);
-        ScontentValues.put(DBHelper.DAT_KEY_QUANTITY, csvreader[4]);
-        ScontentValues.put(DBHelper.DAT_KEY_PRICE, csvreader[5]);
+        ScontentValues.put(DBHelper.DAT_KEY_ID, csvreader[0]);
+        ScontentValues.put(DBHelper.DAT_KEY_BARCODE, csvreader[1]);
+        ScontentValues.put(DBHelper.DAT_KEY_POSITION, csvreader[2]);
+        ScontentValues.put(DBHelper.DAT_KEY_QUANTITY, csvreader[3]);
+        ScontentValues.put(DBHelper.DAT_KEY_PRICE, csvreader[4]);
 
         return ScontentValues;
     }
