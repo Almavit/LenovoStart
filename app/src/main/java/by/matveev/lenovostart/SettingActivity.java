@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.IOException;
+
+import by.matveev.lenovostart.lib.CSVFile;
+import by.matveev.lenovostart.lib.Filealmat;
 
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -38,6 +42,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     String sPortFTP;
     String sPathFile;
     String sModeWorking;
+    Filealmat filealmat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +83,21 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 saveSetting();
                 break;
             case R.id.btnLoadSetting:
-                loadSetting();
+                try {
+                    loadSetting();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
 
     }
     public void saveSetting(){
+
+        String text = "";
+        filealmat = new Filealmat();
+        StringBuilder sbText  = new StringBuilder();
+
         sPref = getSharedPreferences("setting", MODE_PRIVATE);
         Editor ed = sPref.edit();
 
@@ -94,25 +108,52 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         ed.putString(PORT_FTP, txtPortFTP.getText().toString());
         ed.putString(MODE_WORKING, txtModeWorking.getText().toString());
         ed.commit();
+        text = txtAdressServer.getText().toString() + ";" +
+                txtUserFTP.getText().toString() + ";" +
+                txtPasswordFTP.getText().toString() + ";" +
+                txtPortFTP.getText().toString() + ";" +
+                txtPathFile.getText().toString() + ";" +
+                txtModeWorking.getText().toString();
+        sbText.append(text);
+        if(0 == filealmat.writeFileSD(this,this,filealmat.NameDirectory,"setting.csv",sbText)){
 
+        }
     }
-    public void loadSetting(){
+    public void loadSetting() throws IOException {
+
+        String[] nextLine = null;
+        filealmat = new Filealmat();
+
         sPref = getSharedPreferences("setting", MODE_PRIVATE);
 
-        sAdressServer = sPref.getString(ADRESS_SERVER, "");
-        sUserFTP = sPref.getString(USER_NAME, "");
-        sPasswordFTP = sPref.getString(USER_PASSWORD, "");
-        sPortFTP = sPref.getString(PORT_FTP, "");
-        sPathFile = sPref.getString(PATH_FILE, "");
-        sModeWorking = sPref.getString(MODE_WORKING, "");
 
-        if (!txtAdressServer.equals("")) {
-            txtAdressServer.setText(sAdressServer);
-            txtUserFTP.setText(sUserFTP);
-            txtPasswordFTP.setText(sPasswordFTP);
-            txtPathFile.setText(sPathFile);
-            txtPortFTP.setText(sPortFTP);
-            txtModeWorking.setText(sModeWorking);
+        if (filealmat.LoadCsv(this, filealmat.NameDirectory,"setting.csv")){
+            while ((nextLine = filealmat.reader.readNext()) != null) {// считываем данные с CSV  файла
+                sAdressServer = nextLine[0];
+                sUserFTP = nextLine[1];
+                sPasswordFTP = nextLine[2];
+                sPortFTP = nextLine[3];
+                sPathFile = nextLine[4];
+                sModeWorking = nextLine[5];
+            }
+        }else{
+            sAdressServer = sPref.getString(ADRESS_SERVER, "");
+            sUserFTP = sPref.getString(USER_NAME, "");
+            sPasswordFTP = sPref.getString(USER_PASSWORD, "");
+            sPortFTP = sPref.getString(PORT_FTP, "");
+            sPathFile = sPref.getString(PATH_FILE, "");
+            sModeWorking = sPref.getString(MODE_WORKING, "");
         }
+            if (!txtAdressServer.equals("")) {
+                txtAdressServer.setText(sAdressServer);
+                txtUserFTP.setText(sUserFTP);
+                txtPasswordFTP.setText(sPasswordFTP);
+                txtPathFile.setText(sPathFile);
+                txtPortFTP.setText(sPortFTP);
+                txtModeWorking.setText(sModeWorking);
+            }
+
+
+
     }
 }

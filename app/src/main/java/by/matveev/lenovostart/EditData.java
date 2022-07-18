@@ -172,15 +172,15 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             case R.id.btnDeleDat:
                 List resultList = new ArrayList();
                 String csvLine = null;
-                String sssssss = txtStroka.getText().toString();
+                String sID = txtStroka.getText().toString();
                 //BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
            //
-                if (!((csvLine = sssssss) != null))
+                if (!((csvLine = sID) != null))
                     break;
                    // sssssss = csvLine.split(";");
                 String[] row = csvLine.split(";");
                 resultList.add(row);
-                sssssss = row[0].toString().replaceAll("\\s","");
+                sID = row[0].toString().replaceAll("\\s","");
 
                 dbHelper = new DBHelper(this);
 
@@ -198,7 +198,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //                        // txtLogMessege.setText("");
 //                }
                 database = dbHelper.getWritableDatabase();
-                int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT," datid=" + sssssss,null);
+                int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT," datid=" + sID,null);
                 datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
                 iCountField = datBaseCursor.getCount();//количество полей
 
@@ -233,7 +233,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         Filealmat filealmat = new Filealmat();
         try {
 
-            filealmat.LoadCsvFile(this,DIR_SD, FILENAME_DAT_TXT);
+            filealmat.LoadCsvFileFtp(this,DIR_SD, FILENAME_DAT_TXT);
             dbHelper.SaveDataDat(this, dbHelper.TABLE_DOCUMENT_DAT, "", filealmat.reader);
 
         } catch (Exception e) {

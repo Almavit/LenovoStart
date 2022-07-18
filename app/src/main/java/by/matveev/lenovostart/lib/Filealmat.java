@@ -93,20 +93,6 @@ public class Filealmat {
                 br.close();
 
                 Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
-                //btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
-                //        btnUploadDelete.setEnabled(true);
-//                if (!setting.sModeWorking.equals("1")) {
-//                    btnSaveToServer.setEnabled(false);
-//                }else{
-//                    btnSaveToServer.setEnabled(true);
-//                }
-//                btnDeleteFile.setEnabled(true);
-
-                //ToastMessageCenter( "Чтение");
-                //if(sdFile.exists())
-                //sdFile.renameTo(sdFile); // переименовать файл
-                //copyFileUsingStream(sdFile, sdFile_copy);// копировать файл
-
             } catch (IOException e) {
                 e.printStackTrace();
                 //ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
@@ -159,8 +145,61 @@ public class Filealmat {
         return true;
     }
 
-//  получить данные из csv файла
-    public boolean LoadCsvFile(Context context, String DirName, String FileNameCSV) throws IOException {
+    public boolean LoadCsv(Activity activity, String DirName, String FileNameCSV){
+
+        String textAdd = "";
+        String line = "";
+        // проверяем доступность SD
+        MyPremission almPremission = new MyPremission();
+        if (!almPremission.myPremission(activity))  {
+            return false;
+        }else{
+
+        }
+//        // получаем путь к SD
+        File sdPath = Environment.getExternalStorageDirectory();
+//        // добавляем свой каталог к пути
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName);
+//        // создаем каталог
+        sdPath.mkdirs();
+//
+        File[] elems = sdPath.listFiles();
+//
+        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
+        int i = 0;
+        paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
+        i++;
+        if (elems != null) {
+            for (File elem : elems) {
+                paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
+                i++;
+            }
+        }
+        MediaScannerConnection.scanFile(activity, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
+//        // формируем объект File, который содержит путь к файлу
+        File sdFile = new File(sdPath, FileNameCSV);
+// Проверка наличия файла
+        if (sdFile.exists()) {
+            //Файл в наличии
+            try {
+                File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
+                        DirName + "/" + FileNameCSV);
+
+                reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+                        ';', '\n', 0);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+//  получить данные из csv файла по сети
+    public boolean LoadCsvFileFtp(Context context, String DirName, String FileNameCSV) throws IOException {
         Setting setting = new Setting();
         if (!setting.loadSetting(context)){
             return false;
@@ -202,7 +241,7 @@ public class Filealmat {
         ContentValues ScontentValues = new ContentValues();
         Setting setting = new Setting();
 
-        if (!LoadCsvFile(context, DirName, FileNameCSV)){
+        if (!LoadCsvFileFtp(context, DirName, FileNameCSV)){
             return false;
         }else{
             DBHelper dbHelper = new DBHelper(context);
