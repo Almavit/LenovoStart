@@ -20,19 +20,19 @@ public class MyPremission {
     private static final int PERMISSION_REQUEST_CODE = 123;
 
 
-    public boolean myPremission(Activity activity){
+    public boolean myPremission(Context context){
         int CodError;
-        if (hasPermissions(activity)){
+        if (hasPermissions(context)){
             // our app has permissions.
             Filealmat makefolder = new Filealmat();
-            makefolder.makeFolder(activity,"");
+            makefolder.makeFolder(context,"");
         }
         else {
             //our app doesn't have permissions, So i m requesting permissions.
-            requestPermissionWithRationale(activity);
+            requestPermissionWithRationale(context);
         }
 
-        if (0 != ExternalStorageState(activity)){
+        if (0 != ExternalStorageState((Activity) context)){
             return false;
         }
         return true;
@@ -75,12 +75,12 @@ public class MyPremission {
 //            // Toast.makeText(this, "Folder already exist", Toast.LENGTH_LONG).show();//Папка уже существует
 //        }
 //    }
-    private void requestPermissionWithRationale(Activity activity) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+    private void requestPermissionWithRationale(Context context) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
                 Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            requestPerms(activity);
+            requestPerms((Activity) context);
         } else {
-            requestPerms(activity);
+            requestPerms((Activity) context);
         }
     }
     private void requestPerms(Activity activity){

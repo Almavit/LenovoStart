@@ -2,13 +2,19 @@ package by.matveev.lenovostart.lib;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.opencsv.CSVReader;
 
 import java.io.IOException;
 
 
 public class Setting {
+
+    SharedPreferences sPref;
+    Filealmat filealmat;
 
     public String sAdressServer;
     public String sUserFTP;
@@ -16,6 +22,7 @@ public class Setting {
     public String sPortFTP;
     public String sPathFile;
     public String sModeWorking;
+    public String FileNameSetting = "setting.csv";
 
     final String USER_NAME = "user_name";
     final String USER_PASSWORD = "user_passowrd";
@@ -23,22 +30,110 @@ public class Setting {
     final String PATH_FILE = "path_file";
     final String PORT_FTP = "21";
     final String MODE_WORKING = "1";
+    public String[] nextLine = null;
 
-    public boolean loadSetting(Context context) {
+    public boolean loadSetting(Context context) throws IOException {
 
-        SharedPreferences sPref = context.getSharedPreferences("setting", Context.MODE_PRIVATE);
+        filealmat = new Filealmat();
+        CSVReader reader;
+        sPref = context.getSharedPreferences(FileNameSetting, MODE_PRIVATE);
 
-        sAdressServer = sPref.getString(ADRESS_SERVER, "");
-        sUserFTP = sPref.getString(USER_NAME, "");
-        sPasswordFTP = sPref.getString(USER_PASSWORD, "");
-        sPortFTP = sPref.getString(PORT_FTP, "");
-        sPathFile = sPref.getString(PATH_FILE, "");
-        sModeWorking = sPref.getString(MODE_WORKING, "");
 
+        if (filealmat.LoadCsv((Activity) context, filealmat.NameDirectory,"setting.csv")){
+        //    while ((nextLine = filealmat.reader.readNext()) != null) {// считываем данные с CSV  файла
+                nextLine = filealmat.reader.readNext();
+                sAdressServer = nextLine[0];
+                sUserFTP = nextLine[1];
+                sPasswordFTP = nextLine[2];
+                sPortFTP = nextLine[3];
+                sPathFile = nextLine[4];
+                sModeWorking = nextLine[5];
+            if (sAdressServer.equals(""))
+                return false;
+
+        }else{
+            sAdressServer = sPref.getString(ADRESS_SERVER, "");
+            sUserFTP = sPref.getString(USER_NAME, "");
+            sPasswordFTP = sPref.getString(USER_PASSWORD, "");
+            sPortFTP = sPref.getString(PORT_FTP, "");
+            sPathFile = sPref.getString(PATH_FILE, "");
+            sModeWorking = sPref.getString(MODE_WORKING, "");
+
+            if (sAdressServer.equals("")){
+
+              //return false;
+            }else{
+                nextLine = new String[6];
+                nextLine[0] = sAdressServer;
+                nextLine[1] = sUserFTP;
+                nextLine[2] = sPasswordFTP;
+                nextLine[3] = sPortFTP;
+                nextLine[4] = sPathFile;
+                nextLine[5] = sModeWorking;
+            }
+            if(!saveSetting(context)){
+                return false;
+            }
+        }
+
+//        if (!txtAdressServer.equals("")) {
+//            txtAdressServer.setText(sAdressServer);
+//            txtUserFTP.setText(sUserFTP);
+//            txtPasswordFTP.setText(sPasswordFTP);
+//            txtPathFile.setText(sPathFile);
+//            txtPortFTP.setText(sPortFTP);
+//            txtModeWorking.setText(sModeWorking);
+//        }
         return true;
     }
+    public boolean saveSetting(Context context) throws IOException {
+       // String[] nextLine = null;
+        //String text = "";
+        filealmat = new Filealmat();
+        StringBuilder sbText  = new StringBuilder();
 
+        sPref = context.getSharedPreferences("setting", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
 
+//        ed.putString(ADRESS_SERVER, txtAdressServer.getText().toString());
+//        ed.putString(USER_NAME, txtUserFTP.getText().toString());
+//        ed.putString(USER_PASSWORD, txtPasswordFTP.getText().toString());
+//        ed.putString(PATH_FILE, txtPathFile.getText().toString());
+//        ed.putString(PORT_FTP, txtPortFTP.getText().toString());
+//        ed.putString(MODE_WORKING, txtModeWorking.getText().toString());
+        if (nextLine!= null) {
+            ed.putString(ADRESS_SERVER, nextLine[0].toString());
+            ed.putString(USER_NAME, nextLine[1].toString());
+            ed.putString(USER_PASSWORD, nextLine[2].toString());
+            ed.putString(PATH_FILE, nextLine[3].toString());
+            ed.putString(PORT_FTP, nextLine[4].toString());
+            ed.putString(MODE_WORKING, nextLine[5].toString());
+            ed.commit();
+        }else{
+            ed.putString(ADRESS_SERVER, "10.250.1.16");
+            ed.putString(USER_NAME, "FTPsession");
+            ed.putString(USER_PASSWORD, "12345");
+            ed.putString(PATH_FILE, "Documents");
+            ed.putString(PORT_FTP, "21");
+            ed.putString(MODE_WORKING, "1");
+            ed.commit();
+            return false;
+        }
+        for (int iFor = 0; iFor < nextLine.length; iFor++)
+        {
+            if(iFor != nextLine.length-1){
+                sbText.append(nextLine[iFor] + ";");
+            }else{
+                sbText.append(nextLine[iFor] );
+            }
+
+        }
+
+        if(0 != filealmat.writeFileSD(context,filealmat.NameDirectory,"setting.csv",sbText)){
+            return false;
+        }
+        return true;
+    }
 
 
     ///////////////////////////////

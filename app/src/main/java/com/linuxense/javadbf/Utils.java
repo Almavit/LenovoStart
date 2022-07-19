@@ -58,7 +58,7 @@ public final class Utils {
 	 */
 	@Deprecated
 	public static int readLittleEndianInt(DataInput in) throws IOException {
-		return DBFUtils.readLittleEndianInt(in);
+		return com.linuxense.javadbf.DBFUtils.readLittleEndianInt(in);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public final class Utils {
 	 */
 	@Deprecated
 	public static short readLittleEndianShort(DataInput in) throws IOException {
-		return DBFUtils.readLittleEndianShort(in);
+		return com.linuxense.javadbf.DBFUtils.readLittleEndianShort(in);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public final class Utils {
 	 */
 	@Deprecated
 	public static byte[] removeSpaces(byte[] array) {
-		return DBFUtils.removeSpaces(array);
+		return com.linuxense.javadbf.DBFUtils.removeSpaces(array);
 	}
 
 
@@ -94,7 +94,7 @@ public final class Utils {
 	 */
 	@Deprecated
 	public static short littleEndian(short value) {
-		return DBFUtils.littleEndian(value);
+		return com.linuxense.javadbf.DBFUtils.littleEndian(value);
 	}
 
 	/**
@@ -105,7 +105,7 @@ public final class Utils {
 	 */
 	@Deprecated
 	public static int littleEndian(int value) {
-		return DBFUtils.littleEndian(value);
+		return com.linuxense.javadbf.DBFUtils.littleEndian(value);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public final class Utils {
 	 */
 	@Deprecated
 	public static byte[] textPadding(String text, Charset charset, int length) {
-		return DBFUtils.textPadding(text, charset, length, DBFAlignment.LEFT, (byte) ' ');
+		return com.linuxense.javadbf.DBFUtils.textPadding(text, charset, length, com.linuxense.javadbf.DBFAlignment.LEFT, (byte) ' ');
 	}
 
 	/**
@@ -135,8 +135,8 @@ public final class Utils {
 	 *             {@link DBFUtils#textPadding(String, Charset, int, DBFAlignment, byte)}
 	 */
 	@Deprecated
-	public static byte[] textPadding(String text, Charset charset, int length, DBFAlignment alignment) {
-		return DBFUtils.textPadding(text, charset, length, alignment, (byte) ' ');
+	public static byte[] textPadding(String text, Charset charset, int length, com.linuxense.javadbf.DBFAlignment alignment) {
+		return com.linuxense.javadbf.DBFUtils.textPadding(text, charset, length, alignment, (byte) ' ');
 	}
 
 
@@ -153,8 +153,8 @@ public final class Utils {
 	 * @deprecated Use {@link DBFUtils#textPadding(String, Charset, int, DBFAlignment, byte)}
 	 */
 	@Deprecated
-	public static byte[] textPadding(String text, Charset charset, int length, DBFAlignment alignment, byte paddingByte) {
-		return DBFUtils.textPadding(text, charset, length, alignment, paddingByte);
+	public static byte[] textPadding(String text, Charset charset, int length, com.linuxense.javadbf.DBFAlignment alignment, byte paddingByte) {
+		return com.linuxense.javadbf.DBFUtils.textPadding(text, charset, length, alignment, paddingByte);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public final class Utils {
 	 */
 	@Deprecated
 	public static byte[] doubleFormating(Number num, Charset charset, int fieldLength, int sizeDecimalPart) {
-		return DBFUtils.doubleFormating(num.doubleValue(), charset, fieldLength, sizeDecimalPart);
+		return com.linuxense.javadbf.DBFUtils.doubleFormating(num.doubleValue(), charset, fieldLength, sizeDecimalPart);
 	}
 
 	/**
@@ -182,7 +182,7 @@ public final class Utils {
 	 */
 	@Deprecated
 	public static byte[] doubleFormating(Double doubleNum, Charset charset, int fieldLength, int sizeDecimalPart) {
-		return DBFUtils.doubleFormating(doubleNum, charset, fieldLength, sizeDecimalPart);
+		return com.linuxense.javadbf.DBFUtils.doubleFormating(doubleNum, charset, fieldLength, sizeDecimalPart);
 	}
 
 
@@ -195,7 +195,7 @@ public final class Utils {
 	 */
 	@Deprecated
 	public static boolean contains(byte[] array, byte value) {
-		return DBFUtils.contains(array, value);
+		return com.linuxense.javadbf.DBFUtils.contains(array, value);
 	}
 
 	/**

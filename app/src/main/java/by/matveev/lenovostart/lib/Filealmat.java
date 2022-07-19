@@ -28,23 +28,23 @@ public class Filealmat {
     public String NameFile;
     public String NameDirectory = "Documents";
     final String LOG_TAG = "PatshDIR_SD";
-    public Activity activity;
+    //public Activity activity;
     private static final String ENCODING_WIN1251 = "windows-1251";
     public CSVReader reader;
     public Integer NumberOfRecords = 0;
 
 
-    public int  writeFileSD(Activity activity, Context contex, String PatshDIR_SD, String FileName,StringBuilder addText){
+    public int  writeFileSD(Context contex, String PatshDIR_SD, String FileName,StringBuilder addText) throws IOException {
         int returnerror = 0;
         String textAdd = "";
         String line = "";
-        Setting setting = new Setting();
-        setting.loadSetting(contex);
+    //    Setting setting = new Setting();
+   //     setting.loadSetting(contex);
 
         //loadSetting(); //добавить класс
         // проверяем доступность SD
         MyPremission almPremission = new MyPremission();
-        if (!almPremission.myPremission(activity))  {
+        if (!almPremission.myPremission(contex))  {
             returnerror = -1;
         }else{
 
@@ -68,7 +68,7 @@ public class Filealmat {
                 i++;
             }
         }
-        MediaScannerConnection.scanFile(activity, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
+        MediaScannerConnection.scanFile(contex, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
 //        // формируем объект File, который содержит путь к файлу
         File sdFile = new File(sdPath, FileName);
 
@@ -76,6 +76,12 @@ public class Filealmat {
 // Проверка наличия файла
         if (sdFile.exists()){
             //Файл в наличии
+            String df = sdFile.getName();
+            Setting setting = new Setting();
+
+             if (sdFile.getName().equals(setting.FileNameSetting)){
+                        return 0;
+                    }
             try {
                 // открываем поток для чтения
                 BufferedReader br = new BufferedReader(new FileReader(sdFile));
@@ -99,6 +105,7 @@ public class Filealmat {
                 return -1;
             }
         }
+
         try {
             // открываем поток для записи если файла нет
             //ToastMessageCenter("Запись");
@@ -120,7 +127,7 @@ public class Filealmat {
         return returnerror;
     }
 
-    public boolean makeFolder(Activity activity,String namedirectoryDocuments){
+    public boolean makeFolder(Context context,String namedirectoryDocuments){
         String sDirectory = "";
         if (namedirectoryDocuments == ""){
             sDirectory = NameDirectory;
@@ -132,10 +139,10 @@ public class Filealmat {
         if (!file.exists()){
             Boolean ff = file.mkdir();
             if (ff){
-                Toast.makeText(activity, "Folder created successfully", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Folder created successfully", Toast.LENGTH_LONG).show();
             }
             else {
-                Toast.makeText(activity, "Failed to create folder", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Failed to create folder", Toast.LENGTH_LONG).show();
             }
 
         }
@@ -145,13 +152,13 @@ public class Filealmat {
         return true;
     }
 
-    public boolean LoadCsv(Activity activity, String DirName, String FileNameCSV){
+    public boolean LoadCsv(Context context, String DirName, String FileNameCSV){
 
         String textAdd = "";
         String line = "";
         // проверяем доступность SD
         MyPremission almPremission = new MyPremission();
-        if (!almPremission.myPremission(activity))  {
+        if (!almPremission.myPremission(context))  {
             return false;
         }else{
 
@@ -175,7 +182,7 @@ public class Filealmat {
                 i++;
             }
         }
-        MediaScannerConnection.scanFile(activity, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
+        MediaScannerConnection.scanFile(context, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
 //        // формируем объект File, который содержит путь к файлу
         File sdFile = new File(sdPath, FileNameCSV);
 // Проверка наличия файла

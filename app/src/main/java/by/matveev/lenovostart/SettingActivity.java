@@ -9,11 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.IOException;
 
 import by.matveev.lenovostart.lib.CSVFile;
 import by.matveev.lenovostart.lib.Filealmat;
+import by.matveev.lenovostart.lib.Setting;
 
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -27,22 +29,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     Button btnSaveSetting;
     Button btnLoadSetting;
 
-    SharedPreferences sPref;
-
-    final String USER_NAME = "user_name";
-    final String USER_PASSWORD = "user_passowrd";
-    final String ADRESS_SERVER = "adress_server";
-    final String PATH_FILE = "path_file";
-    final String PORT_FTP = "21";
-    final String MODE_WORKING = "1";
-
-    String sAdressServer;
-    String sUserFTP;
-    String sPasswordFTP;
-    String sPortFTP;
-    String sPathFile;
-    String sModeWorking;
-    Filealmat filealmat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,82 +64,38 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+        Setting setting = new Setting();
         switch (v.getId()){
             case R.id.btnSaveSetting:
-                saveSetting();
+                try {
+
+                    String[] stringsetting = new String[6];
+                    stringsetting[0] =
+                            stringsetting[0] = txtAdressServer.getText().toString();
+                            stringsetting[1] = txtUserFTP.getText().toString();
+                            stringsetting[2] = txtPasswordFTP.getText().toString();
+                            stringsetting[3] = txtPortFTP.getText().toString();
+                            stringsetting[4] = txtPathFile.getText().toString();
+                            stringsetting[5] = txtModeWorking.getText().toString();
+                            setting.nextLine = stringsetting;
+                    if(!setting.saveSetting(this)){
+
+                        break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.btnLoadSetting:
                 try {
-                    loadSetting();
+                    if(!setting.loadSetting(this)){
+                        Toast.makeText(this, "ИЗМЕНИТЬ И СОХРАНИТЬ НОВЫЕ НАСТРОЙКИ", Toast.LENGTH_LONG).show();
+                        break;
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
         }
-
-    }
-    public void saveSetting(){
-
-        String text = "";
-        filealmat = new Filealmat();
-        StringBuilder sbText  = new StringBuilder();
-
-        sPref = getSharedPreferences("setting", MODE_PRIVATE);
-        Editor ed = sPref.edit();
-
-        ed.putString(ADRESS_SERVER, txtAdressServer.getText().toString());
-        ed.putString(USER_NAME, txtUserFTP.getText().toString());
-        ed.putString(USER_PASSWORD, txtPasswordFTP.getText().toString());
-        ed.putString(PATH_FILE, txtPathFile.getText().toString());
-        ed.putString(PORT_FTP, txtPortFTP.getText().toString());
-        ed.putString(MODE_WORKING, txtModeWorking.getText().toString());
-        ed.commit();
-        text = txtAdressServer.getText().toString() + ";" +
-                txtUserFTP.getText().toString() + ";" +
-                txtPasswordFTP.getText().toString() + ";" +
-                txtPortFTP.getText().toString() + ";" +
-                txtPathFile.getText().toString() + ";" +
-                txtModeWorking.getText().toString();
-        sbText.append(text);
-        if(0 == filealmat.writeFileSD(this,this,filealmat.NameDirectory,"setting.csv",sbText)){
-
-        }
-    }
-    public void loadSetting() throws IOException {
-
-        String[] nextLine = null;
-        filealmat = new Filealmat();
-
-        sPref = getSharedPreferences("setting", MODE_PRIVATE);
-
-
-        if (filealmat.LoadCsv(this, filealmat.NameDirectory,"setting.csv")){
-            while ((nextLine = filealmat.reader.readNext()) != null) {// считываем данные с CSV  файла
-                sAdressServer = nextLine[0];
-                sUserFTP = nextLine[1];
-                sPasswordFTP = nextLine[2];
-                sPortFTP = nextLine[3];
-                sPathFile = nextLine[4];
-                sModeWorking = nextLine[5];
-            }
-        }else{
-            sAdressServer = sPref.getString(ADRESS_SERVER, "");
-            sUserFTP = sPref.getString(USER_NAME, "");
-            sPasswordFTP = sPref.getString(USER_PASSWORD, "");
-            sPortFTP = sPref.getString(PORT_FTP, "");
-            sPathFile = sPref.getString(PATH_FILE, "");
-            sModeWorking = sPref.getString(MODE_WORKING, "");
-        }
-            if (!txtAdressServer.equals("")) {
-                txtAdressServer.setText(sAdressServer);
-                txtUserFTP.setText(sUserFTP);
-                txtPasswordFTP.setText(sPasswordFTP);
-                txtPathFile.setText(sPathFile);
-                txtPortFTP.setText(sPortFTP);
-                txtModeWorking.setText(sModeWorking);
-            }
-
-
-
     }
 }

@@ -258,30 +258,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                     sTextView = "Штрих-код" + "\n" + "ЦЕНА = " + sTextView + "   |  " + cursor.getString(3);
                     txtvBarcode.setText(sTextView);
                     txtvBarcode.setBackgroundColor(Color.GREEN);
-
-
-//                    //txtQR.setText(cursor.getString(0));
-//                    txtQRNumNakl.setText(cursor.getString(1));
-//                    txtQRDate.setText(cursor.getString(2));
-//                    txtQRNamePost.setText(cursor.getString(3));
-//                    txtQRBarcode.setText(cursor.getString(5));
-//                    txtQRNameTov.setText(cursor.getString(6));
-//                    txtQRPricePall.setText(cursor.getString(8));
-//                    //txtQRPrice.setText("0.00");
-//                    //txtQR.setSelection(1, 33);
-//                    txtQR.getText().clear();
-
                 }else{
-                   // sqlStroka = txtQR.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
-//                    txtQR.setBackgroundColor(Color.RED);
-//                    txtQR.getText().clear();;
-//                    txtQRNumNakl.setText("");
-//                    txtQRDate.setText("");
-//                    txtQRNamePost.setText("");
-//                    txtQRBarcode.setText("");
-//                    txtQRNameTov.setText("");
-//                    txtQRPricePall.setText("");
-                    //txtQR.selectAll();
                     txtvBarcode.setText("Штрих-код");
                     txtvBarcode.setBackgroundColor(Color.WHITE);
                 }
@@ -301,7 +278,11 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                             txtdQuantity.selectAll();
                             showKeyboard(txtdQuantity);
                         }else{
-                            FocusView();
+                            try {
+                                FocusView();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -317,7 +298,11 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                     if (txtdQuantity.getVisibility() == View.VISIBLE) {
                         //
                     }else{
-                        FocusView();
+                        try {
+                            FocusView();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         txtdPrice.setNextFocusDownId(txtnBarcode.getId());
                         txtnBarcode.setFocusable(true);
                         txtnBarcode.selectAll();
@@ -333,7 +318,11 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                     if (txtnNumber.getVisibility() == View.VISIBLE){
                         //
                     }else {
-                        FocusView();
+                        try {
+                            FocusView();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         txtdQuantity.setNextFocusDownId(txtnBarcode.getId());
                         txtnBarcode.setFocusable(true);
                         txtnBarcode.selectAll();
@@ -348,7 +337,11 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 if(event.getAction() == KeyEvent.ACTION_DOWN &&  (keyCode == KeyEvent.KEYCODE_ENTER)){
                     if (btnAddPosition.getVisibility() == View.VISIBLE)  {
                         //Toast.makeText(getApplicationContext(), "txtnNumber.setOnKeyListener", Toast.LENGTH_LONG).show();
-                        FocusView();
+                        try {
+                            FocusView();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         txtnNumber.setNextFocusDownId(txtnBarcode.getId());
                         txtnBarcode.setFocusable(true);
                         txtnBarcode.selectAll();
@@ -374,8 +367,12 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             @Override
 
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                       FocusView();
-                        txtnBarcode.requestFocus();
+                try {
+                    FocusView();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                txtnBarcode.requestFocus();
                         txtnBarcode.setFocusable(true);
                         txtnBarcode.selectAll();
                 return false;
@@ -424,7 +421,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         imm.toggleSoftInput(0, 0);
     }
 
-    void FocusView(){
+    void FocusView() throws IOException {
         if (txtnBarcode.length() > 0) {
             writeFileSD();
         }else{
@@ -442,7 +439,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         txtnBarcode.selectAll();
     }
 
-    void writeFileSD() {// запись на SD диск  // подготавливаем переменные
+    void writeFileSD() throws IOException {// запись на SD диск  // подготавливаем переменные
 
         String txtBarcode = txtnBarcode.getText().toString();
         String txtNumber = "";
@@ -465,7 +462,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 
         addText.insert(0,text);
         Filealmat filealmat = new Filealmat();
-        if (filealmat.writeFileSD(this,this,DIR_SD,FILENAME_SD,addText) != 0){
+        if (filealmat.writeFileSD(this,DIR_SD,FILENAME_SD,addText) != 0){
             return;
         }else{
             btnAddPosition.setText("Добавить позицию (" + filealmat.NumberOfRecords + ")");
@@ -1030,7 +1027,7 @@ public void saveSetting(){
     }
 
 
-    public void ok(View v){
+    public void ok(View v) throws IOException {
         if (txtnBarcode.length() > 0) {
             writeFileSD();
         }else{

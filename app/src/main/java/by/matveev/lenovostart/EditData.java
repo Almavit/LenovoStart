@@ -156,11 +156,12 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         ArrayAdapter<String> datadapter;
         switch (v.getId()) {
             case R.id.btnDonloadDat:
-                LoaddbListView();
-                datadapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_list_item_1, repositorys.getDataDat());
-                datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
-                dbListView.setAdapter(datadapter);
+                if (LoaddbListView()) {
+                    datadapter = new ArrayAdapter<String>(this,
+                            android.R.layout.simple_list_item_1, repositorys.getDataDat());
+                    datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
+                    dbListView.setAdapter(datadapter);
+                }
                 break;
             case R.id.btnSaveDat:
                 datadapterdat = new ArrayAdapter<String>(this,
@@ -184,19 +185,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
                 dbHelper = new DBHelper(this);
 
-//                try {
-//                        dbHelper.createDataBase();
-//                        try {
-//                            dbHelper.openDataBase();
-//                        } catch (SQLException sqle) {
-//                            throw sqle;
-//                        }
-//                } catch (Exception e) {
-//                        database.close();
-//                        e.printStackTrace();
-//                        Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
-//                        // txtLogMessege.setText("");
-//                }
+
                 database = dbHelper.getWritableDatabase();
                 int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT," datid=" + sID,null);
                 datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
@@ -226,14 +215,17 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         //
     }
     //
-    public void LoaddbListView(){
+    public boolean LoaddbListView(){
         final String LOG_TAG = "LoaddbListView";
         ContentValues datContentValues = new ContentValues();
         dbHelper = new DBHelper(this);
         Filealmat filealmat = new Filealmat();
         try {
 
-            filealmat.LoadCsvFileFtp(this,DIR_SD, FILENAME_DAT_TXT);
+            if (!filealmat.LoadCsvFileFtp(this,DIR_SD, FILENAME_DAT_TXT)){
+                Toast.makeText(this, "ДАННЫЕ НАСТРОЕК ОТСУТСТВУЮТ!!!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
             dbHelper.SaveDataDat(this, dbHelper.TABLE_DOCUMENT_DAT, "", filealmat.reader);
 
         } catch (Exception e) {
@@ -243,11 +235,12 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
             e.printStackTrace();
             Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
-            // txtLogMessege.setText("");
+            return false;
         }
             if(null != dbHelper) {
                 dbHelper.close();
             }
+            return true;
     }
 
 
