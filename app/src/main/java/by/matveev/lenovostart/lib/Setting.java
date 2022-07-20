@@ -42,6 +42,10 @@ public class Setting {
         if (filealmat.LoadCsv((Activity) context, filealmat.NameDirectory,"setting.csv")){
         //    while ((nextLine = filealmat.reader.readNext()) != null) {// считываем данные с CSV  файла
                 nextLine = filealmat.reader.readNext();
+                if(nextLine==null){
+
+                    return false;
+                }
                 sAdressServer = nextLine[0];
                 sUserFTP = nextLine[1];
                 sPasswordFTP = nextLine[2];

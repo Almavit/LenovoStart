@@ -84,69 +84,69 @@ public class DBHelper extends SQLiteOpenHelper {
         this.fContext = context;
     }
 
-    public void QRselect(SQLiteDatabase db, String NumNakl){
+//    public void QRselect(SQLiteDatabase db, String NumNakl){
+//
+//    }
+//
+//    public void selectNumNakl(SQLiteDatabase db, String NumNakl){
+//        boolean dbExist = checkDataBase();
+//        if (dbExist) {
+//            if (tableExists()){
+//
+//            }
+//
+//            //ничего не делаем – файл базы данных уже есть
+//        } else {
+//            this.getReadableDatabase();
+//
+//            db.execSQL("select * from " + TABLE_DOCUMENT + "where  " + KEY_NUM_NAKL + " = " + NumNakl);
+////                KEY_ID + " integer primary key, " +
+////                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
+////                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
+////                //KEY_PRICE + " text, " +
+////                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );
+//        }
+//    }
 
-    }
+//    public void selectGroup(SQLiteDatabase db){
+//        boolean dbExist = checkDataBase();
+//        if (dbExist) {
+//            //ничего не делаем – файл базы данных уже есть
+//        } else {
+//            this.getReadableDatabase();
+//
+//        db.execSQL("select " + KEY_NUM_NAKL + "count(*)" + " from " + TABLE_DOCUMENT + " group by " + KEY_NUM_NAKL);
+////                KEY_ID + " integer primary key, " +
+////                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
+////                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
+////                //KEY_PRICE + " text, " +
+////                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );
+//        }
+//
+//    }
 
-    public void selectNumNakl(SQLiteDatabase db, String NumNakl){
-        boolean dbExist = checkDataBase();
-        if (dbExist) {
-            if (tableExists()){
-
-            }
-
-            //ничего не делаем – файл базы данных уже есть
-        } else {
-            this.getReadableDatabase();
-
-            db.execSQL("select * from " + TABLE_DOCUMENT + "where  " + KEY_NUM_NAKL + " = " + NumNakl);
-//                KEY_ID + " integer primary key, " +
-//                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
-//                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
-//                //KEY_PRICE + " text, " +
-//                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );
-        }
-    }
-
-    public void selectGroup(SQLiteDatabase db){
-        boolean dbExist = checkDataBase();
-        if (dbExist) {
-            //ничего не делаем – файл базы данных уже есть
-        } else {
-            this.getReadableDatabase();
-
-        db.execSQL("select " + KEY_NUM_NAKL + "count(*)" + " from " + TABLE_DOCUMENT + " group by " + KEY_NUM_NAKL);
-//                KEY_ID + " integer primary key, " +
-//                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
-//                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
-//                //KEY_PRICE + " text, " +
-//                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );
-        }
-
-    }
-
-    private boolean tableExists()
-    {
-        dataBase = SQLiteDatabase.openDatabase(DATABASE_NAME, null, SQLiteDatabase.OPEN_READONLY);
-
-        if (TABLE_DOCUMENT == null || dataBase == null || !dataBase.isOpen())
-        {
-            return false;
-        }
-        Cursor cursor = dataBase.rawQuery(
-                "SELECT COUNT(*) FROM  sqlite_master   WHERE  type='table' AND name = " + TABLE_DOCUMENT,
-                new String[] {"table", TABLE_DOCUMENT}
-        );
-        if (!cursor.moveToFirst())
-        {
-            cursor.close();
-            return false;
-        }
-        int count = cursor.getInt(0);
-        cursor.close();
-
-        return count > 0;
-    }
+//    private boolean tableExists()
+//    {
+//        dataBase = SQLiteDatabase.openDatabase(DATABASE_NAME, null, SQLiteDatabase.OPEN_READONLY);
+//
+//        if (TABLE_DOCUMENT == null || dataBase == null || !dataBase.isOpen())
+//        {
+//            return false;
+//        }
+//        Cursor cursor = dataBase.rawQuery(
+//                "SELECT COUNT(*) FROM  sqlite_master   WHERE  type='table' AND name = " + TABLE_DOCUMENT,
+//                new String[] {"table", TABLE_DOCUMENT}
+//        );
+//        if (!cursor.moveToFirst())
+//        {
+//            cursor.close();
+//            return false;
+//        }
+//        int count = cursor.getInt(0);
+//        cursor.close();
+//
+//        return count > 0;
+//    }
 
    /**
      * Creates a empty database on the system and rewrites it with your own
@@ -182,8 +182,8 @@ public class DBHelper extends SQLiteOpenHelper {
         checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
 
         String SqlTextDat = "create table if not exists " + TABLE_DOCUMENT_DAT + "(" + DAT_KEY_ID + " integer, " +
-                DAT_KEY_BARCODE + " text, " + DAT_KEY_POSITION + " text, " + DAT_KEY_PRICE + " text, " +
-                DAT_KEY_QUANTITY + " text)";
+                DAT_KEY_BARCODE + " text, " + DAT_KEY_PRICE + " text, " + DAT_KEY_QUANTITY + " text, " +
+                 DAT_KEY_POSITION+ " text)";
         checkDB.execSQL(SqlTextDat);
 
             checkDB.close();
@@ -205,25 +205,25 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    private void CreateBase() {
-        SQLiteDatabase checkDB = null;
-        try {
-            // String myPath = DATABASE_NAME;
-            //checkDB = openOrCreateDatabase(DATABASE_NAME , MODE_PRIVATE, null);
-            checkDB.execSQL("create table " + TABLE_DOCUMENT + "(" +
-//                KEY_ID + " integer primary key, " +
-                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
-                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
-                KEY_PRICE + " text, " +
-                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );
-
-        } catch (SQLiteException ioe) {
-            //файл базы данных отсутствует
-        }
-        if (checkDB != null) {
-            checkDB.close();
-        }
-    }
+//    private void CreateBase() {
+//        SQLiteDatabase checkDB = null;
+//        try {
+//            // String myPath = DATABASE_NAME;
+//            //checkDB = openOrCreateDatabase(DATABASE_NAME , MODE_PRIVATE, null);
+//            checkDB.execSQL("create table " + TABLE_DOCUMENT + "(" +
+////                KEY_ID + " integer primary key, " +
+//                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
+//                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
+//                KEY_PRICE + " text, " +
+//                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );
+//
+//        } catch (SQLiteException ioe) {
+//            //файл базы данных отсутствует
+//        }
+//        if (checkDB != null) {
+//            checkDB.close();
+//        }
+//    }
 
 //    public void openDataBase() throws SQLException {
 //
@@ -235,39 +235,39 @@ public class DBHelper extends SQLiteOpenHelper {
 //
 //    }
 
-    private boolean checkDataBase() {
-        SQLiteDatabase checkDB = null;
-        try {
-            String myPath = DATABASE_NAME;
-            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-
-        } catch (SQLiteException e) {
-            //файл базы данных отсутствует
-        }
-        if (checkDB != null) {
-            checkDB.close();
-        }
-        return checkDB != null ? true : false;
-    }
+//    private boolean checkDataBase() {
+//        SQLiteDatabase checkDB = null;
+//        try {
+//            String myPath = DATABASE_NAME;
+//            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+//
+//        } catch (SQLiteException e) {
+//            //файл базы данных отсутствует
+//        }
+//        if (checkDB != null) {
+//            checkDB.close();
+//        }
+//        return checkDB != null ? true : false;
+//    }
     /**
      * Copies your database from your local assets-folder to the just created
      * empty database in the system folder, from where it can be accessed and
      * handled. This is done by transfering bytestream.
      * */
-    private void copyDataBase() throws IOException {
-
-        InputStream input = fContext.getAssets().open(DATABASE_NAME);
-        String outFileName = DATABASE_NAME;
-        OutputStream output = new FileOutputStream(outFileName);
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = input.read(buffer)) > 0) {
-            output.write(buffer, 0, length);
-        }
-        output.flush();
-        output.close();
-        input.close();
-    }
+//    private void copyDataBase() throws IOException {
+//
+//        InputStream input = fContext.getAssets().open(DATABASE_NAME);
+//        String outFileName = DATABASE_NAME;
+//        OutputStream output = new FileOutputStream(outFileName);
+//        byte[] buffer = new byte[1024];
+//        int length;
+//        while ((length = input.read(buffer)) > 0) {
+//            output.write(buffer, 0, length);
+//        }
+//        output.flush();
+//        output.close();
+//        input.close();
+//    }
 
     public void openDataBase() throws SQLException {
         String path = DATABASE_NAME;
@@ -293,23 +293,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     // return cursor
-    public Cursor query(String table, String[] columns, String selection,
-                        String[] selectionArgs, String groupBy, String having,
-                        String orderBy) {
-        return myDataBase.query(table, columns, selection, selectionArgs,
-                groupBy, having, orderBy);
-
-    }
-
-    public Cursor rawQuery(String query) {
-        // TODO Auto-generated method stub
-        return myDataBase.rawQuery(query, null);
-    }
+//    public Cursor query(String table, String[] columns, String selection,
+//                        String[] selectionArgs, String groupBy, String having,
+//                        String orderBy) {
+//        return myDataBase.query(table, columns, selection, selectionArgs,
+//                groupBy, having, orderBy);
+//
+//    }
+//
+//    public Cursor rawQuery(String query) {
+//        // TODO Auto-generated method stub
+//        return myDataBase.rawQuery(query, null);
+//    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-
+      //  createDataBase();
 /*        db.execSQL("create table " + TABLE_DOCUMENT + "(" +
 //                KEY_ID + " integer primary key, " +
                 KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
@@ -348,7 +348,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean SaveDataDat(Context contex,String TableName, String SqlStroka,CSVReader reader) throws IOException, InterruptedException {
+    public boolean SaveDataDat(Context contex,String TableName, String SqlStroka,CSVReader reader) throws IOException {
         DBHelper dbHelper = new DBHelper(contex);
         String[] nextLine =  null;
         String[] sID = new String[1];

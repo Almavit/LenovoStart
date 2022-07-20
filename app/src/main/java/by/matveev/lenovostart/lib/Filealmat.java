@@ -33,7 +33,38 @@ public class Filealmat {
     public CSVReader reader;
     public Integer NumberOfRecords = 0;
 
-
+public boolean DeleteFile(String PatshDIR_SD, String FileName){
+    int returnerror = 0;
+    String textAdd = "";
+    String line = "";
+    // получаем путь к SD
+    File sdPath = Environment.getExternalStorageDirectory();
+    // добавляем свой каталог к пути
+    sdPath = new File(sdPath.getAbsolutePath() + "/" + PatshDIR_SD);
+    // создаем каталог
+    sdPath.mkdirs();
+//    File[] elems = sdPath.listFiles();
+//
+//    String[] paths = new String[1 + (elems == null? 0 : elems.length)];
+//    int i = 0;
+//    paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
+//    i++;
+//    if (elems != null) {
+//        for (File elem : elems) {
+//            paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
+//            i++;
+//        }
+//    }
+ //   MediaScannerConnection.scanFile(contex, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
+//        // формируем объект File, который содержит путь к файлу
+    File sdFile = new File(sdPath, FileName);
+// Проверка наличия файла
+    if (sdFile.exists()) {
+        //Файл в наличии
+        sdFile.delete();
+    }
+    return true;
+}
     public int  writeFileSD(Context contex, String PatshDIR_SD, String FileName,StringBuilder addText) throws IOException {
         int returnerror = 0;
         String textAdd = "";
@@ -76,12 +107,9 @@ public class Filealmat {
 // Проверка наличия файла
         if (sdFile.exists()){
             //Файл в наличии
-            String df = sdFile.getName();
-            Setting setting = new Setting();
+            //String df = sdFile.getName();
 
-             if (sdFile.getName().equals(setting.FileNameSetting)){
-                        return 0;
-                    }
+
             try {
                 // открываем поток для чтения
                 BufferedReader br = new BufferedReader(new FileReader(sdFile));
@@ -90,6 +118,7 @@ public class Filealmat {
 
                 StringBuilder builder = new StringBuilder();
                 NumberOfRecords = 0;
+
                 while ((line = br.readLine()) != null) {
                     builder.append(line + "\r\n");
                     ++NumberOfRecords;
@@ -106,14 +135,29 @@ public class Filealmat {
             }
         }
 
+        Setting setting = new Setting();
+        if (sdFile.getName().equals(setting.FileNameSetting)){
+            // открываем поток для записи настроек
+            //ToastMessageCenter("Запись");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+                textAdd = addText.toString();
+                bw.write(textAdd);
+                bw.close();
+                return 0;
+        }
         try {
+
+
             // открываем поток для записи если файла нет
             //ToastMessageCenter("Запись");
             BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
             // пишем данные
             textAdd = textAdd + addText.toString();//list.toString();//text;//Add + text ;
+
+
             bw.append(textAdd);
             // закрываем поток
+
             bw.close();
             ++NumberOfRecords;
             Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());

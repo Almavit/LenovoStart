@@ -61,9 +61,9 @@ public class DBRepository {
 
         DAT_KEY_ID(0),          // = "id";
         DAT_KEY_BARCODE(1),     // = "barcode";
-        DAT_KEY_NUMBER(2),// = "number";
+        DAT_KEY_PRICE(2),// = "number";
         DAT_KEY_QUANTITY(3),  // = "quantity";
-        DAT_KEY_PRICE(4);  // = "price";
+        DAT_KEY_NUMBER(4);  // = "price";
 
         DatFields(int i) {
             this.datfieldCode = i;
@@ -191,9 +191,9 @@ public class DBRepository {
                 iCountFields = cursor.getPosition();
                 String sField = cursor.getString(fieldid.getFieldCode()) + "   ;   " +
                         cursor.getString(fieldbarcose.getFieldCode()) + "   ;   " +
-                        cursor.getString(fieldnumber.getFieldCode()) + "   ;   " +
+                        cursor.getString(fieldprice.getFieldCode()) + "   ;   " +
                         cursor.getString(fieldquantity.getFieldCode()) + "   ;   " +
-                        cursor.getString(fieldprice.getFieldCode());
+                        cursor.getString(fieldnumber.getFieldCode());
                  list.add(sField);
             } while (cursor.moveToNext());
         }

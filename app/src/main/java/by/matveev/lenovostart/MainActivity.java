@@ -126,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DBHelper db = new DBHelper(this);
+        db.createDataBase();
+        db.close();
 
  //       MyFileToSD = new Filealmat();
         //MyFileToSD.NameFile = "Dat1.txt";

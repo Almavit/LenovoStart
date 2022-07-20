@@ -2,13 +2,10 @@ package by.matveev.lenovostart;
 
 import android.Manifest;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +13,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,17 +23,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.opencsv.CSVReader;
-
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,70 +142,127 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //0104810319017400212nuzH1NG+93p<x>
     @Override
     public void onClick(View v) {
-        final DBRepository repositorys = new DBRepository(getApplicationContext());
-        ArrayAdapter<String> datadapterdat;
-        ArrayAdapter<String> datadapter;
         switch (v.getId()) {
             case R.id.btnDonloadDat:
                 if (LoaddbListView()) {
-                    datadapter = new ArrayAdapter<String>(this,
-                            android.R.layout.simple_list_item_1, repositorys.getDataDat());
-                    datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
-                    dbListView.setAdapter(datadapter);
+                    if(!AdapterEdit()){
+                        Toast.makeText(getApplicationContext(), "ОШИБКА ОБНОВЛЕНИЯ АДАПТЕРА", Toast.LENGTH_LONG).show();
+                        break;
+                    }
                 }
                 break;
             case R.id.btnSaveDat:
-                datadapterdat = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_list_item_1, repositorys.getDataDat());
-                datadapterdat.setDropDownViewResource(R.layout.simple_list_item_dat);
-                dbListView.setAdapter(datadapterdat);
-                //writeFileSD(DIR_SD,);
+                DataBDEditDelete(0);
+                SaveToFileEdit();
+                if(!AdapterEdit()){
+                    Toast.makeText(getApplicationContext(), "ОШИБКА ОБНОВЛЕНИЯ АДАПТЕРА", Toast.LENGTH_LONG).show();
+                    break;
+                }
                 break;
             case R.id.btnDeleDat:
-                List resultList = new ArrayList();
-                String csvLine = null;
-                String sID = txtStroka.getText().toString();
-                //BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-           //
-                if (!((csvLine = sID) != null))
-                    break;
-                   // sssssss = csvLine.split(";");
-                String[] row = csvLine.split(";");
-                resultList.add(row);
-                sID = row[0].toString().replaceAll("\\s","");
-
-                dbHelper = new DBHelper(this);
-
-
-                database = dbHelper.getWritableDatabase();
-                int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT," datid=" + sID,null);
-                datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
-                iCountField = datBaseCursor.getCount();//количество полей
-
-                database.close();
-
-                txtStroka.setText("");
                 LoaddbListView();
+                DataBDEditDelete(-1);
                 // обновляем таблицу
-                datadapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_list_item_1, repositorys.getDataDat());
-                datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
-                dbListView.setAdapter(datadapter);
-                // обновляем таблицу end
-
-                // Запись в файл Dat1.txt
-                try {
-                    writeFileSD(DIR_SD, FILENAME_DAT_TXT);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(!AdapterEdit()){
+                    Toast.makeText(getApplicationContext(), "btnAddPosition on focus", Toast.LENGTH_LONG).show();
+                    break;
                 }
-                // Запись в файл Dat1.txt end
-
+                SaveToFileEdit();
                 break;
         }
-        //
     }
     //
+    public boolean SaveToFileEdit(){
+
+        Filealmat filealmat = new Filealmat();
+        StringBuilder stringBuilder = new StringBuilder();
+        database = dbHelper.getWritableDatabase();
+
+        DBRepository.DatFields fieldbarcose = DBRepository.DatFields.DAT_KEY_BARCODE;
+        DBRepository.DatFields fieldnumber = DBRepository.DatFields.DAT_KEY_NUMBER;
+        DBRepository.DatFields fieldquantity = DBRepository.DatFields.DAT_KEY_QUANTITY;
+        DBRepository.DatFields fieldprice = DBRepository.DatFields.DAT_KEY_PRICE;
+        Cursor cursor = database.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
+        int iF = cursor.getCount();
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            Integer iCountFields = cursor.getColumnCount();
+            do {
+                iCountFields = cursor.getPosition();
+                String text = //cursor.getString(fieldid.getFieldCode()) + "   ;   " +
+                        cursor.getString(fieldbarcose.getFieldCode()) + ";" +
+                                cursor.getString(fieldprice.getFieldCode()) + ";" +
+                                cursor.getString(fieldquantity.getFieldCode()) + ";" +
+                                cursor.getString(fieldnumber.getFieldCode()) + "\n" ;
+                stringBuilder.append(text);
+            } while (cursor.moveToNext());
+        }
+        database.close();
+        // Запись в файл Dat1.txt
+        try {
+            filealmat.DeleteFile(DIR_SD, FILENAME_DAT_TXT);
+            filealmat.writeFileSD(this,DIR_SD, FILENAME_DAT_TXT,stringBuilder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+    public boolean  DataBDEditDelete(int status){
+        List resultList = new ArrayList();
+        ContentValues cv = new ContentValues();
+        dbHelper = new DBHelper(this);
+        database = dbHelper.getWritableDatabase();
+
+        String csvLine = null;
+        String sID = txtStroka.getText().toString();
+        String sStroks ;
+        if (!((csvLine = sID) != null))
+            return false;
+        String[] row = csvLine.split(";");
+        resultList.add(row);
+        sID = row[0].toString().replaceAll("\\s","");
+
+        if (status < 0) {//отрицательный - дэлете
+            int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT, " datid=" + sID, null);
+        }
+        if (status == 0) {//0 - редактировать
+            // String[] row = csvLine.split(";");
+            sStroks = row[0].toString().replaceAll("\\s","");
+            sStroks = sStroks + row[1].toString().replaceAll("\\s","");
+            sStroks = sStroks + row[2].toString().replaceAll("\\s","");
+            sStroks = sStroks + row[3].toString().replaceAll("\\s","");
+            sStroks = sStroks + row[4].toString().replaceAll("\\s","");
+
+            cv.put(dbHelper.DAT_KEY_ID, row[0].toString().replaceAll("\\s",""));
+            cv.put(dbHelper.DAT_KEY_BARCODE, row[1].toString().replaceAll("\\s",""));
+            cv.put(dbHelper.DAT_KEY_PRICE, row[2].toString().replaceAll("\\s",""));
+            cv.put(dbHelper.DAT_KEY_QUANTITY, row[3].toString().replaceAll("\\s",""));
+            cv.put(dbHelper.DAT_KEY_POSITION, row[4].toString().replaceAll("\\s",""));
+
+
+            int iDataStatus = database.update(dbHelper.TABLE_DOCUMENT_DAT,cv , " datid = ?" ,  new String[] {sID});
+        }
+        datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
+        iCountField = datBaseCursor.getCount();//количество полей
+
+        database.close();
+
+        txtStroka.setText("");
+
+        return true;
+    }
+    public boolean AdapterEdit(){
+        final DBRepository repositorys = new DBRepository(getApplicationContext());
+        ArrayAdapter<String> datadapterdat;
+        ArrayAdapter<String> datadapter;
+
+        datadapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, repositorys.getDataDat());
+        datadapter.setDropDownViewResource(R.layout.simple_list_item_dat);
+        dbListView.setAdapter(datadapter);
+
+        return true;
+    }
     public boolean LoaddbListView(){
         final String LOG_TAG = "LoaddbListView";
         ContentValues datContentValues = new ContentValues();
@@ -234,7 +282,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             }
 
             e.printStackTrace();
-            Toast.makeText(this, "The specified file was not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "The specified file was not found 1", Toast.LENGTH_SHORT).show();
             return false;
         }
             if(null != dbHelper) {
@@ -275,13 +323,24 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         String[] datcolumnsName = null;
 
        // datcolumnsName = new String[]{DAT_KEY_ID,DAT_KEY_BARCODE, DAT_KEY_NUMBER, DAT_KEY_QUANTITY, DAT_KEY_PRICE};//,
-        DBRepository.DatFields fieldid = DBRepository.DatFields.DAT_KEY_ID;
+        id = dbListView.getCount();
+
+                SparseBooleanArray chosen = (dbListView).getCheckedItemPositions();
+        for (int i = 0; i < chosen.size(); i++) {
+            // если пользователь выбрал пункт списка,
+            // то выводим его в TextView.
+            if (chosen.valueAt(i)) {
+               // selection.append(foods[chosen.keyAt(i)] + " ");
+                text = text +  chosen.keyAt(i) + ";";
+            }
+        }
+        //DBRepository.DatFields fieldid = DBRepository.DatFields.DAT_KEY_ID;
         DBRepository.DatFields fieldbarcose = DBRepository.DatFields.DAT_KEY_BARCODE;
         DBRepository.DatFields fieldnumber = DBRepository.DatFields.DAT_KEY_NUMBER;
         DBRepository.DatFields fieldquantity = DBRepository.DatFields.DAT_KEY_QUANTITY;
         DBRepository.DatFields fieldprice = DBRepository.DatFields.DAT_KEY_PRICE;
 
-        ArrayList<String> list = new ArrayList<String>();
+        //ArrayList<String> list = new ArrayList<String>();
         db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
 
         Cursor cursor = db.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
@@ -293,9 +352,9 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                 iCountFields = cursor.getPosition();
                 text = //cursor.getString(fieldid.getFieldCode()) + "   ;   " +
                         cursor.getString(fieldbarcose.getFieldCode()) + ";" +
-                        cursor.getString(fieldnumber.getFieldCode()) + ";" +
+                        cursor.getString(fieldprice.getFieldCode()) + ";" +
                         cursor.getString(fieldquantity.getFieldCode()) + ";" +
-                        cursor.getString(fieldprice.getFieldCode()) + "\r\n";
+                        cursor.getString(fieldnumber.getFieldCode()) + "\r\n";
                 sbText.append(text);
             } while (cursor.moveToNext());
         }
