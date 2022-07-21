@@ -42,7 +42,7 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
     // добавляем свой каталог к пути
     sdPath = new File(sdPath.getAbsolutePath() + "/" + PatshDIR_SD);
     // создаем каталог
-    sdPath.mkdirs();
+ //   sdPath.mkdirs();
 //    File[] elems = sdPath.listFiles();
 //
 //    String[] paths = new String[1 + (elems == null? 0 : elems.length)];
@@ -59,6 +59,10 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
 //        // формируем объект File, который содержит путь к файлу
     File sdFile = new File(sdPath, FileName);
 // Проверка наличия файла
+    if (sdFile.exists()) {
+        //Файл в наличии
+        sdFile.delete();
+    }
     if (sdFile.exists()) {
         //Файл в наличии
         sdFile.delete();
@@ -207,38 +211,43 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
         }else{
 
         }
-//        // получаем путь к SD
-        File sdPath = Environment.getExternalStorageDirectory();
-//        // добавляем свой каталог к пути
-        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName);
-//        // создаем каталог
-        sdPath.mkdirs();
-//
-        File[] elems = sdPath.listFiles();
-//
-        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
-        int i = 0;
-        paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
-        i++;
-        if (elems != null) {
-            for (File elem : elems) {
-                paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
-                i++;
-            }
-        }
-        MediaScannerConnection.scanFile(context, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
+////        // получаем путь к SD
+//        File sdPath = Environment.getExternalStorageDirectory();
+////        // добавляем свой каталог к пути
+//        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName);
+////        // создаем каталог
+//        sdPath.mkdirs();
+////
+//        File[] elems = sdPath.listFiles();
+////
+//        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
+//        int i = 0;
+//        paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
+//        i++;
+//        if (elems != null) {
+//            for (File elem : elems) {
+//                paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
+//                i++;
+//            }
+//        }
+//        MediaScannerConnection.scanFile(context, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
+//        File sdFile = new File(sdPath, FileNameCSV);
+
 //        // формируем объект File, который содержит путь к файлу
-        File sdFile = new File(sdPath, FileNameCSV);
+        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
+                DirName + "/" + FileNameCSV);
+
 // Проверка наличия файла
-        if (sdFile.exists()) {
+        if (csvfile.exists()) {
             //Файл в наличии
             try {
-                File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
-                        DirName + "/" + FileNameCSV);
 
                 reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
                         ';', '\n', 0);
-
+//                csvfile.close();
+//                if (csvfile.exists()) {
+//                    int i = 0;
+//                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {
@@ -275,8 +284,7 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
             return false;// не загрузилось
         }
 //////////////////////////////////
-        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
-                DirName + "/" + FileNameCSV);
+        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" + DirName + "/" + FileNameCSV);
 
         reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
                 ';', '\n', 0);

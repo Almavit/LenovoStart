@@ -203,28 +203,28 @@ public class DBRepository {
     public ArrayList<String> getDataNakld(String numNakl)
     {
         Integer iFields;
-        String asdf;
-        String naAAA;
-        String nameTov;
-        String namePostav;
-        String numPoz;
-        String Barcodes;
-        String DataNakl;
-        String numNakldn;
-        String quntityTov;
-        String statusTov;
-        String[] columnsName = null;
+//        String asdf;
+//        String naAAA;
+//        String nameTov;
+//        String namePostav;
+//        String numPoz;
+//        String Barcodes;
+//        String DataNakl;
+//        String numNakldn;
+//        String quntityTov;
+//        String statusTov;
+//        String[] columnsName = null;
         String[] columns = null;
-        columnsName = new String[]{KEY_NUM_NAKL};//, "count(*)"
+//        columnsName = new String[]{KEY_NUM_NAKL};//, "count(*)"
         // columnsName = "numnakl";
         Fields numNakld = Fields.KEY_NUM_NAKL;
         Fields datNakld = Fields.KEY_DATE;
-        Fields postavNakld = Fields.KEY_NAME_POST;
-        Fields numPozNakld = Fields.KEY_NUM_POZ;
-        Fields barcodeNakld = Fields.KEY_BARCODE;
-        Fields nameTovNakld = Fields.KEY_NAME_TOV;
-        Fields quntityNakld = Fields.KEY_QUANTITY;
-        Fields statusNakld = Fields.KEY_STATUS;
+//        Fields postavNakld = Fields.KEY_NAME_POST;
+//        Fields numPozNakld = Fields.KEY_NUM_POZ;
+//        Fields barcodeNakld = Fields.KEY_BARCODE;
+//        Fields nameTovNakld = Fields.KEY_NAME_TOV;
+//        Fields quntityNakld = Fields.KEY_QUANTITY;
+//        Fields statusNakld = Fields.KEY_STATUS;
 
 
         columns = new String[] {KEY_NUM_NAKL + ", " + KEY_DATE + ", " + KEY_NAME_POST + ", " + KEY_NUM_POZ + ", " + KEY_BARCODE + ", " + KEY_NAME_TOV + ", " + KEY_QUANTITY + ", " + KEY_STATUS};

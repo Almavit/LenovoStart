@@ -411,9 +411,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         ScontentValues.put(DBHelper.DAT_KEY_ID, csvreader[0]);
         ScontentValues.put(DBHelper.DAT_KEY_BARCODE, csvreader[1]);
-        ScontentValues.put(DBHelper.DAT_KEY_POSITION, csvreader[2]);
+        ScontentValues.put(DBHelper.DAT_KEY_PRICE, csvreader[2]);
         ScontentValues.put(DBHelper.DAT_KEY_QUANTITY, csvreader[3]);
-        ScontentValues.put(DBHelper.DAT_KEY_PRICE, csvreader[4]);
+        ScontentValues.put(DBHelper.DAT_KEY_POSITION, csvreader[4]);
 
         return ScontentValues;
     }

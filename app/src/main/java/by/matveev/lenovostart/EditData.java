@@ -215,23 +215,25 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
         String csvLine = null;
         String sID = txtStroka.getText().toString();
-        String sStroks ;
+//        String sStroks ;
         if (!((csvLine = sID) != null))
             return false;
         String[] row = csvLine.split(";");
         resultList.add(row);
         sID = row[0].toString().replaceAll("\\s","");
-
+        if (sID.length()==0){
+            return true;
+        }
         if (status < 0) {//отрицательный - дэлете
             int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT, " datid=" + sID, null);
         }
         if (status == 0) {//0 - редактировать
             // String[] row = csvLine.split(";");
-            sStroks = row[0].toString().replaceAll("\\s","");
-            sStroks = sStroks + row[1].toString().replaceAll("\\s","");
-            sStroks = sStroks + row[2].toString().replaceAll("\\s","");
-            sStroks = sStroks + row[3].toString().replaceAll("\\s","");
-            sStroks = sStroks + row[4].toString().replaceAll("\\s","");
+//            sStroks = row[0].toString().replaceAll("\\s","");
+//            sStroks = sStroks + row[1].toString().replaceAll("\\s","");
+//            sStroks = sStroks + row[2].toString().replaceAll("\\s","");
+//            sStroks = sStroks + row[3].toString().replaceAll("\\s","");
+//            sStroks = sStroks + row[4].toString().replaceAll("\\s","");
 
             cv.put(dbHelper.DAT_KEY_ID, row[0].toString().replaceAll("\\s",""));
             cv.put(dbHelper.DAT_KEY_BARCODE, row[1].toString().replaceAll("\\s",""));
@@ -242,8 +244,8 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
             int iDataStatus = database.update(dbHelper.TABLE_DOCUMENT_DAT,cv , " datid = ?" ,  new String[] {sID});
         }
-        datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
-        iCountField = datBaseCursor.getCount();//количество полей
+//        datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
+//        iCountField = datBaseCursor.getCount();//количество полей
 
         database.close();
 
@@ -265,12 +267,12 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
     }
     public boolean LoaddbListView(){
         final String LOG_TAG = "LoaddbListView";
-        ContentValues datContentValues = new ContentValues();
+//        ContentValues datContentValues = new ContentValues();
         dbHelper = new DBHelper(this);
         Filealmat filealmat = new Filealmat();
         try {
 
-            if (!filealmat.LoadCsvFileFtp(this,DIR_SD, FILENAME_DAT_TXT)){
+            if (!filealmat.LoadCsv(this,DIR_SD, FILENAME_DAT_TXT)){
                 Toast.makeText(this, "ДАННЫЕ НАСТРОЕК ОТСУТСТВУЮТ!!!", Toast.LENGTH_SHORT).show();
                 return false;
             }
