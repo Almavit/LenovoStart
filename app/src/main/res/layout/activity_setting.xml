@@ -146,20 +146,21 @@
             android:orientation="horizontal">
 
 
-
             <Button
                 android:id="@+id/btnLoadSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Загрузить" />
+                android:text="Загрузить"
+                android:textSize="24sp" />
 
             <Button
                 android:id="@+id/btnSaveSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Сохранить" />
+                android:text="Сохранить"
+                android:textSize="24sp" />
         </LinearLayout>
 
         <TextView
@@ -170,6 +171,13 @@
             android:textAlignment="center"
             android:textSize="36sp"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ОБНОВЛЕНИЕ"
+            android:textSize="24sp" />
 
 
     </LinearLayout>

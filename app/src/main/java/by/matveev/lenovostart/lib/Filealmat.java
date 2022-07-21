@@ -27,11 +27,16 @@ public class Filealmat {
     public String PatshFile;
     public String NameFile;
     public String NameDirectory = "Documents";
+    public String NameFileAPK = "app-debug.apk";
     final String LOG_TAG = "PatshDIR_SD";
     //public Activity activity;
     private static final String ENCODING_WIN1251 = "windows-1251";
     public CSVReader reader;
     public Integer NumberOfRecords = 0;
+
+
+
+
 
 public boolean DeleteFile(String PatshDIR_SD, String FileName){
     int returnerror = 0;
@@ -41,21 +46,6 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
     File sdPath = Environment.getExternalStorageDirectory();
     // добавляем свой каталог к пути
     sdPath = new File(sdPath.getAbsolutePath() + "/" + PatshDIR_SD);
-    // создаем каталог
- //   sdPath.mkdirs();
-//    File[] elems = sdPath.listFiles();
-//
-//    String[] paths = new String[1 + (elems == null? 0 : elems.length)];
-//    int i = 0;
-//    paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
-//    i++;
-//    if (elems != null) {
-//        for (File elem : elems) {
-//            paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
-//            i++;
-//        }
-//    }
- //   MediaScannerConnection.scanFile(contex, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
 //        // формируем объект File, который содержит путь к файлу
     File sdFile = new File(sdPath, FileName);
 // Проверка наличия файла
@@ -73,16 +63,10 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
         int returnerror = 0;
         String textAdd = "";
         String line = "";
-    //    Setting setting = new Setting();
-   //     setting.loadSetting(contex);
-
-        //loadSetting(); //добавить класс
         // проверяем доступность SD
         MyPremission almPremission = new MyPremission();
         if (!almPremission.myPremission(contex))  {
             returnerror = -1;
-        }else{
-
         }
 //        // получаем путь к SD
         File sdPath = Environment.getExternalStorageDirectory();
@@ -111,9 +95,6 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
 // Проверка наличия файла
         if (sdFile.exists()){
             //Файл в наличии
-            //String df = sdFile.getName();
-
-
             try {
                 // открываем поток для чтения
                 BufferedReader br = new BufferedReader(new FileReader(sdFile));
@@ -122,7 +103,7 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
 
                 StringBuilder builder = new StringBuilder();
                 NumberOfRecords = 0;
-
+                String sdsdsdsd = br.toString();
                 while ((line = br.readLine()) != null) {
                     builder.append(line + "\r\n");
                     ++NumberOfRecords;
@@ -150,7 +131,6 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
                 return 0;
         }
         try {
-
 
             // открываем поток для записи если файла нет
             //ToastMessageCenter("Запись");
@@ -260,9 +240,55 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
     }
 //  получить данные из csv файла по сети
     public boolean LoadCsvFileFtp(Context context, String DirName, String FileNameCSV) throws IOException {
-        Setting setting = new Setting();
-        if (!setting.loadSetting(context)){
+//        Setting setting = new Setting();
+//        if (!setting.loadSetting(context)){
+//            return false;
+//        }
+//        if (!setting.executeCommand(setting.sAdressServer)) {
+//            // txtLog.setBackgroundColor(Color.RED);
+//            return false;
+//        }
+//        //SQLiteDatabase db;
+//        //подключаемся к FTP серверу
+//        FTPModel mymodel = new FTPModel();
+//        // получает корневой каталог
+//        File sdPath = Environment.getExternalStorageDirectory();
+//        // добавляем свой каталог устройства к пути куда загружаем файл с сервера
+//        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName + "/" + FileNameCSV);
+//        // загрузка csv файла с FTP сервера
+//        boolean ko = mymodel.downloadAndSaveFile(setting.sAdressServer, Integer.parseInt(setting.sPortFTP),
+//                setting.sUserFTP, setting.sPasswordFTP, FileNameCSV, sdPath);
+//        if (ko) {
+//
+//        } else {
+//            return false;// не загрузилось
+//        }
+        if(!LoadFileFtp(context, DirName, FileNameCSV)){
+
             return false;
+
+        }
+//////////////////////////////////
+        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" + DirName + "/" + FileNameCSV);
+        if (csvfile.exists()) {
+            reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+                    ';', '\n', 0);
+            //String[] nextLine = reader.readNext();
+            csvfile.exists();
+        }
+        return true;
+    }
+
+
+
+    public boolean LoadFileFtp(Context context, String DirName, String FileName){
+        Setting setting = new Setting();
+        try {
+            if (!setting.loadSetting(context)){
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         if (!setting.executeCommand(setting.sAdressServer)) {
             // txtLog.setBackgroundColor(Color.RED);
@@ -274,22 +300,15 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
         // получает корневой каталог
         File sdPath = Environment.getExternalStorageDirectory();
         // добавляем свой каталог устройства к пути куда загружаем файл с сервера
-        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName + "/" + FileNameCSV);
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName + "/" + FileName);
         // загрузка csv файла с FTP сервера
         boolean ko = mymodel.downloadAndSaveFile(setting.sAdressServer, Integer.parseInt(setting.sPortFTP),
-                setting.sUserFTP, setting.sPasswordFTP, FileNameCSV, sdPath);
+                setting.sUserFTP, setting.sPasswordFTP, FileName, sdPath);
         if (ko) {
 
         } else {
             return false;// не загрузилось
         }
-//////////////////////////////////
-        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" + DirName + "/" + FileNameCSV);
-
-        reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-                ';', '\n', 0);
-        //String[] nextLine = reader.readNext();
-        csvfile.exists();
         return true;
     }
 

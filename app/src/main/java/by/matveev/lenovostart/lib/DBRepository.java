@@ -225,8 +225,6 @@ public class DBRepository {
 //        Fields nameTovNakld = Fields.KEY_NAME_TOV;
 //        Fields quntityNakld = Fields.KEY_QUANTITY;
 //        Fields statusNakld = Fields.KEY_STATUS;
-
-
         columns = new String[] {KEY_NUM_NAKL + ", " + KEY_DATE + ", " + KEY_NAME_POST + ", " + KEY_NUM_POZ + ", " + KEY_BARCODE + ", " + KEY_NAME_TOV + ", " + KEY_QUANTITY + ", " + KEY_STATUS};
 
         ArrayList<String> list = new ArrayList<String>();

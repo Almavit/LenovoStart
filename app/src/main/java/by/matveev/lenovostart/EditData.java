@@ -102,8 +102,8 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 
         txtStroka = (TextView) findViewById(R.id.txtStroka);
 
-        btnEditDat = (Button) findViewById(R.id.btnEditDat);
-        btnEditDat.setOnClickListener(this);
+//        btnEditDat = (Button) findViewById(R.id.btnEditDat);
+//        btnEditDat.setOnClickListener(this);
 
         btnSaveDat = (Button) findViewById(R.id.btnSaveDat);
         btnSaveDat.setOnClickListener(this);
@@ -114,16 +114,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
         btnDonloadDat = (Button) findViewById(R.id.btnDonloadDat);
         btnDonloadDat.setOnClickListener(this);
 
-
-   //     dbGridEditDat = (GridView) findViewById(R.id.dbGridEditDat);
-
         dbListView = (ListView) findViewById(R.id.dbListView);
-
-
-       // Intent intent = new Intent(this, electron_document.class);
-
-
-
         AdapterView.OnItemClickListener datitemListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -162,6 +153,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             case R.id.btnDeleDat:
                 LoaddbListView();
                 DataBDEditDelete(-1);
+                SaveToFileEdit();
                 // обновляем таблицу
                 if(!AdapterEdit()){
                     Toast.makeText(getApplicationContext(), "btnAddPosition on focus", Toast.LENGTH_LONG).show();

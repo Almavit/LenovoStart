@@ -4,9 +4,7 @@ package by.matveev.lenovostart;
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
@@ -15,12 +13,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,24 +25,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.opencsv.CSVReader;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.net.ftp.FTPClient;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import by.matveev.lenovostart.lib.DBHelper;
-import by.matveev.lenovostart.lib.FTPModel;
 import by.matveev.lenovostart.lib.Filealmat;
-//import by.matveev.lenovostart.lib.MyPremission;
 import by.matveev.lenovostart.lib.MyPremission;
 import by.matveev.lenovostart.lib.ProgressTextView;
 import by.matveev.lenovostart.lib.Setting;
@@ -71,34 +59,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    }
 
 //    private static final int PERMISSION_REQUEST_CODE = 123;
-
-    SQLiteDatabase database;
-    SQLiteDatabase db;
+//
+//    SQLiteDatabase database;
+//    SQLiteDatabase db;
     Setting setting;
 
     final String FILENAME_CSV = "999.csv";
     final String DIR_SD = "Documents";
 
-    private static final String FILENAME = "./alphabet.utf8";
-    private static final String ENCODING_WIN1251 = "windows-1251";
-    private static final String ENCODING_UTF8 = "UTF-8";
+//    private static final String FILENAME = "./alphabet.utf8";
+//    private static final String ENCODING_WIN1251 = "windows-1251";
+//    private static final String ENCODING_UTF8 = "UTF-8";
     String[] nextLine;
     ProgressTextView progressTextViewMain;
 
 
-    final String USER_NAME = "user_name";
-    final String USER_PASSWORD = "user_passowrd";
-    final String ADRESS_SERVER = "adress_server";
-    final String PATH_FILE = "path_file";
-    final String PORT_FTP = "21";
-    final String MODE_WORKING = "1";
+//    final String USER_NAME = "user_name";
+//    final String USER_PASSWORD = "user_passowrd";
+//    final String ADRESS_SERVER = "adress_server";
+//    final String PATH_FILE = "path_file";
+//    final String PORT_FTP = "21";
+//    final String MODE_WORKING = "1";
 
-    String sAdressServer;
-    String sUserFTP;
-    String sPasswordFTP;
-    String sPortFTP;
-    String sPathFile;
-    String sModeWorking;
+//    String sAdressServer;
+//    String sUserFTP;
+//    String sPasswordFTP;
+//    String sPortFTP;
+//    String sPathFile;
+//    String sModeWorking;
 
     Button btnFourField;
     Button btnTwoField;
@@ -113,8 +101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnQrBarcode;
 
     TextView txtLog;
-    EditText txtIp;
-    CheckBox chkWiFi;
+//    EditText txtIp;
+//    CheckBox chkWiFi;
 
 
    // MyPremission almPremission;
@@ -130,29 +118,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         db.createDataBase();
         db.close();
 
- //       MyFileToSD = new Filealmat();
-        //MyFileToSD.NameFile = "Dat1.txt";
-//        MyFileToSD.writeFileSD("Documents","Dat1.txt", null);
+
         filealmat = new Filealmat();
         setting = new Setting();
         MyPremission almPremission = new MyPremission();
 //
         Boolean Premis = true;
-//        do{
-//            if (Premis){
+
                 if (!almPremission.myPremission(this)) {
                     Premis = true;
                 } else {
                     Premis = false;
                 }
-//            }
-//
-//        } while(!Premis);
-
-//        Setting setting = new Setting();
-//        setting.loadSetting(this);
-//        String sAdressServer = setting.sAdressServer;
-
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -185,82 +162,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressTextViewMain = (ProgressTextView) findViewById(R.id.progressTextViewMain);
         progressTextViewMain.setValue(0); // устанавливаем нужное значение
 
-
-
-//        btnSaveToServer = (Button) findViewById(R.id.btnSaveToServer);
-//        btnSaveToServer.setOnClickListener(this);
-
         btnSetting = (Button) findViewById(R.id.btnSetting);
         btnSetting.setOnClickListener(this);
 
         btnStartElectron = (Button) findViewById(R.id.btnStartElectron);
         btnStartElectron.setOnClickListener(this);
 
-
-
-
         txtLog = (TextView) findViewById(R.id.txtLog);
 
-
-
-       // if (!myPremission())  return;
     }
 
-    //===========================   проверка разрешений приложения  ================================
-//    private boolean myPremission(){
-//        if (hasPermissions()){
-//            // our app has permissions.
-//          //  Filealmat makefolder = new Filealmat();
-//            filealmat.makeFolder(this);
-//        }
-//        else {
-//            //our app doesn't have permissions, So i m requesting permissions.
-//            requestPermissionWithRationale();
+//    //===================  обновление программы старт ===========================
+//
+//    public boolean Update(String apkurl){
+//        try {
+//            if(apkurl.length()!=0) {
+//                URL url = new URL(apkurl);
+//                HttpURLConnection c = (HttpURLConnection) url.openConnection();
+//                c.setRequestMethod("GET");
+//                c.setDoOutput(true);
+//                c.connect();
+//
+//                String PATH = Environment.getExternalStorageDirectory() + filealmat.NameDirectory;
+//                File file = new File(PATH);
+//                file.mkdirs();
+//                File outputFile = new File(file, filealmat.NameFileAPK);
+//                FileOutputStream fos = new FileOutputStream(outputFile);
+//
+//                InputStream is = c.getInputStream();
+//
+//                byte[] buffer = new byte[1024];
+//                int len1 = 0;
+//                while ((len1 = is.read(buffer)) != -1) {
+//                    fos.write(buffer, 0, len1);
+//                }
+//                fos.close();
+//                is.close();//till here, it works fine - .apk is download to my sdcard in download file
+//
+//                Intent promptInstall = new Intent(Intent.ACTION_VIEW)
+//                        .setData(Uri.parse(PATH + filealmat.NameFileAPK))
+//                        .setType("application/android.com.app");
+//                startActivity(promptInstall);//installation is not working
+//            }else{
+//                if(!filealmat.LoadFileFtp(this, filealmat.NameDirectory,filealmat.NameFileAPK)) {
+//                    return false;
+//                }
+//            }
+//        } catch (IOException e) {
+//            Toast.makeText(getApplicationContext(), "ОШИБКА ОБНОВЛЕНИЯ !", Toast.LENGTH_LONG).show();
 //        }
 //        return true;
 //    }
-//    private void makeFolder(){
-//        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"fandroid");
-//
-//        if (!file.exists()){
-//            Boolean ff = file.mkdir();
-//            if (ff){
-//                Toast.makeText(this, "Folder created successfully", Toast.LENGTH_LONG).show();
-//            }
-//            else {
-//                Toast.makeText(this, "Failed to create folder", Toast.LENGTH_LONG).show();
-//            }
-//
-//        }
-//        else {
-//            // Toast.makeText(this, "Folder already exist", Toast.LENGTH_LONG).show();//Папка уже существует
-//        }
-//    }
-//    private boolean hasPermissions(){
-//        int res = 0;
-//        //string array of permissions,
-//        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-//
-//        for (String perms : permissions){
-//            /*
-//             * с помощью метода checkCallingOrSelfPermission в цикле проверяет
-//             * предоставленные приложению разрешения и сравнивает их с тем, которое нам необходимо.
-//             * При отсутствии разрешения метод будет возвращать false, а при наличии разрешения — true.
-//             */
-//            res = checkCallingOrSelfPermission(perms);
-//            if (!(res == PackageManager.PERMISSION_GRANTED)){
-//                return false;
-//            }
-//        }
-//
-//        return true;
-//    }
-//    private void requestPerms(){
-//        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-//            requestPermissions(permissions,PERMISSION_REQUEST_CODE);
-//        }
-//    }
+    //===================  обновление программы конец ===========================
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         boolean allowed = true;
@@ -320,30 +273,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-//    public void requestPermissionWithRationale() {
-//        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//            //final String message = "Storage permission is needed to show files count";
-//            //Snackbar.make(this.findViewById(R.id.activity_scaner), message, Snackbar.LENGTH_LONG)
-//            //        .setAction("GRANT", new View.OnClickListener() {
-//            //   @Override
-//            //    public void onClick(View v) {
-//            requestPerms();
-//            //    }
-//            //     })
-//            //     .show();
-//
-//        } else {
-//            requestPerms();
-//        }
-//    }
-    //========================  конец проверки разрешений  ==============================//
 
      public void onClick(View v) {
         Intent intent = new Intent(this, ScanerActivity.class);
-         DBHelper dbHelper;// = new DBHelper(this);
-         //SQLiteDatabase database;
-         //= dbHelper.getWritableDatabase();
+//         DBHelper dbHelper;// = new DBHelper(this);
+
          ContentValues contentValues = new ContentValues();
         intent.putExtra("VisibleTxtQuantity", View.VISIBLE);
         intent.putExtra("VisibleIntQuantity", View.VISIBLE);
@@ -410,9 +344,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(MainActivity.this, "Функция недоступна", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btnStartElectron:
-                Intent intentStartElectronDocument = new Intent(this, StartElectronDocument.class);
-                startActivity(intentStartElectronDocument);
-
+                //Intent intentStartElectronDocument = new Intent(this, StartElectronDocument.class);
+                //startActivity(intentStartElectronDocument);
+                Toast.makeText(MainActivity.this, "Функция недоступна", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnSetting:
