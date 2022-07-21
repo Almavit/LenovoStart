@@ -151,11 +151,19 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 if(!filealmat.LoadFileFtp(this, filealmat.NameDirectory,filealmat.NameFileAPK)) {
                     return false;
                 }
-                String PATH = Environment.getExternalStorageDirectory() + "/" + filealmat.NameDirectory + "/";
-                Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-                        .setData(Uri.parse(PATH + filealmat.NameFileAPK))
-                        .setType("application/android.com.app");
-                startActivity(promptInstall);//installation is not working
+                String PATH = Environment.getExternalStorageDirectory() + "/" + filealmat.NameDirectory + "/" + filealmat.NameFileAPK;
+                Runtime.getRuntime().exec(new String[] {"su", "-c", "pm install -r " + PATH});
+
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                Uri uri = Uri.fromFile(new File(PATH));
+//                intent.setDataAndType(uri, "application/vnd.android.package-archive");
+//                startActivity(intent);
+
+
+//                Intent promptInstall = new Intent(Intent.ACTION_VIEW)
+//                        .setData(Uri.parse(PATH + filealmat.NameFileAPK))
+//                        .setType("application/android.com.app");
+//                startActivity(promptInstall);//installation is not working
             }
 
         } catch (IOException e) {
