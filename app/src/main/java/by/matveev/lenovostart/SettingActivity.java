@@ -1,13 +1,15 @@
 package by.matveev.lenovostart;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -21,9 +23,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import by.matveev.lenovostart.lib.CSVFile;
 import by.matveev.lenovostart.lib.Filealmat;
 import by.matveev.lenovostart.lib.Setting;
+import by.matveev.lenovostart.lib.SettingsManager;
 
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -38,6 +40,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     Button btnLoadSetting;
     Button btnUpdate;
     Filealmat filealmat;
+    private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
 
 
     @Override
@@ -82,7 +85,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         Setting setting = new Setting();
         switch (v.getId()){
             case R.id.btnUpdate:
-                Update("");
+
+                String apkurl = "";
+                //apkurl = Environment.getExternalStorageDirectory() + "/" + filealmat.NameDirectory + "/" + filealmat.NameFileAPK;
+                //Update(apkurl);
+                Update(0,this);
                 break;
             case R.id.btnSaveSetting:
                 try {
@@ -117,58 +124,95 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
     //===================  обновление программы старт ===========================
+    public void Update(final Integer lastAppVersion, Context context) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Доступно обновление приложения rutracker free до версии " +
+                                lastAppVersion + " - желаете обновиться? " +
+                                "Если вы согласны - вы будете перенаправлены к скачиванию APK файла,"
+                                +" который затем нужно будет открыть.")
+                        .setCancelable(true)
+                        .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String sd = filealmat.NameDirectory;
+                                if(!filealmat.LoadFileFtp(context, filealmat.NameDirectory,filealmat.NameFileAPK)) {
+                                    //no
+                                }else{
+                                    // создаём новое намерение
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+// устанавливаем флаг для того, чтобы дать внешнему приложению пользоваться нашим FileProvider
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    String apkUrl = Environment.getExternalStorageDirectory() + "/" + filealmat.NameDirectory + "/" + filealmat.NameFileAPK;
+                                    File file = new File(apkUrl);
+// генерируем URI, я определил полномочие как ID приложения в манифесте, последний параметр это файл, который я хочу открыть
+                                    Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, file);
 
-    public boolean Update(String apkurl){
-        try {
-            if(apkurl.length()!=0) {
-                URL url = new URL(apkurl);
-                HttpURLConnection c = (HttpURLConnection) url.openConnection();
-                c.setRequestMethod("GET");
-                c.setDoOutput(true);
-                c.connect();
+// я открываю PDF-файл, поэтому я даю ему действительный тип MIME
+                                    intent.setDataAndType(uri, ANDROID_PACKAGE);//"application/pdf"
 
-                String PATH = Environment.getExternalStorageDirectory() + filealmat.NameDirectory;
-                File file = new File(PATH);
-                file.mkdirs();
-                File outputFile = new File(file, filealmat.NameFileAPK);
-                FileOutputStream fos = new FileOutputStream(outputFile);
+// подтвердите, что устройство может открыть этот файл!
+                                    PackageManager pm = context.getPackageManager();
+                                    if (intent.resolveActivity(pm) != null) {
+                                        startActivity(intent);
+                                    }
 
-                InputStream is = c.getInputStream();
-
-                byte[] buffer = new byte[1024];
-                int len1 = 0;
-                while ((len1 = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, len1);
-                }
-                fos.close();
-                is.close();//till here, it works fine - .apk is download to my sdcard in download file
-
-                Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-                        .setData(Uri.parse(PATH + filealmat.NameFileAPK))
-                        .setType("application/android.com.app");
-                startActivity(promptInstall);//installation is not working
-            }else{
-                if(!filealmat.LoadFileFtp(this, filealmat.NameDirectory,filealmat.NameFileAPK)) {
-                    return false;
-                }
-                String PATH = Environment.getExternalStorageDirectory() + "/" + filealmat.NameDirectory + "/" + filealmat.NameFileAPK;
-                Runtime.getRuntime().exec(new String[] {"su", "-c", "pm install -r " + PATH});
-
-//                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                Uri uri = Uri.fromFile(new File(PATH));
-//                intent.setDataAndType(uri, "application/vnd.android.package-archive");
-//                startActivity(intent);
+                                }
 
 
-//                Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-//                        .setData(Uri.parse(PATH + filealmat.NameFileAPK))
-//                        .setType("application/android.com.app");
-//                startActivity(promptInstall);//installation is not working
+//                            File directory = getExternalFilesDir(null);
+//                            File file = new File(directory, "app-debug.apk");
+//                            Uri fileUri = Uri.fromFile(file);
+//                            if (Build.VERSION.SDK_INT >= 24) {
+//                                fileUri = FileProvider.getUriForFile(context, context.getPackageName() ,
+//                                        file);
+//                            }
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
+//                            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+//                            intent.setDataAndType(fileUri, "application/vnd.android" + ".package-archive");
+//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                            startActivity(intent);
+                                finish();
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//
+//                            String apkUrl = Environment.getExternalStorageDirectory() + "/" + "Documents" + "/" + "app-debug.apk";
+//                            File file = new File(apkUrl);
+//                            //"https://github.com/chu888chu888/android-autoupdater/blob/master/sample/src/main/java/com/github/snowdream/android/apps/autoupdater/MainActivity.java";
+//                            //
+//                            //"https://github.com/jehy/rutracker-free/releases/download/" + lastAppVersion + "/app-release.apk";
+//                            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+//                            //intent.setDataAndType(Uri.parse(apkUrl), "application/vnd.android.package-archive");
+//
+//                            intent.setDataAndType(Uri.fromFile(file),"application/vnd.android.package-archive");
+//                            //intent.setData(Uri.parse(apkUrl));
+//
+//
+//                            //intent.setDataAndType(Uri.parse(FileUtil.getPublicDir(Environment.getExternalStorageDirectory() + "/" + "Documents" + "/").concat("/Vertretungsplan.apk")),
+//                            //        "application/vnd.android.package-archive");
+//                            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                            startActivity(intent);
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                SettingsManager.put(this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
+        });
 
-        } catch (IOException e) {
-            Toast.makeText(getApplicationContext(), "ОШИБКА ОБНОВЛЕНИЯ !", Toast.LENGTH_LONG).show();
-        }
-        return true;
+
     }
+//////////////
+
+
 }

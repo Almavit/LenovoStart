@@ -3,9 +3,10 @@ package by.matveev.lenovostart;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -14,31 +15,28 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.Filealmat;
 import by.matveev.lenovostart.lib.MyPremission;
 import by.matveev.lenovostart.lib.ProgressTextView;
 import by.matveev.lenovostart.lib.Setting;
+import by.matveev.lenovostart.lib.SettingsManager;
 import by.matveev.lenovostart.lib.WIFIService;
 
 
@@ -64,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    SQLiteDatabase db;
     Setting setting;
 
+    private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
     final String FILENAME_CSV = "999.csv";
     final String DIR_SD = "Documents";
 
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    private static final String ENCODING_UTF8 = "UTF-8";
     String[] nextLine;
     ProgressTextView progressTextViewMain;
-
+    String PACKAGE_NAME;
 
 //    final String USER_NAME = "user_name";
 //    final String USER_PASSWORD = "user_passowrd";
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DBHelper db = new DBHelper(this);
         db.createDataBase();
         db.close();
-
+        PACKAGE_NAME = getApplicationContext().getPackageName();
 
         filealmat = new Filealmat();
         setting = new Setting();
@@ -172,48 +171,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-//    //===================  обновление программы старт ===========================
-//
-//    public boolean Update(String apkurl){
-//        try {
-//            if(apkurl.length()!=0) {
-//                URL url = new URL(apkurl);
-//                HttpURLConnection c = (HttpURLConnection) url.openConnection();
-//                c.setRequestMethod("GET");
-//                c.setDoOutput(true);
-//                c.connect();
-//
-//                String PATH = Environment.getExternalStorageDirectory() + filealmat.NameDirectory;
-//                File file = new File(PATH);
-//                file.mkdirs();
-//                File outputFile = new File(file, filealmat.NameFileAPK);
-//                FileOutputStream fos = new FileOutputStream(outputFile);
-//
-//                InputStream is = c.getInputStream();
-//
-//                byte[] buffer = new byte[1024];
-//                int len1 = 0;
-//                while ((len1 = is.read(buffer)) != -1) {
-//                    fos.write(buffer, 0, len1);
-//                }
-//                fos.close();
-//                is.close();//till here, it works fine - .apk is download to my sdcard in download file
-//
-//                Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-//                        .setData(Uri.parse(PATH + filealmat.NameFileAPK))
-//                        .setType("application/android.com.app");
-//                startActivity(promptInstall);//installation is not working
-//            }else{
-//                if(!filealmat.LoadFileFtp(this, filealmat.NameDirectory,filealmat.NameFileAPK)) {
-//                    return false;
-//                }
-//            }
-//        } catch (IOException e) {
-//            Toast.makeText(getApplicationContext(), "ОШИБКА ОБНОВЛЕНИЯ !", Toast.LENGTH_LONG).show();
-//        }
-//        return true;
-//    }
-    //===================  обновление программы конец ===========================
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         boolean allowed = true;
@@ -350,7 +307,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btnSetting:
-
+//                Update(0,this);
+//
                 Intent intentSetting = new Intent(this, SettingActivity.class);
                 startActivity(intentSetting);
                 break;
@@ -387,242 +345,100 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
 //===============================
-                //подключаемся к FTP серверу
-//                FTPModel mymodel = new FTPModel();
-//                // получает корневой каталог
-//                File sdPath = Environment.getExternalStorageDirectory();
-//                // добавляем свой каталог устройства к пути куда загружаем файл с сервера
-//                sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD + "/" + FILENAME_CSV);
-//                // загрузка csv файла с FTP сервера
-//                boolean ko = mymodel.downloadAndSaveFile(setting.sAdressServer, Integer.parseInt(setting.sPortFTP),
-//                        setting.sUserFTP, setting.sPasswordFTP, FILENAME_CSV, sdPath);
-//                if (ko) {
-//                    // Toast.makeText(context, "Файл данных загружен", Toast.LENGTH_LONG).show();
-//                    txtLog.setText("ДАННЫЕ ЗАГРУЖЕНЫ");
-//                    txtLog.setBackgroundColor(Color.GREEN);
-//                } else {
-//                    //Toast.makeText(context, "Файл данных не загружен", Toast.LENGTH_LONG).show();
-//                    txtLog.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
-//                    txtLog.setBackgroundColor(Color.RED);
-//                    break;
-//                }
-////////////////////////////   распаковка CSV    ////////////////////////////////////
-//                try {
-//// OPTION 1: if the file is in the sd
-//
-//                    File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
-//                            DIR_SD + "/" + FILENAME_CSV);
-//// END OF OPTION 1
-//                    dbHelper = new DBHelper(this);
-//                    //SQLiteDatabase db = dbHelper.getReadableDatabase();
-//                    //Environment.getExternalStorageDirectory()
-//// OPTION 2: pack the file with the app
-//                    /* "If you want to package the .csv file with the application and have it install on the internal storage when the app installs, create an assets folder in your project src/main folder (e.g., c:\myapp\app\src\main\assets\), and put the .csv file in there, then reference it like this in your activity:" (from the cited answer) */
-//                    /* "Если вы хотите упаковать файл .csv вместе с приложением и установить его во внутреннее хранилище при установке приложения, создайте папку assets в вашей папке project src/main (например, c:\myapp\app\src\main\assets \), и поместите туда файл .csv, а затем ссылайтесь на него следующим образом в вашей деятельности:" (из процитированного ответа) */
-//                    // String csvfileStrin  = this.getApplicationInfo().dataDir + File.pathSeparatorChar  +
-//                    //FILENAME_CSV;
-//                    //    File csvfiles = csvfile;//new File(csvfileString);
-//// END OF OPTION 2
-//                    CSVReader reader = new CSVReader(
-//                            new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-//                            ';', '\'', 0);
-//                    //sStrok = reader.toString();
-//                    // считываем данные с БД
-//                    database = dbHelper.getWritableDatabase();
-//                    Cursor basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT, null);
-//                    // определяем, какие столбцы из курсора будут выводиться в ListView
-//                    Integer iCountStrok = basecursor.getCount();//количество строк
-//                    iCountStrok = 0;
-//
-//                    while ((nextLine = reader.readNext()) != null) {
-//                        iCountStrok++;
-//
-//                    }
-//
-//
-//                    reader = new CSVReader(
-//                            new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-//                            ';', '\'', 0);
-//                    progressTextViewMain.setMaxValue(iCountStrok);
-//                    Integer iCountField = basecursor.getColumnCount();//количество полей
-//                    basecursor.moveToFirst();// установка курсора в начало
-//                    iCountStrok = 1;
-//                    while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
-//                        progressTextViewMain.setValue(iCountStrok);
-//                        iCountStrok++;
-//                        String sqlStroka = nextLine[0].toString(); //QR code
-//                        sqlStroka = nextLine[1].toString(); // № invoice
-//                        sqlStroka = nextLine[2].toString(); // invoice date
-//                        sqlStroka = nextLine[3].toString();//provider
-//                        sqlStroka = nextLine[4].toString();// # items in the invoice
-//                        sqlStroka = nextLine[5].toString();// barcode
-//                        sqlStroka = nextLine[6].toString();//name  product
-//                        sqlStroka = nextLine[7].toString();// price
-//                        sqlStroka = nextLine[8].toString();// status
-//
-//                        sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_BARCODE +
-//                                " = '" + nextLine[5].toString() + "' AND " + DBHelper.KEY_NUM_NAKL +
-//                                " = '" + nextLine[1].toString() + "' AND " +
-//                                DBHelper.KEY_DATE + " = '" + nextLine[2].toString() + "'";
-//                        basecursor = database.rawQuery(sqlStroka, null);
-//                        basecursor.moveToFirst();// установка курсора в начало
-//                        iCountField = basecursor.getCount();//количество полей
-//                        //  csvfileString = basecursor.getString(4);
-////                        if(basecursor.isAfterLast()){
-////                         }else{
-////                        }
-//                        if (iCountField != 0) {
-//
-////                            sValueFieldNumNakldn = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_QR_CODE));
-////                            sValueFieldBarcode   = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_BARCODE));
-////                            sValueFieldDate      = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_DATE));
-//                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-//                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-//                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-//                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-//                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-//                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-//                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-//                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-//                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-//                            database.update(DBHelper.TABLE_DOCUMENT, contentValues, null, null);
-//                        } else {
-//                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-//                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-//                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-//                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-//                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-//                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-//                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-//                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-//                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-//                            database.insert(DBHelper.TABLE_DOCUMENT, null, contentValues);
-//                        }
-//
-//                    }
-//                    database.close();
-//                    txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
-//                    txtLog.setBackgroundColor(Color.GREEN);
-//                    break;
-//
-//
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-                //===========================================
+
+//===========================================
         }
     }
-//
-//    public boolean LoadSaveCsvToDB(String DirName, String FileNameCSV, String SqlStroka, String TableName) throws IOException {
-//        boolean returnstatus = true;
-//        ContentValues ScontentValues = new ContentValues();
-//        //SQLiteDatabase db;
-//        //подключаемся к FTP серверу
-//        FTPModel mymodel = new FTPModel();
-//        // получает корневой каталог
-//        File sdPath = Environment.getExternalStorageDirectory();
-//        // добавляем свой каталог устройства к пути куда загружаем файл с сервера
-//        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName + "/" + FileNameCSV);
-//        // загрузка csv файла с FTP сервера
-//        boolean ko = mymodel.downloadAndSaveFile(sAdressServer, Integer.parseInt(sPortFTP),
-//                sUserFTP, sPasswordFTP, FILENAME_CSV, sdPath);
-//        if (ko) {
-//
-//        } else {
-//            return false;// не загрузилось
-//        }
-////////////////////////////////////
-//        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
-//                DirName + "/" + FileNameCSV);
-//// END OF OPTION 1
-//        DBHelper dbHelper = new DBHelper(this);
-//        db = dbHelper.getWritableDatabase();//getReadableDatabase
-//        db.delete(TableName,null,null);
-//        db.close();
-//        db = dbHelper.getWritableDatabase();
-//        Cursor basecursor = db.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-//        Integer iCount = basecursor.getCount();
-//        CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-//                ';', '\'', 0);
-//        //sStrok = reader.toString();
-//        // считываем данные с БД
-//        //db = dbHelper.getWritableDatabase();
-//       // db = dbHelper.getWritableDatabase();
-//
-//        while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
-//            ScontentValues = ScontentValues(nextLine);
-////            ScontentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-////            ScontentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-////            ScontentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-////            ScontentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-////            ScontentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-////            ScontentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-////            ScontentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-////            ScontentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-////            ScontentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-//            db.insert(DBHelper.TABLE_DOCUMENT, null, ScontentValues);
-//        }
-//        db.close();
-//
-//        return returnstatus;
-//    }
-//    public ContentValues ScontentValues(String[] csvreader){
-//
-//        ContentValues ScontentValues = new ContentValues();
-//        ScontentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-//        ScontentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-//        ScontentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-//        ScontentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-//        ScontentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-//        ScontentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-//        ScontentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-//        ScontentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-//        ScontentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-//        return ScontentValues;
-//    }
+/////////////////////////////////
+public void Update(final Integer lastAppVersion, Context context) {
+    runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Доступно обновление приложения rutracker free до версии " +
+                            lastAppVersion + " - желаете обновиться? " +
+                            "Если вы согласны - вы будете перенаправлены к скачиванию APK файла,"
+                            +" который затем нужно будет открыть.")
+                    .setCancelable(true)
+                    .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
 
-//    public void loadSetting() {
+                if(!filealmat.LoadFileFtp(context, filealmat.NameDirectory,filealmat.NameFileAPK)) {
+                    //no
+                }else{
+                    // создаём новое намерение
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+// устанавливаем флаг для того, чтобы дать внешнему приложению пользоваться нашим FileProvider
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    String apkUrl = Environment.getExternalStorageDirectory() + "/" + "Documents" + "/" + filealmat.NameFileAPK;
+                    File file = new File(apkUrl);
+// генерируем URI, я определил полномочие как ID приложения в манифесте, последний параметр это файл, который я хочу открыть
+                    Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, file);
+
+// я открываю PDF-файл, поэтому я даю ему действительный тип MIME
+                    intent.setDataAndType(uri, ANDROID_PACKAGE);//"application/pdf"
+
+// подтвердите, что устройство может открыть этот файл!
+                    PackageManager pm = context.getPackageManager();
+                    if (intent.resolveActivity(pm) != null) {
+                        startActivity(intent);
+                    }
+
+                }
+
+
+//                            File directory = getExternalFilesDir(null);
+//                            File file = new File(directory, "app-debug.apk");
+//                            Uri fileUri = Uri.fromFile(file);
+//                            if (Build.VERSION.SDK_INT >= 24) {
+//                                fileUri = FileProvider.getUriForFile(context, context.getPackageName() ,
+//                                        file);
+//                            }
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
+//                            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+//                            intent.setDataAndType(fileUri, "application/vnd.android" + ".package-archive");
+//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                            startActivity(intent);
+                            finish();
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
 //
-//        SharedPreferences sPref;
+//                            String apkUrl = Environment.getExternalStorageDirectory() + "/" + "Documents" + "/" + "app-debug.apk";
+//                            File file = new File(apkUrl);
+//                            //"https://github.com/chu888chu888/android-autoupdater/blob/master/sample/src/main/java/com/github/snowdream/android/apps/autoupdater/MainActivity.java";
+//                            //
+//                            //"https://github.com/jehy/rutracker-free/releases/download/" + lastAppVersion + "/app-release.apk";
+//                            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+//                            //intent.setDataAndType(Uri.parse(apkUrl), "application/vnd.android.package-archive");
 //
-//        sPref = getSharedPreferences("setting", MODE_PRIVATE);
+//                            intent.setDataAndType(Uri.fromFile(file),"application/vnd.android.package-archive");
+//                            //intent.setData(Uri.parse(apkUrl));
 //
-//        sAdressServer = sPref.getString(ADRESS_SERVER, "");
-//        sUserFTP = sPref.getString(USER_NAME, "");
-//        sPasswordFTP = sPref.getString(USER_PASSWORD, "");
-//        sPortFTP = sPref.getString(PORT_FTP, "");
-//        sPathFile = sPref.getString(PATH_FILE, "");
-//        sModeWorking = sPref.getString(MODE_WORKING, "");
-//    }
-    ///////////////////////////////
-//    private boolean executeCommand(String ip){
-//        System.out.println("executeCommand");
-//        Runtime runtime = Runtime.getRuntime();
-//        try {
-//            Process mIpAddrProcess = runtime.exec("/system/bin/ping -c 1 "+ ip);
-//            int mExitValue = mIpAddrProcess.waitFor();
-//            txtLog.setText(" mExitValue " + mExitValue);
-//            if(mExitValue==0){
-//                txtLog.setText("ЕСТЬ СВЯЗЬ");
-//                return true;
-//            }else{
-//                txtLog.setText("НЕТ СВЯЗИ");
-//                return false;
-//            }
-//        }
-//        catch (InterruptedException ignore) {
-//            ignore.printStackTrace();
-//            System.out.println(" Exception:" + ignore);
-//            txtLog.setText(" Ошибка:" + ignore);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.out.println(" Exception:" + e);
-//            txtLog.setText(" Ошибка:" + e);
-//        } return false;
-//    }
-    //////////////
+//
+//                            //intent.setDataAndType(Uri.parse(FileUtil.getPublicDir(Environment.getExternalStorageDirectory() + "/" + "Documents" + "/").concat("/Vertretungsplan.apk")),
+//                            //        "application/vnd.android.package-archive");
+//                            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                            startActivity(intent);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            SettingsManager.put(this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+    });
+
+
+}
+//////////////
     // Start the  service
     public void startNewService(View view) {
 
@@ -635,93 +451,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopService(new Intent(this, WIFIService.class));
     }
 ////////////////////////////////////
-//ftp
-
-//    public  void ftpConn(String hostAddress, String log, String password) throws FileNotFoundException {
-//        FTPClient fClient = new FTPClient();
-//        // Environment.getExternalStorageDirectory().toString()
-//        //txtLog.setText(Environment.getExternalStorageDirectory() + "/Documents/Dat1.txt");
-//        if (!Environment.getExternalStorageState().equals(
-//                Environment.MEDIA_MOUNTED)) {
-//           // Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
-//           // ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
-//            return;
-//        }
-//        FileInputStream fInput = new FileInputStream( Environment.getExternalStorageDirectory() + "/Documents/Dat1.txt");
-//        String fs = "Yes.txt";
-//        try {
-//            fClient.connect("10.250.1.15",21);
-//
-//            fClient.enterLocalPassiveMode();
-//            fClient.login(log, password);
-//            fClient.storeFile(fs, fInput);
-//            fClient.logout();
-//            fClient.disconnect();
-//            txtLog.setText("Yes ftp");
-//        } catch (IOException ex) {
-//            System.err.println(ex);
-//            txtLog.setText("No ftp");
-//        }
-//    }
-///////////////////////////
-    // сохранить с сайта
-//private void onDownloadComplete(boolean success) {
-//    // файл скачался, можно как-то реагировать
-//    Log.i("***", "************** " + success);
-//}
-//
-//    private class LoadFile extends Thread {
-//        private final String src;
-//        private final File dest;
-//
-//        LoadFile(String src, File dest) {
-//            this.src = src;
-//            this.dest = dest;
-//        }
-//
-//        @Override
-//        public void run() {
-//            try {
-//
-//                URL u = new URL(src);
-//                FileUtils.copyURLToFile(u, dest,1000,1000);
-//                //onDownloadComplete(true);
-//                txtLog.setText("Yes save" + dest.toString());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                //onDownloadComplete(false);
-//               // txtLog.setText("No save" + dest.toString());
-//            }
-//        }
-//    }
-
-///////////////////////////////
-//private boolean executeCommand(String ip){
-//        System.out.println("executeCommand");
-//        Runtime runtime = Runtime.getRuntime();
-//        try {
-//            Process mIpAddrProcess = runtime.exec("/system/bin/ping -c 1 "+ ip);
-//            int mExitValue = mIpAddrProcess.waitFor();
-//            txtLog.setText(" mExitValue "+ mExitValue);
-//            if(mExitValue==0){
-//                txtLog.setText("YES+++");
-//                return true;
-//            }else{
-//                txtLog.setText("No---");
-//                return false;
-//            }
-//        }
-//        catch (InterruptedException ignore) {
-//            ignore.printStackTrace();
-//            System.out.println(" Exception:"+ignore);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.out.println(" Exception:"+e);
-//        } return false;
-//    }
-//////////////
-
-///////////////////////////////  end ping
 
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
