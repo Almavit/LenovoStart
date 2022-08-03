@@ -245,10 +245,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         switch (v.getId()) {
-            case R.id.btnQR:
-                Intent intentQR = new Intent(this, QRcode.class);
-                startActivity(intentQR);
-                break;
             case R.id.btnFourField:
                 Toast.makeText(MainActivity.this, getString(R.string.action_item1), Toast.LENGTH_SHORT).show();
                 startActivity(intent);
@@ -305,6 +301,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //startActivity(intentStartElectronDocument);
                 Toast.makeText(MainActivity.this, "Функция недоступна", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.btnQR:
+//                Intent intentQR = new Intent(this, QRcode.class);
+//                startActivity(intentQR);
+
+                Toast.makeText(MainActivity.this, "Функция недоступна", Toast.LENGTH_SHORT).show();
+                break;
 
             case R.id.btnSetting:
 //                Update(0,this);
@@ -327,9 +329,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     txtLog.setText("       ...       ");
                     txtLog.setBackgroundColor(Color.WHITE);
+                    Toast.makeText(this, "ЖДИТЕ! ИДЕТ ЗАГРУЗКА ДАННЫХ" , Toast.LENGTH_LONG);
                     if (filealmat.LoadSaveCsvToDB(this, DIR_SD,"price.csv",
                             "select * from " + DBHelper.TABLE_DOCUMENT_PRICE,DBHelper.TABLE_DOCUMENT_PRICE)){
                         txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
+                        Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ" , Toast.LENGTH_LONG);
                         txtLog.setBackgroundColor(Color.GREEN);
                     }else{
                         txtLog.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");

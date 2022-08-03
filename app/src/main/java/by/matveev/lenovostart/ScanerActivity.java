@@ -54,20 +54,10 @@ import java.util.List;
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.FTPModel;
 import by.matveev.lenovostart.lib.Filealmat;
+import by.matveev.lenovostart.lib.Setting;
 
 
 public class ScanerActivity extends AppCompatActivity implements View.OnClickListener{
-
-    public static  final String KEY_QR_CODE = "qrcode";
-    public static  final String KEY_NUM_NAKL = "numnakl";
-    public static  final String KEY_DATE = "date";
-    public static  final String KEY_NAME_POST = "namepost";
-    public static  final String KEY_NUM_POZ = "numpoz";
-    public static  final String KEY_BARCODE = "barcode";
-    public static  final String KEY_NAME_TOV = "nametov";
-    public static  final String KEY_PRICE = "price";
-    public static  final String KEY_QUANTITY = "quantity";
-    public static  final String KEY_STATUS = "status";
 
     EditText txtnBarcode;
     EditText txtdPrice;
@@ -84,26 +74,26 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     Button btnSaveToServer;
     Button btnEditDatTxt;
 
-    final String USER_NAME = "user_name";
-    final String USER_PASSWORD = "user_passowrd";
-    final String ADRESS_SERVER = "adress_server";
-    final String PATH_FILE = "path_file";
-    final String PORT_FTP = "21";
-    final String MODE_WORKING = "1";
+//    final String USER_NAME = "user_name";
+//    final String USER_PASSWORD = "user_passowrd";
+//    final String ADRESS_SERVER = "adress_server";
+//    final String PATH_FILE = "path_file";
+//    final String PORT_FTP = "21";
+//    final String MODE_WORKING = "1";
 
-    String sAdressServer;
-    String sUserFTP;
-    String sPasswordFTP;
-    String sPortFTP;
-    String sPathFile;
-    String sModeWorking;
+//    String sAdressServer;
+//    String sUserFTP;
+//    String sPasswordFTP;
+//    String sPortFTP;
+//    String sPathFile;
+//    String sModeWorking;
 
 
     private static final int MY_REQUEST_CODE = 123;
 
     private WifiManager wifiManager;
 
-
+    Setting setting = new Setting();
 
     InputMethodManager imm;// для вывода клавиатуры
     // переменные для диалогового окна Выгрузить - Удалить
@@ -114,20 +104,16 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 
 
     final String LOG_TAG = "myLogs";
-    final String DIR_SD = "Documents";
-    final String FILENAME_SD = "Dat1.txt";
-    //final String FILENAME_SD_copy = "Dat_Copy.txt";
-
-
     private static final int PERMISSION_REQUEST_CODE = 123;
     private Handler mHandler = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
+        //setting = new Setting(this);
 
 
 
@@ -137,35 +123,39 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         setSupportActionBar(toolbar);
 
         // переменные и функции для диалогового окна
-        loadSetting();  //загрузка настроек программы
+        try {
+            setting.loadSetting(this);  //загрузка настроек программы
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         context = ScanerActivity.this;
-        String title = "Выбор есть всегда";
-        String message = "Выбери пищу";
-        String button1String = "Вкусная пища";
-        String button2String = "Здоровая пища";
-
-        ad = new AlertDialog.Builder(context);
-        ad.setTitle(title);  // заголовок
-        ad.setMessage(message); // сообщение
-        ad.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int arg1) {
-                Toast.makeText(context, "Вы сделали правильный выбор",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-        ad.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int arg1) {
-                Toast.makeText(context, "Возможно вы правы", Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
-        ad.setCancelable(true);
-        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
-                Toast.makeText(context, "Вы ничего не выбрали",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
+//        String title = "Выбор есть всегда";
+//        String message = "Выбери пищу";
+//        String button1String = "Вкусная пища";
+//        String button2String = "Здоровая пища";
+//
+//        ad = new AlertDialog.Builder(context);
+//        ad.setTitle(title);  // заголовок
+//        ad.setMessage(message); // сообщение
+//        ad.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int arg1) {
+//                Toast.makeText(context, "Вы сделали правильный выбор",
+//                        Toast.LENGTH_LONG).show();
+//            }
+//        });
+//        ad.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int arg1) {
+//                Toast.makeText(context, "Возможно вы правы", Toast.LENGTH_LONG)
+//                        .show();
+//            }
+//        });
+//        ad.setCancelable(true);
+//        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//            public void onCancel(DialogInterface dialog) {
+//                Toast.makeText(context, "Вы ничего не выбрали",
+//                        Toast.LENGTH_LONG).show();
+//            }
+//        });
 
 
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -216,7 +206,13 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         txtdQuantity.setVisibility(VisibleIntQuantity);
 
 // проверка наличия разрешения на чтение и редактирование файла
-        readFileSD();
+        try {
+            writeFileSD();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+       // filealmat.writeFileSD(this,setting.sPathFile,setting.FileNameDat,);
+
 
 // события barcode addTextChangedListener
         txtnBarcode.addTextChangedListener(new TextWatcher() {
@@ -445,13 +441,13 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         String txtNumber = "";
         String txtQuantity = "";
         String txtPrice = "";
-        String textAdd = "";
-        String line = "";
-        Integer NumberOfRecords = 0;
+//        String textAdd = "";
+//        String line = "";
+//        Integer NumberOfRecords = 0;
         StringBuilder addText = new StringBuilder();
 
 
-        loadSetting();
+        setting.loadSetting(this);
         if (txtnNumber.length() > 0 && txtnNumber.getVisibility() == View.VISIBLE)
            txtNumber = txtnNumber.getText().toString();
         if (txtdQuantity.length() > 0 && txtdQuantity.getVisibility() == View.VISIBLE)
@@ -459,14 +455,15 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         if (txtdPrice.length() > 0 && txtdPrice.getVisibility() == View.VISIBLE)
            txtPrice = txtdPrice.getText().toString();
         String text =  txtBarcode + ";" + txtPrice + ";" + txtQuantity + ";" + txtNumber + ";";
+        if (text.length()<=4) return;
 
         addText.insert(0,text);
         Filealmat filealmat = new Filealmat();
-        if (filealmat.writeFileSD(this,DIR_SD,FILENAME_SD,addText) != 0){
+        if (filealmat.writeFileSD(this,setting.sPathFile,setting.FileNameDat,addText) != 0){
             return;
         }else{
             btnAddPosition.setText("Добавить позицию (" + filealmat.NumberOfRecords + ")");
-            if (!sModeWorking.equals("1")) {
+            if (!setting.sModeWorking.equals("1")) {
                 btnSaveToServer.setEnabled(false);
             }else{
                 btnSaveToServer.setEnabled(true);
@@ -474,112 +471,6 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             btnDeleteFile.setEnabled(true);
 
         }
-
-//
-//        // проверяем доступность SD
-//        if (!Environment.getExternalStorageState().equals(
-//                Environment.MEDIA_MOUNTED)) {
-//            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
-//            ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
-//            return;
-//        }
-//        // получаем путь к SD
-//        File sdPath = Environment.getExternalStorageDirectory();
-//        // добавляем свой каталог к пути
-//        sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
-//        // создаем каталог
-//        sdPath.mkdirs();
-//
-//        File[] elems = sdPath.listFiles();
-//
-//        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
-//        int i = 0;
-//        paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
-//        i++;
-//        if (elems != null) {
-//            for (File elem : elems) {
-//                paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
-//                i++;
-//            }
-//        }
-//        MediaScannerConnection.scanFile(ScanerActivity.this, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
-//        // формируем объект File, который содержит путь к файлу
-//        File sdFile = new File(sdPath, FILENAME_SD);
-//        //File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
-//
-//        // Проверка наличия файла
-//        if (sdFile.exists()){
-//            //ToastMessageCenter("Файл в наличии.");
-//            // проверка разрешений
-//            if (!myPremission())  return;
-//            String lineSeparator = System.getProperty("line.separator");
-//            try {
-//                // открываем поток для чтения
-//                BufferedReader br = new BufferedReader(new FileReader(sdFile));
-//                // пишем данные
-//                //ToastMessageCenter("Файл открыт для чтения.");
-//
-//                StringBuilder builder = new StringBuilder();
-//                NumberOfRecords = 0;
-//                while ((line = br.readLine()) != null) {
-//                    builder.append(line + "\r\n");
-//                    ++NumberOfRecords;
-//                }
-//                textAdd = builder.toString();
-//                // закрываем поток
-//                br.close();
-//                Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
-//                btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
-//        //        btnUploadDelete.setEnabled(true);
-//                if (!sModeWorking.equals("1")) {
-//                    btnSaveToServer.setEnabled(false);
-//                }else{
-//                    btnSaveToServer.setEnabled(true);
-//                }
-//                btnDeleteFile.setEnabled(true);
-//
-//                //ToastMessageCenter( "Чтение");
-//                //if(sdFile.exists())
-//                  //sdFile.renameTo(sdFile); // переименовать файл
-//                    //copyFileUsingStream(sdFile, sdFile_copy);// копировать файл
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
-//                return;
-//            }
-//        }//else{ ToastMessageCenter("Файл отсутствует."); }
-//        try {
-//            // открываем поток для записи если файла нет
-//            //ToastMessageCenter("Запись");
-//            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
-//            // пишем данные
-//            textAdd = textAdd + text ;
-//            //bw.write(textAdd);
-//
-//            bw.append(textAdd);
-//            // закрываем поток
-//            bw.close();
-//                   ++NumberOfRecords;
-//            //if(sdFile.exists())
-//                //sdFile.renameTo(sdFile); // переименовать файл
-//               //copyFileUsingStream(sdFile, sdFile);// копировать файл
-//            Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
-//            //ToastMessageCenter("Данные сохранены на SD.+");
-//            btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
-//       //     btnUploadDelete.setEnabled(true);
-//            if (!sModeWorking.equals("1")) {
-//                //1
-//                btnSaveToServer.setEnabled(false);
-//            }else{
-//                btnSaveToServer.setEnabled(true);
-//            }
-//            btnDeleteFile.setEnabled(true);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            ToastMessageCenter("Ошибка: Файл невозможно открыть.");
-//            return;
-//        }
     }
 
 //================================================================
@@ -628,13 +519,17 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
             return;
         }
-        loadSetting();
+        try {
+            setting.loadSetting(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         // получаем путь к SD
         File sdPath = Environment.getExternalStorageDirectory();
         // добавляем свой каталог к пути
-        sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + setting.sPathFile);
         // создаем каталог
         sdPath.mkdirs();
 
@@ -652,7 +547,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         }
         MediaScannerConnection.scanFile(ScanerActivity.this, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
         // формируем объект File, который содержит путь к файлу
-        final File sdFile = new File(sdPath, FILENAME_SD);
+        final File sdFile = new File(sdPath, setting.FileNameSetting);
 //        final File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
 
         if(sdFile.exists())
@@ -663,16 +558,16 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         //sdFile_copy.delete();
 
         if(sdFile.exists())
-            ToastMessageCenter("Файл " + FILENAME_SD + " не удален!");
+            ToastMessageCenter("Файл " + setting.FileNameSetting + " не удален!");
         else
-            ToastMessageCenter("Файл " + FILENAME_SD + " удален!");
+            ToastMessageCenter("Файл " + setting.FileNameSetting + " удален!");
         //if(sdFile_copy.exists())
         //    ToastMessageCenter("Файл sdFile_copy не удален!");
         //else
         //    ToastMessageCenter("Файл sdFile_copy удален!");
         btnAddPosition.setText("Добавить позицию ");
        // btnUploadDelete.setEnabled(false);
-        if (!sModeWorking.equals("1")){
+        if (!setting.sModeWorking.equals("1")){
             btnSaveToServer.setEnabled(false);
         }else{
             btnSaveToServer.setEnabled(false);
@@ -680,23 +575,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         btnDeleteFile.setEnabled(false);
         txtLogScaner.setText("...");
     }
-    public void SavDelFileOnClick(View v) {
-        //============   одна кнопка
-/*        AlertDialog.Builder builder = new AlertDialog.Builder(ScanerActivity.this);
-        builder.setTitle("Важное сообщение!")
-                .setMessage("Покормите кота!")
-                .setCancelable(true)
-                .setNegativeButton("ОК, иду на кухню",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();*/
-        //ad.show();
-        showDialog(IDD_THREE_BUTTONS);
-    }
+//    public void SavDelFileOnClick(View v) {
+//
+//        showDialog(IDD_THREE_BUTTONS);
+//    }
 
     @Override
     protected Dialog onCreateDialog(int id) {
@@ -709,7 +591,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         // получаем путь к SD
         File sdPath = Environment.getExternalStorageDirectory();
         // добавляем свой каталог к пути
-        sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + setting.sPathFile);
         // создаем каталог
         sdPath.mkdirs();
 
@@ -727,9 +609,13 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         }
         MediaScannerConnection.scanFile(ScanerActivity.this, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
         // формируем объект File, который содержит путь к файлу
-        final File sdFile = new File(sdPath, FILENAME_SD);
+        final File sdFile = new File(sdPath, setting.FileNameDat);
 //        final File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
-        loadSetting();
+        try {
+            setting.loadSetting(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         switch (id) {
 
             case IDD_THREE_BUTTONS:
@@ -741,23 +627,16 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                                     public void onClick(DialogInterface dialog,
                                                         int id) {
                                         if(sdFile.exists())
-                                            //sdFile.renameTo(sdFile_copy);
+
                                             sdFile.delete();
-                                        //if(sdFile_copy.exists())
-                                            //sdFile.renameTo(sdFile_copy);
-                                            //sdFile_copy.delete();
+
 
                                         if(sdFile.exists())
-                                            ToastMessageCenter("Файл sdFile не удален!");
+                                            ToastMessageCenter("Файл " + setting.FileNameDat + " не удален!");
                                         else
-                                            ToastMessageCenter("Файл sdFile удален!");
-                                        //if(sdFile_copy.exists())
-                                        //    ToastMessageCenter("Файл sdFile_copy не удален!");
-                                        //else
-                                        //    ToastMessageCenter("Файл sdFile_copy удален!");
+                                            ToastMessageCenter("Файл " + setting.FileNameDat + " удален!");
                                         btnAddPosition.setText("Добавить позицию ");
-           //                             btnUploadDelete.setEnabled(false);
-                                        if (!sModeWorking.equals("1")){
+                                        if (!setting.sModeWorking.equals("1")){
                                             btnSaveToServer.setEnabled(false);
                                         }else{
                                             btnSaveToServer.setEnabled(false);
@@ -772,122 +651,13 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                                                         int id) {
                                         dialog.cancel();
                                     }
-                                })
-//                        .setNegativeButton("Выгрузить",
-//                                new DialogInterface.OnClickListener() {
-//                                    public void onClick(DialogInterface dialog,
-//                                                        int id) {
-//                                        //if(sdFile_copy.exists())
-//                                        //    copyFileUsingStream(sdFile_copy, sdFile);
-//                                        //else
-//                                        //    ToastMessageCenter("Данные не собраны!");
-//                                        dialog.cancel();
-//                                    }
-//                                })
-//
-                                ;
+                                });
 
                 return builder.create();
             default:
                 return null;
         }
     }
-   private int readFileSD() {
-
-       String line = "";
-       Integer NumberOfRecords;
-       loadSetting();
-       // проверяем доступность SD
-       if (!Environment.getExternalStorageState().equals(
-               Environment.MEDIA_MOUNTED)) {
-           Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
-           ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
-           return 0;
-       }
-       // получаем путь к SD
-       File sdPath = Environment.getExternalStorageDirectory();
-       // добавляем свой каталог к пути
-       sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
-       // создаем каталог
-       //sdPath.mkdirs();
-       // формируем объект File, который содержит путь к файлу
-       File sdFile = new File(sdPath, FILENAME_SD);
-       //File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
-
-       // Проверка наличия файла
-       if (sdFile.exists()) {
-           //ToastMessageCenter("Файл в наличии.");
-           // проверка разрешений записи на карту памяти
-           if (!myPremission())
-               return 0;
-           try {
-               // открываем поток для чтения
-               BufferedReader br = new BufferedReader(new FileReader(sdFile));
-               // пишем данные
-               //ToastMessageCenter("Файл открыт для чтения.");
-
-               StringBuilder builder = new StringBuilder();
-               NumberOfRecords = 0;
-               while ((line = br.readLine()) != null) {
-                   builder.append(line + "\n");
-                   ++NumberOfRecords;
-               }
-               // закрываем поток
-               br.close();
-               Log.d(LOG_TAG, "Файл  на SD: " + sdFile.getAbsolutePath());
-               btnAddPosition.setText("Добавить позицию (" + NumberOfRecords + ")");
-               //if(sdFile.exists())
-               // sdFile.renameTo(sdFile_copy); // переименовать файл
-               //     copyFileUsingStream(sdFile, sdFile_copy);// копировать файл
-
-               return NumberOfRecords;
-           } catch (IOException e) {
-               e.printStackTrace();
-
-               if (!myPremission())
-                   ToastMessageCenter("Ошибка: Файл не открывается для чтения.");
-               else
-                    return 0;//
-
-               return 0;
-           }
-       }else{
-      //     btnUploadDelete.setEnabled(false);
-           btnSaveToServer.setEnabled(false);
-           btnDeleteFile.setEnabled(false);
-           if (!myPremission())
-               return 0;
-       }
-       return 0;
-   }
-//=================  чтение - запись настроек  =========================
-public void saveSetting(){
-//    sPref = getSharedPreferences("setting", MODE_PRIVATE);
-//    SharedPreferences.Editor ed = sPref.edit();
-//
-//    ed.putString(ADRESS_SERVER, txtAdressServer.getText().toString());
-//    ed.putString(USER_NAME, txtUserFTP.getText().toString());
-//    ed.putString(USER_PASSWORD, txtPasswordFTP.getText().toString());
-//    ed.putString(PATH_FILE, txtPathFile.getText().toString());
-//    ed.putString(PORT_FTP, txtPortFTP.getText().toString());
-//    ed.commit();
-
-}
-    public void loadSetting(){
-
-        SharedPreferences sPref;
-
-       sPref = getSharedPreferences("setting", MODE_PRIVATE);
-
-        sAdressServer = sPref.getString(ADRESS_SERVER, "");
-        sUserFTP = sPref.getString(USER_NAME, "");
-        sPasswordFTP = sPref.getString(USER_PASSWORD, "");
-        sPortFTP = sPref.getString(PORT_FTP, "");
-        sPathFile = sPref.getString(PATH_FILE, "");
-        sModeWorking = sPref.getString(MODE_WORKING, "");
-
-    }
-//=================  чтение - запись настроек  =========================
     //===========================   проверка разрешений приложения  ================================
     private boolean myPremission(){
         if (hasPermissions()){
@@ -1005,16 +775,7 @@ public void saveSetting(){
     public void requestPermissionWithRationale() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            //final String message = "Storage permission is needed to show files count";
-            //Snackbar.make(this.findViewById(R.id.activity_scaner), message, Snackbar.LENGTH_LONG)
-            //        .setAction("GRANT", new View.OnClickListener() {
-                     //   @Override
-                    //    public void onClick(View v) {
-                            requestPerms();
-                    //    }
-               //     })
-               //     .show();
-
+            requestPerms();
         } else {
             requestPerms();
         }
@@ -1061,7 +822,6 @@ public void saveSetting(){
     @Override
     protected void onStart() {
         super.onStart();
-        //InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
       showKeyboard(txtnBarcode);
         txtnBarcode.setFocusable(true);
@@ -1104,13 +864,17 @@ public void saveSetting(){
                     // ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
                     return;
                 }
-                loadSetting();
-                if (executeCommand(sAdressServer)){
+                try {
+                    setting.loadSetting(this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (setting.executeCommand(setting.sAdressServer)){
                     try{
                         FTPModel mymodel = new FTPModel();
 
 
-                        boolean co = mymodel.connect(sAdressServer,sUserFTP,sPasswordFTP,Integer.parseInt(sPortFTP));
+                        boolean co = mymodel.connect(setting.sAdressServer,setting.sUserFTP,setting.sPasswordFTP,Integer.parseInt(setting.sPortFTP));
                         if(co){
                             txtLogScaner.setText("ДАННЫЕ СОХРАНЕНЫ");
                         }else{
@@ -1125,35 +889,4 @@ public void saveSetting(){
         }
     }
     ///////////////////////////////
-    private boolean executeCommand(String ip){
-        System.out.println("executeCommand");
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process mIpAddrProcess = runtime.exec("/system/bin/ping -c 1 "+ ip);
-            int mExitValue = mIpAddrProcess.waitFor();
-            txtLogScaner.setText(" mExitValue " + mExitValue);
-            if(mExitValue==0){
-                txtLogScaner.setText("ЕСТЬ СВЯЗЬ");
-                return true;
-            }else{
-                txtLogScaner.setText("НЕТ СВЯЗИ");
-                return false;
-            }
-        }
-        catch (InterruptedException ignore) {
-            ignore.printStackTrace();
-            System.out.println(" Exception:" + ignore);
-            txtLogScaner.setText(" Ошибка:" + ignore);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(" Exception:" + e);
-            txtLogScaner.setText(" Ошибка:" + e);
-        } return false;
-    }
-
-//    private class writeFileSD {
-//    }
-//////////////
-
-    
 }

@@ -103,7 +103,7 @@
             android:text="Добавить позицию"
 
             android:textColor="#000000"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/btnSaveToServer"
@@ -120,7 +120,7 @@
             android:onClick="DeleteFile"
             android:text="УДАЛИТЬ ДАННЫЕ"
             android:textColor="#000000"
-            android:textSize="30sp"
+            android:textSize="24sp"
             android:textStyle="normal" />
 
         <Button
@@ -128,7 +128,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="РЕДАКТИРОВАНИЕ"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/txtLogScaner"

@@ -25,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 
 public class Filealmat {
     public String PatshFile;
-    public String NameFile;
+    public String NameFileCSV;
     public String NameDirectory = "Documents";
     public String NameFileAPK = "app-debug.apk";
     final String LOG_TAG = "PatshDIR_SD";

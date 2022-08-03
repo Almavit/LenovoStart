@@ -336,6 +336,7 @@ public class DBHelper extends SQLiteOpenHelper {
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
         Integer ISSSSS = 0;
+
 //        List sdsdsdsdsd = reader.readAll();
 //        String dddd = sdsdsdsdsd.toString();
         while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла

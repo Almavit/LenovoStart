@@ -23,6 +23,7 @@ public class Setting {
     public String sPathFile;
     public String sModeWorking;
     public String FileNameSetting = "setting.csv";
+    public String FileNameDat = "Dat1.txt";
 
     final String USER_NAME = "user_name";
     final String USER_PASSWORD = "user_passowrd";
@@ -80,14 +81,7 @@ public class Setting {
             }
         }
 
-//        if (!txtAdressServer.equals("")) {
-//            txtAdressServer.setText(sAdressServer);
-//            txtUserFTP.setText(sUserFTP);
-//            txtPasswordFTP.setText(sPasswordFTP);
-//            txtPathFile.setText(sPathFile);
-//            txtPortFTP.setText(sPortFTP);
-//            txtModeWorking.setText(sModeWorking);
-//        }
+
         return true;
     }
     public boolean saveSetting(Context context) throws IOException {
@@ -99,26 +93,20 @@ public class Setting {
         sPref = context.getSharedPreferences("setting", MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
 
-//        ed.putString(ADRESS_SERVER, txtAdressServer.getText().toString());
-//        ed.putString(USER_NAME, txtUserFTP.getText().toString());
-//        ed.putString(USER_PASSWORD, txtPasswordFTP.getText().toString());
-//        ed.putString(PATH_FILE, txtPathFile.getText().toString());
-//        ed.putString(PORT_FTP, txtPortFTP.getText().toString());
-//        ed.putString(MODE_WORKING, txtModeWorking.getText().toString());
         if (nextLine!= null) {
             ed.putString(ADRESS_SERVER, nextLine[0].toString());
             ed.putString(USER_NAME, nextLine[1].toString());
             ed.putString(USER_PASSWORD, nextLine[2].toString());
-            ed.putString(PATH_FILE, nextLine[3].toString());
-            ed.putString(PORT_FTP, nextLine[4].toString());
+            ed.putString(PORT_FTP, nextLine[3].toString());
+            ed.putString(PATH_FILE, nextLine[4].toString());
             ed.putString(MODE_WORKING, nextLine[5].toString());
             ed.commit();
         }else{
             ed.putString(ADRESS_SERVER, "10.250.1.16");
             ed.putString(USER_NAME, "FTPsession");
             ed.putString(USER_PASSWORD, "12345");
-            ed.putString(PATH_FILE, "Documents");
             ed.putString(PORT_FTP, "21");
+            ed.putString(PATH_FILE, "Documents");
             ed.putString(MODE_WORKING, "1");
             ed.commit();
             return false;

@@ -89,6 +89,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 String apkurl = "";
                 //apkurl = Environment.getExternalStorageDirectory() + "/" + filealmat.NameDirectory + "/" + filealmat.NameFileAPK;
                 //Update(apkurl);
+                Toast.makeText(getApplicationContext(), "ЖДИТЕ! ИДЕТ ОБНОВЛЕНИЕ!",
+                        Toast.LENGTH_LONG).show();
                 Update(0,this);
                 break;
             case R.id.btnSaveSetting:
@@ -104,7 +106,12 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                             stringsetting[5] = txtModeWorking.getText().toString();
                             setting.nextLine = stringsetting;
                     if(!setting.saveSetting(this)){
-
+                        Toast.makeText(getApplicationContext(), "НАСТРОЙКИ НЕ СОХРАНЕНЫ",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    }else{
+                        Toast.makeText(getApplicationContext(), "НАСТРОЙКИ СОХРАНЕНЫ",
+                                Toast.LENGTH_SHORT).show();
                         break;
                     }
                 } catch (IOException e) {
@@ -115,6 +122,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 try {
                     if(!setting.loadSetting(this)){
                         Toast.makeText(this, "ИЗМЕНИТЬ И СОХРАНИТЬ НОВЫЕ НАСТРОЙКИ", Toast.LENGTH_LONG).show();
+                        break;
+                    }else{
+                        Toast.makeText(getApplicationContext(), "НАСТРОЙКИ ЗАГРУЖЕНЫ",
+                                Toast.LENGTH_SHORT).show();
                         break;
                     }
                 } catch (IOException e) {
