@@ -2,6 +2,10 @@ package by.matveev.lenovostart;
 
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +19,7 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -42,50 +47,15 @@ import by.matveev.lenovostart.lib.WIFIService;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-//    public static Network getNetwork(final Context context, final int transport) {
-//        final ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//
-//        for (Network network : connManager.getAllNetworks()) {
-//            NetworkCapabilities networkCapabilities = connManager.getNetworkCapabilities(network);
-//            if (networkCapabilities != null &&
-//                    networkCapabilities.hasTransport(transport) &&
-//                    networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
-//                return network;
-//            }
-//        }
-//        return null;
-//    }
-
-//    private static final int PERMISSION_REQUEST_CODE = 123;
-//
-//    SQLiteDatabase database;
-//    SQLiteDatabase db;
     Setting setting;
 
     private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
-    final String FILENAME_CSV = "999.csv";
+//    final String FILENAME_CSV = "999.csv";
     final String DIR_SD = "Documents";
 
-//    private static final String FILENAME = "./alphabet.utf8";
-//    private static final String ENCODING_WIN1251 = "windows-1251";
-//    private static final String ENCODING_UTF8 = "UTF-8";
     String[] nextLine;
     ProgressTextView progressTextViewMain;
     String PACKAGE_NAME;
-
-//    final String USER_NAME = "user_name";
-//    final String USER_PASSWORD = "user_passowrd";
-//    final String ADRESS_SERVER = "adress_server";
-//    final String PATH_FILE = "path_file";
-//    final String PORT_FTP = "21";
-//    final String MODE_WORKING = "1";
-
-//    String sAdressServer;
-//    String sUserFTP;
-//    String sPasswordFTP;
-//    String sPortFTP;
-//    String sPathFile;
-//    String sModeWorking;
 
     Button btnFourField;
     Button btnTwoField;
@@ -100,11 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnQrBarcode;
 
     TextView txtLog;
-//    EditText txtIp;
-//    CheckBox chkWiFi;
-
-
-   // MyPremission almPremission;
     Filealmat filealmat;
 
 
@@ -304,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnQR:
 //                Intent intentQR = new Intent(this, QRcode.class);
 //                startActivity(intentQR);
-
                 Toast.makeText(MainActivity.this, "Функция недоступна", Toast.LENGTH_SHORT).show();
                 break;
 
@@ -330,6 +294,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     txtLog.setText("       ...       ");
                     txtLog.setBackgroundColor(Color.WHITE);
                     Toast.makeText(this, "ЖДИТЕ! ИДЕТ ЗАГРУЗКА ДАННЫХ" , Toast.LENGTH_LONG);
+//==================================================================
+
+//                    NotificationCompat.Builder builder =
+//                            new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
+//                                    .setSmallIcon(R.drawable.ic_media_play_dark)
+//                                    .setContentTitle("Напоминание")
+//                                    .setContentText("Пора покормить кота")
+//                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+//
+//                    NotificationManagerCompat notificationManager =
+//                            NotificationManagerCompat.from(MainActivity.this);
+//                    notificationManager.notify(NOTIFY_ID, builder.build());
+
+//==================================================================
                     if (filealmat.LoadSaveCsvToDB(this, DIR_SD,"price.csv",
                             "select * from " + DBHelper.TABLE_DOCUMENT_PRICE,DBHelper.TABLE_DOCUMENT_PRICE)){
                         txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
@@ -389,43 +367,7 @@ public void Update(final Integer lastAppVersion, Context context) {
                     }
 
                 }
-
-
-//                            File directory = getExternalFilesDir(null);
-//                            File file = new File(directory, "app-debug.apk");
-//                            Uri fileUri = Uri.fromFile(file);
-//                            if (Build.VERSION.SDK_INT >= 24) {
-//                                fileUri = FileProvider.getUriForFile(context, context.getPackageName() ,
-//                                        file);
-//                            }
-//                            Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
-//                            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-//                            intent.setDataAndType(fileUri, "application/vnd.android" + ".package-archive");
-//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                            startActivity(intent);
                             finish();
-//                            Intent intent = new Intent(Intent.ACTION_VIEW);
-//
-//                            String apkUrl = Environment.getExternalStorageDirectory() + "/" + "Documents" + "/" + "app-debug.apk";
-//                            File file = new File(apkUrl);
-//                            //"https://github.com/chu888chu888/android-autoupdater/blob/master/sample/src/main/java/com/github/snowdream/android/apps/autoupdater/MainActivity.java";
-//                            //
-//                            //"https://github.com/jehy/rutracker-free/releases/download/" + lastAppVersion + "/app-release.apk";
-//                            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-//                            //intent.setDataAndType(Uri.parse(apkUrl), "application/vnd.android.package-archive");
-//
-//                            intent.setDataAndType(Uri.fromFile(file),"application/vnd.android.package-archive");
-//                            //intent.setData(Uri.parse(apkUrl));
-//
-//
-//                            //intent.setDataAndType(Uri.parse(FileUtil.getPublicDir(Environment.getExternalStorageDirectory() + "/" + "Documents" + "/").concat("/Vertretungsplan.apk")),
-//                            //        "application/vnd.android.package-archive");
-//                            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                            startActivity(intent);
                             dialog.dismiss();
                         }
                     })
