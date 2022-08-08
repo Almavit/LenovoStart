@@ -78,22 +78,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DBHelper db = new DBHelper(this);
-        db.createDataBase();
-        db.close();
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
         filealmat = new Filealmat();
         setting = new Setting();
         MyPremission almPremission = new MyPremission();
-//
         Boolean Premis = true;
 
-                if (!almPremission.myPremission(this)) {
-                    Premis = true;
-                } else {
-                    Premis = false;
-                }
+        if (!almPremission.myPremission(this)) {
+            Premis = true;
+        } else {
+            Premis = false;
+        }
+        DBHelper db = new DBHelper(this);
+
+        db.createDataBase();
+        db.close();
+//
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);

@@ -160,6 +160,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         try {
             checkDB = SQLiteDatabase.openDatabase(DATABASE_NAME, null, SQLiteDatabase.OPEN_READONLY);
+            // checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
         } catch (SQLiteException e) {
             //файл базы данных отсутствует
         }
@@ -168,6 +169,10 @@ public class DBHelper extends SQLiteOpenHelper {
         } else {
             checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
         }
+            checkDB.close();
+            // checkDB = null;
+            checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
+
             String SqlText = "create table if not exists " + TABLE_DOCUMENT + "(" +
 //                KEY_ID + " integer primary key, " +
                     KEY_QR_CODE + " text, " +
@@ -188,7 +193,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             checkDB.close();
 
-            checkDB.close();
+            //checkDB.close();
             // checkDB = null;
             checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
 

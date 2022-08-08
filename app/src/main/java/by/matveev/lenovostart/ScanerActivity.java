@@ -455,7 +455,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         if (txtdPrice.length() > 0 && txtdPrice.getVisibility() == View.VISIBLE)
            txtPrice = txtdPrice.getText().toString();
         String text =  txtBarcode + ";" + txtPrice + ";" + txtQuantity + ";" + txtNumber + ";";
-        if (text.length()<=4) return;
+        if (text.length()<=4) {
+            text = "";
+        };
+
 
         addText.insert(0,text);
         Filealmat filealmat = new Filealmat();
@@ -817,6 +820,11 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     public void onWindowFocusChanged(boolean hasFocus) {
 
         super.onWindowFocusChanged(hasFocus);
+        try {
+            writeFileSD();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

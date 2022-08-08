@@ -122,10 +122,18 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 try {
                     if(!setting.loadSetting(this)){
                         Toast.makeText(this, "ИЗМЕНИТЬ И СОХРАНИТЬ НОВЫЕ НАСТРОЙКИ", Toast.LENGTH_LONG).show();
+
                         break;
                     }else{
                         Toast.makeText(getApplicationContext(), "НАСТРОЙКИ ЗАГРУЖЕНЫ",
                                 Toast.LENGTH_SHORT).show();
+                        txtAdressServer.setText(setting.sAdressServer);
+                        txtUserFTP.setText(setting.sUserFTP);
+                        txtPasswordFTP.setText(setting.sPasswordFTP);
+                        txtPortFTP.setText(setting.sPortFTP);
+                        txtPathFile.setText(setting.sPathFile);
+                        txtModeWorking.setText(setting.sModeWorking);
+
                         break;
                     }
                 } catch (IOException e) {
@@ -170,43 +178,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                                     }
 
                                 }
-
-
-//                            File directory = getExternalFilesDir(null);
-//                            File file = new File(directory, "app-debug.apk");
-//                            Uri fileUri = Uri.fromFile(file);
-//                            if (Build.VERSION.SDK_INT >= 24) {
-//                                fileUri = FileProvider.getUriForFile(context, context.getPackageName() ,
-//                                        file);
-//                            }
-//                            Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
-//                            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-//                            intent.setDataAndType(fileUri, "application/vnd.android" + ".package-archive");
-//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                            startActivity(intent);
                                 finish();
-//                            Intent intent = new Intent(Intent.ACTION_VIEW);
-//
-//                            String apkUrl = Environment.getExternalStorageDirectory() + "/" + "Documents" + "/" + "app-debug.apk";
-//                            File file = new File(apkUrl);
-//                            //"https://github.com/chu888chu888/android-autoupdater/blob/master/sample/src/main/java/com/github/snowdream/android/apps/autoupdater/MainActivity.java";
-//                            //
-//                            //"https://github.com/jehy/rutracker-free/releases/download/" + lastAppVersion + "/app-release.apk";
-//                            intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-//                            //intent.setDataAndType(Uri.parse(apkUrl), "application/vnd.android.package-archive");
-//
-//                            intent.setDataAndType(Uri.fromFile(file),"application/vnd.android.package-archive");
-//                            //intent.setData(Uri.parse(apkUrl));
-//
-//
-//                            //intent.setDataAndType(Uri.parse(FileUtil.getPublicDir(Environment.getExternalStorageDirectory() + "/" + "Documents" + "/").concat("/Vertretungsplan.apk")),
-//                            //        "application/vnd.android.package-archive");
-//                            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                            startActivity(intent);
                                 dialog.dismiss();
                             }
                         })

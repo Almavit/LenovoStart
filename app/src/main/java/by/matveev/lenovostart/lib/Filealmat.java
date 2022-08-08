@@ -103,7 +103,7 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
 
                 StringBuilder builder = new StringBuilder();
                 NumberOfRecords = 0;
-                String sdsdsdsd = br.toString();
+          //      String sdsdsdsd = br.toString();
                 while ((line = br.readLine()) != null) {
                     builder.append(line + "\r\n");
                     ++NumberOfRecords;
@@ -136,14 +136,15 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
             //ToastMessageCenter("Запись");
             BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
             // пишем данные
-            textAdd = textAdd + addText.toString();//list.toString();//text;//Add + text ;
-
-
+            if(addText.length()>0){
+                textAdd = textAdd + addText.toString();//list.toString();//text;//Add + text ;
+                ++NumberOfRecords;
+            }
             bw.append(textAdd);
             // закрываем поток
 
             bw.close();
-            ++NumberOfRecords;
+
             Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
@@ -162,12 +163,12 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
         }else{
             sDirectory = namedirectoryDocuments;
         }
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),sDirectory);
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + sDirectory + "/base/");
 
         if (!file.exists()){
             Boolean ff = file.mkdir();
             if (ff){
-                Toast.makeText(context, "Folder created successfully", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Folder created successfully", Toast.LENGTH_LONG).show();//Папка успешно создана
             }
             else {
                 Toast.makeText(context, "Failed to create folder", Toast.LENGTH_LONG).show();
