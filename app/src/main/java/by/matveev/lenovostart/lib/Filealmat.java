@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
@@ -35,37 +36,39 @@ public class Filealmat {
     public Integer NumberOfRecords = 0;
 
 
-
-
-
-public boolean DeleteFile(String PatshDIR_SD, String FileName){
-    int returnerror = 0;
-    String textAdd = "";
-    String line = "";
-    // получаем путь к SD
-    File sdPath = Environment.getExternalStorageDirectory();
-    // добавляем свой каталог к пути
-    sdPath = new File(sdPath.getAbsolutePath() + "/" + PatshDIR_SD);
+//    @Override
+//    public void onCreate() {
+//
+//    }
+    public boolean DeleteFile(String PatshDIR_SD, String FileName) {
+        int returnerror = 0;
+        String textAdd = "";
+        String line = "";
+        // получаем путь к SD
+        File sdPath = Environment.getExternalStorageDirectory();
+        // добавляем свой каталог к пути
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + PatshDIR_SD);
 //        // формируем объект File, который содержит путь к файлу
-    File sdFile = new File(sdPath, FileName);
+        File sdFile = new File(sdPath, FileName);
 // Проверка наличия файла
-    if (sdFile.exists()) {
-        //Файл в наличии
-        sdFile.delete();
+        if (sdFile.exists()) {
+            //Файл в наличии
+            sdFile.delete();
+        }
+        if (sdFile.exists()) {
+            //Файл в наличии
+            sdFile.delete();
+        }
+        return true;
     }
-    if (sdFile.exists()) {
-        //Файл в наличии
-        sdFile.delete();
-    }
-    return true;
-}
-    public int  writeFileSD(Context contex, String PatshDIR_SD, String FileName,StringBuilder addText) throws IOException {
+
+    public int writeFileSD(Context contex, String PatshDIR_SD, String FileName, StringBuilder addText) throws IOException {
         int returnerror = 0;
         String textAdd = "";
         String line = "";
         // проверяем доступность SD
         MyPremission almPremission = new MyPremission();
-        if (!almPremission.myPremission(contex))  {
+        if (!almPremission.myPremission(contex)) {
             returnerror = -1;
         }
 //        // получаем путь к SD
@@ -77,7 +80,7 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
 //
         File[] elems = sdPath.listFiles();
 //
-        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
+        String[] paths = new String[1 + (elems == null ? 0 : elems.length)];
         int i = 0;
         paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
         i++;
@@ -93,7 +96,7 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
 
 
 // Проверка наличия файла
-        if (sdFile.exists()){
+        if (sdFile.exists()) {
             //Файл в наличии
             try {
                 // открываем поток для чтения
@@ -103,7 +106,7 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
 
                 StringBuilder builder = new StringBuilder();
                 NumberOfRecords = 0;
-          //      String sdsdsdsd = br.toString();
+                //      String sdsdsdsd = br.toString();
                 while ((line = br.readLine()) != null) {
                     builder.append(line + "\r\n");
                     ++NumberOfRecords;
@@ -121,14 +124,14 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
         }
 
         Setting setting = new Setting();
-        if (sdFile.getName().equals(setting.FileNameSetting)){
+        if (sdFile.getName().equals(setting.FileNameSetting)) {
             // открываем поток для записи настроек
             //ToastMessageCenter("Запись");
-                BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
-                textAdd = addText.toString();
-                bw.write(textAdd);
-                bw.close();
-                return 0;
+            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+            textAdd = addText.toString();
+            bw.write(textAdd);
+            bw.close();
+            return 0;
         }
         try {
 
@@ -136,7 +139,7 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
             //ToastMessageCenter("Запись");
             BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
             // пишем данные
-            if(addText.length()>0){
+            if (addText.length() > 0) {
                 textAdd = textAdd + addText.toString();//list.toString();//text;//Add + text ;
                 ++NumberOfRecords;
             }
@@ -156,40 +159,52 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
         return returnerror;
     }
 
-    public boolean makeFolder(Context context,String namedirectoryDocuments){
+    public boolean makeFolder(Context context, String namedirectoryDocuments) {
         String sDirectory = "";
-        if (namedirectoryDocuments == ""){
+        if (namedirectoryDocuments == "") {
             sDirectory = NameDirectory;
-        }else{
+        } else {
             sDirectory = namedirectoryDocuments;
         }
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + sDirectory + "/base/");
-
-        if (!file.exists()){
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + sDirectory + "/");
+        if (!file.exists()) {
             Boolean ff = file.mkdir();
-            if (ff){
-                Toast.makeText(context, "Folder created successfully", Toast.LENGTH_LONG).show();//Папка успешно создана
-            }
-            else {
-                Toast.makeText(context, "Failed to create folder", Toast.LENGTH_LONG).show();
+            if (ff) {
+                Toast.makeText(context, "Папка " + sDirectory + " успешно создана", Toast.LENGTH_LONG).show();//Папка успешно создана
+            } else {
+                Toast.makeText(context, "Не удалось создать папку " + sDirectory, Toast.LENGTH_LONG).show();
             }
 
+        } else {
+            // Toast.makeText(this, "Folder already exist", Toast.LENGTH_LONG).show();//Папка уже существует
         }
-        else {
+
+
+        file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + sDirectory + "/base/");
+
+        if (!file.exists()) {
+            Boolean ff = file.mkdir();
+            if (ff) {
+                Toast.makeText(context, "Папка " + sDirectory + " успешно создана", Toast.LENGTH_LONG).show();//Папка успешно создана
+            } else {
+                Toast.makeText(context, "Не удалось создать папку " + sDirectory, Toast.LENGTH_LONG).show();
+            }
+
+        } else {
             // Toast.makeText(this, "Folder already exist", Toast.LENGTH_LONG).show();//Папка уже существует
         }
         return true;
     }
 
-    public boolean LoadCsv(Context context, String DirName, String FileNameCSV){
+    public boolean LoadCsv(Context context, String DirName, String FileNameCSV) {
 
         String textAdd = "";
         String line = "";
         // проверяем доступность SD
         MyPremission almPremission = new MyPremission();
-        if (!almPremission.myPremission(context))  {
+        if (!almPremission.myPremission(context)) {
             return false;
-        }else{
+        } else {
 
         }
 ////        // получаем путь к SD
@@ -235,11 +250,12 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
                 e.printStackTrace();
             }
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-//  получить данные из csv файла по сети
+
+    //  получить данные из csv файла по сети
     public boolean LoadCsvFileFtp(Context context, String DirName, String FileNameCSV) throws IOException {
 //        Setting setting = new Setting();
 //        if (!setting.loadSetting(context)){
@@ -264,7 +280,7 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
 //        } else {
 //            return false;// не загрузилось
 //        }
-        if(!LoadFileFtp(context, DirName, FileNameCSV)){
+        if (!LoadFileFtp(context, DirName, FileNameCSV)) {
 
             return false;
 
@@ -281,11 +297,10 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
     }
 
 
-
-    public boolean LoadFileFtp(Context context, String DirName, String FileName){
+    public boolean LoadFileFtp(Context context, String DirName, String FileName) {
         Setting setting = new Setting();
         try {
-            if (!setting.loadSetting(context)){
+            if (!setting.loadSetting(context)) {
                 return false;
             }
         } catch (IOException e) {
@@ -313,18 +328,18 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
         return true;
     }
 
-//сохранение данные из файла csv в БД SQLite
+    //сохранение данные из файла csv в БД SQLite
     public boolean LoadSaveCsvToDB(Context context, String DirName, String FileNameCSV, String SqlStroka, String TableName) throws IOException, InterruptedException {
 
         boolean returnstatus = true;
         ContentValues ScontentValues = new ContentValues();
         Setting setting = new Setting();
 
-        if (!LoadCsvFileFtp(context, DirName, FileNameCSV)){
+        if (!LoadCsvFileFtp(context, DirName, FileNameCSV)) {
             return false;
-        }else{
+        } else {
             DBHelper dbHelper = new DBHelper(context);
-            if (!dbHelper.SaveDataPrice(context,TableName,SqlStroka,reader)){
+            if (!dbHelper.SaveDataPrice(context, TableName, SqlStroka, reader)) {
                 return false;
             }
             dbHelper.close();
@@ -333,7 +348,10 @@ public boolean DeleteFile(String PatshDIR_SD, String FileName){
         }
 
 
-
         return returnstatus;
     }
+//    @Override
+//    public void onCreate() {
+//
+//    }
 }

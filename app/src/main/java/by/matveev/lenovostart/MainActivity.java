@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Setting setting;
 
     private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
-//    final String FILENAME_CSV = "999.csv";
+    //    final String FILENAME_CSV = "999.csv";
     final String DIR_SD = "Documents";
 
     String[] nextLine;
@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
         filealmat = new Filealmat();
+        //filealmat.makeFolder(this, "");
+//filealmat.makeFolder(this,"");
+
         setting = new Setting();
         MyPremission almPremission = new MyPremission();
         Boolean Premis = true;
@@ -141,10 +144,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         boolean allowed = true;
 
-        switch (requestCode){
+        switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
 
-                for (int res : grantResults){
+                for (int res : grantResults) {
                     // if user granted all permissions.
                     allowed = allowed && (res == PackageManager.PERMISSION_GRANTED);
                 }
@@ -154,15 +157,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 allowed = false;
                 break;
         }
-        if (allowed){
+        if (allowed) {
             //user granted all permissions we can perform our task.
 
-            filealmat.makeFolder(this,"");
-        }
-        else {
+            filealmat.makeFolder(this, "");
+            DBHelper db = new DBHelper(this);
+
+            db.createDataBase();
+            db.close();
+            
+
+        } else {
             // we will give warning to user that they haven't granted permissions.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     Toast.makeText(this, "Storage Permissions denied.", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -171,8 +179,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
     public void showNoStoragePermissionSnackbar() {
-        Snackbar.make(this.findViewById(R.id.activity_scaner), "Storage permission isn't granted" , Snackbar.LENGTH_LONG)
+        Snackbar.make(this.findViewById(R.id.activity_scaner), "Storage permission isn't granted", Snackbar.LENGTH_LONG)
                 .setAction("SETTINGS", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -182,26 +191,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }).show();
     }
+
     public void openApplicationSettings() {
         Intent appSettingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + getPackageName()));
         startActivityForResult(appSettingsIntent, PERMISSION_REQUEST_CODE);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
-           // Filealmat makefolder = new Filealmat();
-            filealmat.makeFolder(this,"");
+            // Filealmat makefolder = new Filealmat();
+            filealmat.makeFolder(this, "");
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-     public void onClick(View v) {
+    public void onClick(View v) {
         Intent intent = new Intent(this, ScanerActivity.class);
 //         DBHelper dbHelper;// = new DBHelper(this);
 
-         ContentValues contentValues = new ContentValues();
+        ContentValues contentValues = new ContentValues();
         intent.putExtra("VisibleTxtQuantity", View.VISIBLE);
         intent.putExtra("VisibleIntQuantity", View.VISIBLE);
         intent.putExtra("VisibleTxtPrice", View.VISIBLE);
@@ -294,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     txtLog.setText("       ...       ");
                     txtLog.setBackgroundColor(Color.WHITE);
-                    Toast.makeText(this, "ЖДИТЕ! ИДЕТ ЗАГРУЗКА ДАННЫХ" , Toast.LENGTH_LONG);
+                    Toast.makeText(this, "ЖДИТЕ! ИДЕТ ЗАГРУЗКА ДАННЫХ", Toast.LENGTH_LONG);
 //==================================================================
 
 //                    NotificationCompat.Builder builder =
@@ -309,12 +320,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    notificationManager.notify(NOTIFY_ID, builder.build());
 
 //==================================================================
-                    if (filealmat.LoadSaveCsvToDB(this, DIR_SD,"price.csv",
-                            "select * from " + DBHelper.TABLE_DOCUMENT_PRICE,DBHelper.TABLE_DOCUMENT_PRICE)){
+                    if (filealmat.LoadSaveCsvToDB(this, DIR_SD, "price.csv",
+                            "select * from " + DBHelper.TABLE_DOCUMENT_PRICE, DBHelper.TABLE_DOCUMENT_PRICE)) {
                         txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
-                        Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ" , Toast.LENGTH_LONG);
+                        Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);
                         txtLog.setBackgroundColor(Color.GREEN);
-                    }else{
+                    } else {
                         txtLog.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
                         txtLog.setBackgroundColor(Color.RED);
                     }
@@ -332,60 +343,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //===========================================
         }
     }
-/////////////////////////////////
-public void Update(final Integer lastAppVersion, Context context) {
-    runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setMessage("Доступно обновление приложения rutracker free до версии " +
-                            lastAppVersion + " - желаете обновиться? " +
-                            "Если вы согласны - вы будете перенаправлены к скачиванию APK файла,"
-                            +" который затем нужно будет открыть.")
-                    .setCancelable(true)
-                    .setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
 
-                if(!filealmat.LoadFileFtp(context, filealmat.NameDirectory,filealmat.NameFileAPK)) {
-                    //no
-                }else{
-                    // создаём новое намерение
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
+    /////////////////////////////////
+    public void Update(final Integer lastAppVersion, Context context) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Доступно обновление приложения rutracker free до версии " +
+                                lastAppVersion + " - желаете обновиться? " +
+                                "Если вы согласны - вы будете перенаправлены к скачиванию APK файла,"
+                                + " который затем нужно будет открыть.")
+                        .setCancelable(true)
+                        .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                if (!filealmat.LoadFileFtp(context, filealmat.NameDirectory, filealmat.NameFileAPK)) {
+                                    //no
+                                } else {
+                                    // создаём новое намерение
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
 // устанавливаем флаг для того, чтобы дать внешнему приложению пользоваться нашим FileProvider
-                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    String apkUrl = Environment.getExternalStorageDirectory() + "/" + "Documents" + "/" + filealmat.NameFileAPK;
-                    File file = new File(apkUrl);
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    String apkUrl = Environment.getExternalStorageDirectory() + "/" + "Documents" + "/" + filealmat.NameFileAPK;
+                                    File file = new File(apkUrl);
 // генерируем URI, я определил полномочие как ID приложения в манифесте, последний параметр это файл, который я хочу открыть
-                    Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, file);
+                                    Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, file);
 
 // я открываю PDF-файл, поэтому я даю ему действительный тип MIME
-                    intent.setDataAndType(uri, ANDROID_PACKAGE);//"application/pdf"
+                                    intent.setDataAndType(uri, ANDROID_PACKAGE);//"application/pdf"
 
 // подтвердите, что устройство может открыть этот файл!
-                    PackageManager pm = context.getPackageManager();
-                    if (intent.resolveActivity(pm) != null) {
-                        startActivity(intent);
-                    }
+                                    PackageManager pm = context.getPackageManager();
+                                    if (intent.resolveActivity(pm) != null) {
+                                        startActivity(intent);
+                                    }
 
-                }
-                            finish();
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            SettingsManager.put(this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-    });
+                                }
+                                finish();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                SettingsManager.put(this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
 
 
-}
-//////////////
+    }
+
+    //////////////
     // Start the  service
     public void startNewService(View view) {
 
@@ -422,7 +435,7 @@ public void Update(final Integer lastAppVersion, Context context) {
         /*if (id == R.id.action_settings) {
            return true;
         }*/
-        switch (id){
+        switch (id) {
             case R.id.action_item1:
                 Toast.makeText(MainActivity.this, getString(R.string.action_item1), Toast.LENGTH_LONG).show();
             case R.id.action_item2:
@@ -434,7 +447,6 @@ public void Update(final Integer lastAppVersion, Context context) {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
