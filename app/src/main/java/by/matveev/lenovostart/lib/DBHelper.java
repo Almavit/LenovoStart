@@ -49,6 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static  final String KEY_BARCODE = "barcode";
     public static  final String KEY_NAME_TOV = "nametov";
     public static  final String KEY_PRICE = "price";
+    public static  final String KEY_PRICEOTP = "priceotp";
     public static  final String KEY_QUANTITY = "quantity";
     public static  final String KEY_STATUS = "status";
 
@@ -64,6 +65,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //public static  final String KEY_NUM_POZ = "numpoz";
     public static  final String PRICE_BARCODE = "barcode";
     public static  final String PRICE_NAME_TOV = "nametov";
+    public static  final String PRICE_PRICEOTP = "priceotp";
     public static  final String PRICE_PRICE = "price";
     public static  final String PRICE_DATA = "data";
     //public static  final String KEY_QUANTITY = "quantity";
@@ -83,70 +85,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         this.fContext = context;
     }
-
-//    public void QRselect(SQLiteDatabase db, String NumNakl){
-//
-//    }
-//
-//    public void selectNumNakl(SQLiteDatabase db, String NumNakl){
-//        boolean dbExist = checkDataBase();
-//        if (dbExist) {
-//            if (tableExists()){
-//
-//            }
-//
-//            //ничего не делаем – файл базы данных уже есть
-//        } else {
-//            this.getReadableDatabase();
-//
-//            db.execSQL("select * from " + TABLE_DOCUMENT + "where  " + KEY_NUM_NAKL + " = " + NumNakl);
-////                KEY_ID + " integer primary key, " +
-////                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
-////                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
-////                //KEY_PRICE + " text, " +
-////                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );
-//        }
-//    }
-
-//    public void selectGroup(SQLiteDatabase db){
-//        boolean dbExist = checkDataBase();
-//        if (dbExist) {
-//            //ничего не делаем – файл базы данных уже есть
-//        } else {
-//            this.getReadableDatabase();
-//
-//        db.execSQL("select " + KEY_NUM_NAKL + "count(*)" + " from " + TABLE_DOCUMENT + " group by " + KEY_NUM_NAKL);
-////                KEY_ID + " integer primary key, " +
-////                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
-////                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
-////                //KEY_PRICE + " text, " +
-////                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );
-//        }
-//
-//    }
-
-//    private boolean tableExists()
-//    {
-//        dataBase = SQLiteDatabase.openDatabase(DATABASE_NAME, null, SQLiteDatabase.OPEN_READONLY);
-//
-//        if (TABLE_DOCUMENT == null || dataBase == null || !dataBase.isOpen())
-//        {
-//            return false;
-//        }
-//        Cursor cursor = dataBase.rawQuery(
-//                "SELECT COUNT(*) FROM  sqlite_master   WHERE  type='table' AND name = " + TABLE_DOCUMENT,
-//                new String[] {"table", TABLE_DOCUMENT}
-//        );
-//        if (!cursor.moveToFirst())
-//        {
-//            cursor.close();
-//            return false;
-//        }
-//        int count = cursor.getInt(0);
-//        cursor.close();
-//
-//        return count > 0;
-//    }
 
    /**
      * Creates a empty database on the system and rewrites it with your own
@@ -178,7 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     KEY_QR_CODE + " text, " +
                     KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
                     KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
-                    KEY_PRICE + " text, " +
+                    KEY_PRICEOTP + " text, " + KEY_PRICE + " text, " +
                     KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")";
             checkDB.execSQL(SqlText );
 
@@ -198,7 +136,7 @@ public class DBHelper extends SQLiteOpenHelper {
             checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
 
             String SqlTextPrice = "create table if not exists " + TABLE_DOCUMENT_PRICE + "(" + PRICE_BARCODE + " text, " +
-                    PRICE_NAME_TOV + " text, " + PRICE_PRICE + " text, " + PRICE_DATA +  " text)";
+                    PRICE_NAME_TOV + " text, " + PRICE_PRICEOTP + " text, "  + PRICE_PRICE + " text, " + PRICE_DATA +  " text)";
             checkDB.execSQL(SqlTextPrice);
 
             checkDB.close();
