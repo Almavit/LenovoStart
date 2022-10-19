@@ -368,8 +368,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
             ScontentValues.put(DBHelper.PRICE_BARCODE, csvreader[0]);
             ScontentValues.put(DBHelper.PRICE_NAME_TOV, csvreader[1]);
-            ScontentValues.put(DBHelper.PRICE_PRICE, csvreader[2]);
-            ScontentValues.put(DBHelper.PRICE_DATA, csvreader[3]);
+            ScontentValues.put(DBHelper.PRICE_PRICEOTP, csvreader[2]);
+            ScontentValues.put(DBHelper.PRICE_PRICE, csvreader[3]);
+            ScontentValues.put(DBHelper.PRICE_DATA, csvreader[4]);
 
         return ScontentValues;
     }

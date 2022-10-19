@@ -243,15 +243,25 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 sqlStroka = txtnBarcode.getText().toString().replaceAll("\n","");// очистить от символа \n
                 txtnBarcode.setText(sqlStroka);
                 sqlStroka = txtnBarcode.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
-                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT_PRICE + " where " + DBHelper.KEY_BARCODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
+                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT_PRICE + " where " + DBHelper.PRICE_BARCODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
                 Cursor cursor = db.rawQuery(sqlStroka,null);
                 Integer iCountursor = cursor.getCount();
                 db.close();
                 if ((cursor != null) && (cursor.getCount() > 0)) {
                     cursor.moveToFirst();
                     String sTextView = "";
-                    sTextView = cursor.getString(2);//PricePall.setText(cursor.getString(8));
-                    sTextView = "Штрих-код" + "\n" + "ЦЕНА = " + sTextView + "   |  " + cursor.getString(3);
+                    String sPriceOtp = "";
+                    String sNameTovar = "";
+                    String sDateTovar = "";
+                    String sPrice = "";
+                    //sDateTovar = cursor.getString(0);
+                    sNameTovar = cursor.getString(1);
+                    sPriceOtp = cursor.getString(2);//PricePall.setText(cursor.getString(8));
+                    sPrice = cursor.getString(3);
+                    sDateTovar = cursor.getString(4);//PricePall.setText(cursor.getString(8));
+           //         sTextView = cursor.getString(5);
+
+                    sTextView = sNameTovar + "\n" + "ЦЕНЫ: " + sPriceOtp + "   |  " + cursor.getString(3) + "\n" + "ДАТА " + sDateTovar;
                     txtvBarcode.setText(sTextView);
                     txtvBarcode.setBackgroundColor(Color.GREEN);
                 }else{
