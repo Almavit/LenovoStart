@@ -124,6 +124,8 @@ public class DBHelper extends SQLiteOpenHelper {
        // checkDB = null;
         checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
 
+
+
         String SqlTextDat = "create table if not exists " + TABLE_DOCUMENT_DAT + "(" + DAT_KEY_ID + " integer, " +
                 DAT_KEY_BARCODE + " text, " + DAT_KEY_PRICE + " text, " + DAT_KEY_QUANTITY + " text, " +
                  DAT_KEY_POSITION+ " text)";
@@ -139,7 +141,34 @@ public class DBHelper extends SQLiteOpenHelper {
                     PRICE_NAME_TOV + " text, " + PRICE_PRICEOTP + " text, "  + PRICE_PRICE + " text, " + PRICE_DATA +  " text)";
             checkDB.execSQL(SqlTextPrice);
 
+
+
+
+
+
+            Cursor cursor = null;
+            try {
+                String column = "";
+                String name = "";
+                cursor = checkDB.rawQuery("PRAGMA table_info("+ TABLE_DOCUMENT_PRICE +")", null);
+                if (cursor != null) {
+                    Integer iCountursor = cursor.getCount();
+                    while (cursor.moveToNext()) {
+                        name = cursor.getString(1);
+                        if (column.equalsIgnoreCase(name)) {
+                            //isExists = true;
+                            break;
+                        }
+                    }
+                }
+
+            } finally {
+                if (cursor != null && !cursor.isClosed())
+                    cursor.close();
+            }
+
             checkDB.close();
+
 
         } catch (SQLiteException e) {
             if (checkDB != null) {
@@ -148,69 +177,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-//    private void CreateBase() {
-//        SQLiteDatabase checkDB = null;
-//        try {
-//            // String myPath = DATABASE_NAME;
-//            //checkDB = openOrCreateDatabase(DATABASE_NAME , MODE_PRIVATE, null);
-//            checkDB.execSQL("create table " + TABLE_DOCUMENT + "(" +
-////                KEY_ID + " integer primary key, " +
-//                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
-//                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
-//                KEY_PRICE + " text, " +
-//                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );
-//
-//        } catch (SQLiteException ioe) {
-//            //файл базы данных отсутствует
-//        }
-//        if (checkDB != null) {
-//            checkDB.close();
-//        }
-//    }
 
-//    public void openDataBase() throws SQLException {
-//
-//        // Open the database
-//        String myPath = DB_PATH + DATABASE_NAME;
-//        myDataBase = SQLiteDatabase.openDatabase(myPath, null,
-//                SQLiteDatabase.OPEN_READWRITE);
-//
-//
-//    }
-
-//    private boolean checkDataBase() {
-//        SQLiteDatabase checkDB = null;
-//        try {
-//            String myPath = DATABASE_NAME;
-//            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-//
-//        } catch (SQLiteException e) {
-//            //файл базы данных отсутствует
-//        }
-//        if (checkDB != null) {
-//            checkDB.close();
-//        }
-//        return checkDB != null ? true : false;
-//    }
-    /**
-     * Copies your database from your local assets-folder to the just created
-     * empty database in the system folder, from where it can be accessed and
-     * handled. This is done by transfering bytestream.
-     * */
-//    private void copyDataBase() throws IOException {
-//
-//        InputStream input = fContext.getAssets().open(DATABASE_NAME);
-//        String outFileName = DATABASE_NAME;
-//        OutputStream output = new FileOutputStream(outFileName);
-//        byte[] buffer = new byte[1024];
-//        int length;
-//        while ((length = input.read(buffer)) > 0) {
-//            output.write(buffer, 0, length);
-//        }
-//        output.flush();
-//        output.close();
-//        input.close();
-//    }
 
     public void openDataBase() throws SQLException {
         String path = DATABASE_NAME;
@@ -231,23 +198,6 @@ public class DBHelper extends SQLiteOpenHelper {
 //
 //        onCreate(db);
     }
-
-
-
-
-    // return cursor
-//    public Cursor query(String table, String[] columns, String selection,
-//                        String[] selectionArgs, String groupBy, String having,
-//                        String orderBy) {
-//        return myDataBase.query(table, columns, selection, selectionArgs,
-//                groupBy, having, orderBy);
-//
-//    }
-//
-//    public Cursor rawQuery(String query) {
-//        // TODO Auto-generated method stub
-//        return myDataBase.rawQuery(query, null);
-//    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

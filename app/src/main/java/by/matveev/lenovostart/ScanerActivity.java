@@ -3,18 +3,17 @@ package by.matveev.lenovostart;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.MediaScannerConnection;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,18 +37,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.FTPModel;
@@ -68,26 +62,15 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     TextView txtvQuantity;
     TextView txtvNumber;
     TextView txtLogScaner;
+
+    TextView txtPriceRoz;
+    TextView txtPriceOtp;
+
     Button btnAddPosition;
     //Button btnUploadDelete;
     Button btnDeleteFile;
     Button btnSaveToServer;
     Button btnEditDatTxt;
-
-//    final String USER_NAME = "user_name";
-//    final String USER_PASSWORD = "user_passowrd";
-//    final String ADRESS_SERVER = "adress_server";
-//    final String PATH_FILE = "path_file";
-//    final String PORT_FTP = "21";
-//    final String MODE_WORKING = "1";
-
-//    String sAdressServer;
-//    String sUserFTP;
-//    String sPasswordFTP;
-//    String sPortFTP;
-//    String sPathFile;
-//    String sModeWorking;
-
 
     private static final int MY_REQUEST_CODE = 123;
 
@@ -113,10 +96,6 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        //setting = new Setting(this);
-
-
-
 
         setContentView(R.layout.activity_scaner);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -129,34 +108,6 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             e.printStackTrace();
         }
         context = ScanerActivity.this;
-//        String title = "Выбор есть всегда";
-//        String message = "Выбери пищу";
-//        String button1String = "Вкусная пища";
-//        String button2String = "Здоровая пища";
-//
-//        ad = new AlertDialog.Builder(context);
-//        ad.setTitle(title);  // заголовок
-//        ad.setMessage(message); // сообщение
-//        ad.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int arg1) {
-//                Toast.makeText(context, "Вы сделали правильный выбор",
-//                        Toast.LENGTH_LONG).show();
-//            }
-//        });
-//        ad.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int arg1) {
-//                Toast.makeText(context, "Возможно вы правы", Toast.LENGTH_LONG)
-//                        .show();
-//            }
-//        });
-//        ad.setCancelable(true);
-//        ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            public void onCancel(DialogInterface dialog) {
-//                Toast.makeText(context, "Вы ничего не выбрали",
-//                        Toast.LENGTH_LONG).show();
-//            }
-//        });
-
 
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -171,6 +122,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         txtnNumber = (EditText) findViewById(R.id.txtnNumber);
 
         txtLogScaner = (TextView) findViewById(R.id.txtLogScaner);
+
+//        txtPriceOtp = (TextView) findViewById(R.id.txtPriceOtp);
+//        txtPriceRoz = (TextView) findViewById(R.id.txtPriceRoz);
+
         btnAddPosition = (Button) findViewById(R.id.btnAddPosition);
  //       btnUploadDelete = (Button) findViewById(R.id.btnUploadDelete);
 
@@ -199,6 +154,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         txtvPrice.setVisibility(VisibleTxtPrice);
         int VisibleIntPrice = intent.getIntExtra("VisibleIntPrice",  View.VISIBLE);
         txtdPrice.setVisibility(VisibleIntPrice);
+//        int VisibleIntPriceRoz = intent.getIntExtra("VisibleIntPriceRoz",  View.VISIBLE);
+//        txtdPrice.setVisibility(VisibleIntPriceRoz);
+//        int VisibleIntPriceOtp = intent.getIntExtra("VisibleIntPriceOtp",  View.VISIBLE);
+//        txtdPrice.setVisibility(VisibleIntPriceOtp);
 // quantity visible
         int VisibleTxtQuantity = intent.getIntExtra("VisibleTxtQuantity",  View.VISIBLE);
         txtvQuantity.setVisibility(VisibleTxtQuantity);
@@ -212,8 +171,6 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             e.printStackTrace();
         }
        // filealmat.writeFileSD(this,setting.sPathFile,setting.FileNameDat,);
-
-
 // события barcode addTextChangedListener
         txtnBarcode.addTextChangedListener(new TextWatcher() {
             @Override
@@ -245,6 +202,9 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 sqlStroka = txtnBarcode.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
                 sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT_PRICE + " where " + DBHelper.PRICE_BARCODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
                 Cursor cursor = db.rawQuery(sqlStroka,null);
+
+
+                 // DBHelper
                 Integer iCountursor = cursor.getCount();
                 db.close();
                 if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -260,13 +220,27 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                     sPrice = cursor.getString(3);
                     sDateTovar = cursor.getString(4);//PricePall.setText(cursor.getString(8));
            //         sTextView = cursor.getString(5);
+                    setTitle(sNameTovar);
+//                    txtPriceRoz.setText(sPrice);
+//                    txtPriceOtp.setText(sPriceOtp);
 
-                    sTextView = sNameTovar + "\n" + "ЦЕНЫ: " + sPriceOtp + "   |  " + cursor.getString(3) + "\n" + "ДАТА " + sDateTovar;
+                    sTextView = "ЦЕНЫ: " + sPriceOtp + "      |  " + cursor.getString(3) + "\n" + "ДАТА " + sDateTovar;
                     txtvBarcode.setText(sTextView);
                     txtvBarcode.setBackgroundColor(Color.GREEN);
+//            музыка
+//                    try {
+//                        Uri notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notify);
+//                        r.play();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+
                 }else{
                     txtvBarcode.setText("Штрих-код");
                     txtvBarcode.setBackgroundColor(Color.WHITE);
+                    setTitle("Сканирование");
+                    txtLogScaner.setText("...");
                 }
                 db.close();
                 if (txtdPrice.getVisibility() == View.VISIBLE){
@@ -587,6 +561,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         }
         btnDeleteFile.setEnabled(false);
         txtLogScaner.setText("...");
+        setTitle("Сканирование");
     }
 //    public void SavDelFileOnClick(View v) {
 //
@@ -895,8 +870,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                         boolean co = mymodel.connect(setting.sAdressServer,setting.sUserFTP,setting.sPasswordFTP,Integer.parseInt(setting.sPortFTP));
                         if(co){
                             txtLogScaner.setText("ДАННЫЕ СОХРАНЕНЫ");
+                            setTitle("ДАННЫЕ СОХРАНЕНЫ");
                         }else{
                             txtLogScaner.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
+                            setTitle("ДАННЫЕ НЕ СОХРАНЕНЫ!");
                         }
                         // saveUrl(Environment.getExternalStorageDirectory() + "/Documents/Dat1.txt", "10.250.1.15/asd");
                     }
