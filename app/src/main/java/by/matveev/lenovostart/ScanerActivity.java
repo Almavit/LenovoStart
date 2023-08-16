@@ -11,8 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.MediaScannerConnection;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -46,12 +44,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import by.matveev.lenovostart.lib.DBHelper;
+import by.matveev.lenovostart.lib.DBSampleHelper;
+import by.matveev.lenovostart.lib.EAN13CodeBuilder;
 import by.matveev.lenovostart.lib.FTPModel;
 import by.matveev.lenovostart.lib.Filealmat;
 import by.matveev.lenovostart.lib.Setting;
+import by.matveev.lenovostart.lib.WIFIService;
 
 
-public class ScanerActivity extends AppCompatActivity implements View.OnClickListener{
+public class ScanerActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText txtnBarcode;
     EditText txtdPrice;
@@ -127,7 +128,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 //        txtPriceRoz = (TextView) findViewById(R.id.txtPriceRoz);
 
         btnAddPosition = (Button) findViewById(R.id.btnAddPosition);
- //       btnUploadDelete = (Button) findViewById(R.id.btnUploadDelete);
+        //       btnUploadDelete = (Button) findViewById(R.id.btnUploadDelete);
 
         btnDeleteFile = (Button) findViewById(R.id.btnDeleteFile);
         btnSaveToServer = (Button) findViewById(R.id.btnSaveToServer);
@@ -145,23 +146,23 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         int VisibleIntBarcode = intent.getIntExtra("VisibleIntBarcode",  View.VISIBLE);
         txtnBarcode.setVisibility(VisibleIntBarcode);*/
 // number visible
-        int VisibleTxtNumber = intent.getIntExtra("VisibleTxtNumber",  View.VISIBLE);
+        int VisibleTxtNumber = intent.getIntExtra("VisibleTxtNumber", View.VISIBLE);
         txtvNumber.setVisibility(VisibleTxtNumber);
-        int VisibleIntNumber = intent.getIntExtra("VisibleIntNumber",  View.VISIBLE);
+        int VisibleIntNumber = intent.getIntExtra("VisibleIntNumber", View.VISIBLE);
         txtnNumber.setVisibility(VisibleIntNumber);
 // pricevisible
-        int VisibleTxtPrice = intent.getIntExtra("VisibleTxtPrice",  View.VISIBLE);
+        int VisibleTxtPrice = intent.getIntExtra("VisibleTxtPrice", View.VISIBLE);
         txtvPrice.setVisibility(VisibleTxtPrice);
-        int VisibleIntPrice = intent.getIntExtra("VisibleIntPrice",  View.VISIBLE);
+        int VisibleIntPrice = intent.getIntExtra("VisibleIntPrice", View.VISIBLE);
         txtdPrice.setVisibility(VisibleIntPrice);
 //        int VisibleIntPriceRoz = intent.getIntExtra("VisibleIntPriceRoz",  View.VISIBLE);
 //        txtdPrice.setVisibility(VisibleIntPriceRoz);
 //        int VisibleIntPriceOtp = intent.getIntExtra("VisibleIntPriceOtp",  View.VISIBLE);
 //        txtdPrice.setVisibility(VisibleIntPriceOtp);
 // quantity visible
-        int VisibleTxtQuantity = intent.getIntExtra("VisibleTxtQuantity",  View.VISIBLE);
+        int VisibleTxtQuantity = intent.getIntExtra("VisibleTxtQuantity", View.VISIBLE);
         txtvQuantity.setVisibility(VisibleTxtQuantity);
-        int VisibleIntQuantity = intent.getIntExtra("VisibleIntQuantity",  View.VISIBLE);
+        int VisibleIntQuantity = intent.getIntExtra("VisibleIntQuantity", View.VISIBLE);
         txtdQuantity.setVisibility(VisibleIntQuantity);
 
 // проверка наличия разрешения на чтение и редактирование файла
@@ -170,63 +171,88 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         } catch (IOException e) {
             e.printStackTrace();
         }
-       // filealmat.writeFileSD(this,setting.sPathFile,setting.FileNameDat,);
+        // filealmat.writeFileSD(this,setting.sPathFile,setting.FileNameDat,);
 // события barcode addTextChangedListener
         txtnBarcode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 //ToastMessageCenter("txtnBarcode - beforeTextChanged");
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-               // ToastMessageCenter("txtnBarcode - onTextChanged");
+                // ToastMessageCenter("txtnBarcode - onTextChanged");
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
-               // ToastMessageCenter("txtnBarcode - afterTextChanged");
+                // ToastMessageCenter("txtnBarcode - afterTextChanged");
             }
         });
 
         txtnBarcode.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if(event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)){
-                //ставить код для выборки из главного перечня
-                //txtQR.setText("");
-                //txtQR.setBackgroundColor(Color.WHITE);
-                String sqlStroka = txtnBarcode.getText().toString();
-                SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
-                //String[] columnsName = new String[]{KEY_PRICE, KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY};
-                sqlStroka = txtnBarcode.getText().toString().replaceAll("\n","");// очистить от символа \n
-                txtnBarcode.setText(sqlStroka);
-                sqlStroka = txtnBarcode.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
-                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT_PRICE + " where " + DBHelper.PRICE_BARCODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
-                Cursor cursor = db.rawQuery(sqlStroka,null);
+                if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    //ставить код для выборки из главного перечня
+                    //txtQR.setText("");
+                    //txtQR.setBackgroundColor(Color.WHITE);
+                    String sqlStroka = txtnBarcode.getText().toString();
+                    String sBarcode = txtnBarcode.getText().toString();
+                    if(sBarcode.length() == 0) return
+                            false;
+
+                    sBarcode = txtnBarcode.getText().toString().replaceAll("\n", "");// очистить от символа \n
+                    sBarcode = txtnBarcode.getText().toString().replaceAll("\u001D", "");// очистить от символа \u001D
 
 
-                 // DBHelper
-                Integer iCountursor = cursor.getCount();
-                db.close();
-                if ((cursor != null) && (cursor.getCount() > 0)) {
-                    cursor.moveToFirst();
-                    String sTextView = "";
-                    String sPriceOtp = "";
-                    String sNameTovar = "";
-                    String sDateTovar = "";
-                    String sPrice = "";
-                    //sDateTovar = cursor.getString(0);
-                    sNameTovar = cursor.getString(1);
-                    sPriceOtp = cursor.getString(2);//PricePall.setText(cursor.getString(8));
-                    sPrice = cursor.getString(3);
-                    sDateTovar = cursor.getString(4);//PricePall.setText(cursor.getString(8));
-           //         sTextView = cursor.getString(5);
-                    setTitle(sNameTovar);
+                    String ddd = sBarcode.substring(0, 2);
+                    if (ddd.equals("22")) {
+                        ddd = sBarcode.substring(0,7) + "00000";
+                        EAN13CodeBuilder bb = new EAN13CodeBuilder(ddd);
+                        sBarcode = bb.getCode().toString();
+                    }
+                    txtnBarcode.setText(sBarcode);
+                    if(sBarcode.length() < 13){
+                        Integer lengthSqlStroka = sBarcode.length();
+                        for (int x = 0; x <= (12 - lengthSqlStroka); x++){
+                            sBarcode = "0" + sBarcode;
+                        }
+                    }
+
+                    //setTitle(sqlStroka);
+                    SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
+                    //String[] columnsName = new String[]{KEY_PRICE, KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY};
+                   // sqlStroka = txtnBarcode.getText().toString().replaceAll("\n", "");// очистить от символа \n
+                   // sqlStroka = txtnBarcode.getText().toString().replaceAll("\u001D", "");// очистить от символа \u001D
+                    sqlStroka = "select * from " + DBSampleHelper.DBPrice.TABLE_DOCUMENT_PRICE + " where " + DBSampleHelper.DBPrice.PRICE_BARCODE + " = '" + sBarcode + "'";// создать строку SQL запроса
+                    Cursor cursor = db.rawQuery(sqlStroka, null);
+
+
+                    // DBHelper
+                    Integer iCountursor = cursor.getCount();
+                    db.close();
+                    if ((cursor != null) && (cursor.getCount() > 0)) {
+                        cursor.moveToFirst();
+                        String sTextView = "";
+                        String sPriceOtp = "";
+                        String sNameTovar = "";
+                        String sDateTovar = "";
+                        String sPrice = "";
+                        //sDateTovar = cursor.getString(0);
+                        sNameTovar = cursor.getString(1);
+                        sPriceOtp = cursor.getString(2);//PricePall.setText(cursor.getString(8));
+                        sPrice = cursor.getString(3);
+                        sDateTovar = cursor.getString(4);//PricePall.setText(cursor.getString(8));
+                        //         sTextView = cursor.getString(5);
+                        //setTitle(sNameTovar);
 //                    txtPriceRoz.setText(sPrice);
 //                    txtPriceOtp.setText(sPriceOtp);
 
-                    sTextView = "ЦЕНЫ: " + sPriceOtp + "      |  " + cursor.getString(3) + "\n" + "ДАТА " + sDateTovar;
-                    txtvBarcode.setText(sTextView);
-                    txtvBarcode.setBackgroundColor(Color.GREEN);
+                        sTextView = "ЦЕНЫ:   " + sPriceOtp + "   |   " + cursor.getString(3) + "   |        "   + sDateTovar; //+ "ДАТА ""\n"
+                        setTitle(sBarcode + "  |  " + sNameTovar);
+                        txtvBarcode.setText(sTextView);
+                        txtvBarcode.setBackgroundColor(Color.GREEN);
 //            музыка
 //                    try {
 //                        Uri notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -236,48 +262,48 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 //                        e.printStackTrace();
 //                    }
 
-                }else{
-                    txtvBarcode.setText("Штрих-код");
-                    txtvBarcode.setBackgroundColor(Color.WHITE);
-                    setTitle("Сканирование");
-                    txtLogScaner.setText("...");
-                }
-                db.close();
-                if (txtdPrice.getVisibility() == View.VISIBLE){
-                    txtdPrice.setFocusable(true);
-                    txtdPrice.selectAll();
-                    showKeyboard(txtdPrice);
-                }else{
-                    if (txtnNumber.getVisibility() == View.VISIBLE){
-                        txtnNumber.setFocusable(true);
-                        txtnNumber.selectAll();
-                        showKeyboard(txtnNumber);
-                    }else{
-                        if (txtdQuantity.getVisibility() == View.VISIBLE){
-                            txtdQuantity.setFocusable(true);
-                            txtdQuantity.selectAll();
-                            showKeyboard(txtdQuantity);
-                        }else{
-                            try {
-                                FocusView();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                    } else {
+                        txtvBarcode.setText("Штрих-код");
+                        txtvBarcode.setBackgroundColor(Color.WHITE);
+                        setTitle("Сканирование");
+                        txtLogScaner.setText("...");
+                    }
+                    db.close();
+                    if (txtdPrice.getVisibility() == View.VISIBLE) {
+                        txtdPrice.setFocusable(true);
+                        txtdPrice.selectAll();
+                        showKeyboard(txtdPrice);
+                    } else {
+                        if (txtnNumber.getVisibility() == View.VISIBLE) {
+                            txtnNumber.setFocusable(true);
+                            txtnNumber.selectAll();
+                            showKeyboard(txtnNumber);
+                        } else {
+                            if (txtdQuantity.getVisibility() == View.VISIBLE) {
+                                txtdQuantity.setFocusable(true);
+                                txtdQuantity.selectAll();
+                                showKeyboard(txtdQuantity);
+                            } else {
+                                try {
+                                    FocusView();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
                 }
-            }
-            return false;
+                return false;
             }
         });
 
         txtdPrice.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_DOWN &&  (keyCode == KeyEvent.KEYCODE_ENTER)){
+                if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     if (txtdQuantity.getVisibility() == View.VISIBLE) {
                         //
-                    }else{
+                    } else {
                         try {
                             FocusView();
                         } catch (IOException e) {
@@ -294,10 +320,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         txtdQuantity.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_DOWN &&  (keyCode == KeyEvent.KEYCODE_ENTER)){
-                    if (txtnNumber.getVisibility() == View.VISIBLE){
+                if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    if (txtnNumber.getVisibility() == View.VISIBLE) {
                         //
-                    }else {
+                    } else {
                         try {
                             FocusView();
                         } catch (IOException e) {
@@ -314,8 +340,8 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         txtnNumber.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_DOWN &&  (keyCode == KeyEvent.KEYCODE_ENTER)){
-                    if (btnAddPosition.getVisibility() == View.VISIBLE)  {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    if (btnAddPosition.getVisibility() == View.VISIBLE) {
                         //Toast.makeText(getApplicationContext(), "txtnNumber.setOnKeyListener", Toast.LENGTH_LONG).show();
                         try {
                             FocusView();
@@ -334,9 +360,9 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         txtnBarcode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                   // Toast.makeText(getApplicationContext(), "txtnBarcode on focus", Toast.LENGTH_LONG).show();
-                }else {
+                if (hasFocus) {
+                    // Toast.makeText(getApplicationContext(), "txtnBarcode on focus", Toast.LENGTH_LONG).show();
+                } else {
 
                 }
             }
@@ -353,8 +379,8 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                     e.printStackTrace();
                 }
                 txtnBarcode.requestFocus();
-                        txtnBarcode.setFocusable(true);
-                        txtnBarcode.selectAll();
+                txtnBarcode.setFocusable(true);
+                txtnBarcode.selectAll();
                 return false;
             }
         });
@@ -362,9 +388,9 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         txtdPrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     //Toast.makeText(getApplicationContext(), "txtdPrice on focus", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
                     //Toast.makeText(getApplicationContext(), "txtdPrice lost focus", Toast.LENGTH_LONG).show();
                 }
             }
@@ -373,10 +399,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         btnAddPosition.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     txtnBarcode.requestFocus();
                     //Toast.makeText(getApplicationContext(), "btnAddPosition on focus", Toast.LENGTH_LONG).show();
-                }else {
+                } else {
                     //Toast.makeText(getApplicationContext(), "btnAddPosition lost focus", Toast.LENGTH_LONG).show();
                 }
             }
@@ -385,15 +411,15 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void showKeyboard(TextView name) {
-       // imm.toggleSoftInput(0, 0);
+        // imm.toggleSoftInput(0, 0);
         /**
          * показываем программную клавиатуру
          */
 
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.showSoftInput(name, 0);
-            }
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(name, 0);
+        }
 
     }
 
@@ -404,7 +430,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     void FocusView() throws IOException {
         if (txtnBarcode.length() > 0) {
             writeFileSD();
-        }else{
+        } else {
             ToastMessageCenter("Отсутствуют данные по штрихкоду. В файл не записано.");
             return;
         }
@@ -433,26 +459,27 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 
         setting.loadSetting(this);
         if (txtnNumber.length() > 0 && txtnNumber.getVisibility() == View.VISIBLE)
-           txtNumber = txtnNumber.getText().toString();
+            txtNumber = txtnNumber.getText().toString();
         if (txtdQuantity.length() > 0 && txtdQuantity.getVisibility() == View.VISIBLE)
-           txtQuantity = txtdQuantity.getText().toString();
+            txtQuantity = txtdQuantity.getText().toString();
         if (txtdPrice.length() > 0 && txtdPrice.getVisibility() == View.VISIBLE)
-           txtPrice = txtdPrice.getText().toString();
-        String text =  txtBarcode + ";" + txtPrice + ";" + txtQuantity + ";" + txtNumber + ";";
-        if (text.length()<=4) {
+            txtPrice = txtdPrice.getText().toString();
+        String text = txtBarcode + ";" + txtPrice + ";" + txtQuantity + ";" + txtNumber + ";";
+        if (text.length() <= 4) {
             text = "";
-        };
+        }
+        ;
 
 
-        addText.insert(0,text);
+        addText.insert(0, text);
         Filealmat filealmat = new Filealmat();
-        if (filealmat.writeFileSD(this,setting.sPathFile,setting.FileNameDat,addText) != 0){
+        if (filealmat.writeFileSD(this, setting.sPathFile, setting.FileNameDat, addText) != 0) {
             return;
-        }else{
+        } else {
             btnAddPosition.setText("Добавить позицию (" + filealmat.NumberOfRecords + ")");
             if (!setting.sModeWorking.equals("1")) {
                 btnSaveToServer.setEnabled(false);
-            }else{
+            } else {
                 btnSaveToServer.setEnabled(true);
             }
             btnDeleteFile.setEnabled(true);
@@ -466,7 +493,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         InputStream is = null;
         OutputStream os = null;
         try {
-            if (!myPremission())  return;
+            if (!myPremission()) return;
             String lineSeparator = System.getProperty("line.separator");
 
             is = new FileInputStream(source);
@@ -493,13 +520,14 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
     }
+
     //================================ копирование  ================================
     public void DeleteFile(View v) {
 
         showDialog(IDD_THREE_BUTTONS);
     }
 
-    public void DeleteFilee(View v){
+    public void DeleteFilee(View v) {
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
@@ -522,7 +550,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 
         File[] elems = sdPath.listFiles();
 
-        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
+        String[] paths = new String[1 + (elems == null ? 0 : elems.length)];
         int i = 0;
         paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
         i++;
@@ -537,14 +565,14 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         final File sdFile = new File(sdPath, setting.FileNameSetting);
 //        final File sdFile_copy = new File(sdPath, FILENAME_SD_copy);
 
-        if(sdFile.exists())
+        if (sdFile.exists())
             //sdFile.renameTo(sdFile_copy);
             sdFile.delete();
         //if(sdFile_copy.exists())
         //sdFile.renameTo(sdFile_copy);
         //sdFile_copy.delete();
 
-        if(sdFile.exists())
+        if (sdFile.exists())
             ToastMessageCenter("Файл " + setting.FileNameSetting + " не удален!");
         else
             ToastMessageCenter("Файл " + setting.FileNameSetting + " удален!");
@@ -553,15 +581,19 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         //else
         //    ToastMessageCenter("Файл sdFile_copy удален!");
         btnAddPosition.setText("Добавить позицию ");
-       // btnUploadDelete.setEnabled(false);
-        if (!setting.sModeWorking.equals("1")){
+        // btnUploadDelete.setEnabled(false);
+        if (!setting.sModeWorking.equals("1")) {
             btnSaveToServer.setEnabled(false);
-        }else{
+        } else {
             btnSaveToServer.setEnabled(false);
         }
         btnDeleteFile.setEnabled(false);
         txtLogScaner.setText("...");
         setTitle("Сканирование");
+        txtvBarcode.setText("Штрих-код");
+        txtvBarcode.setBackgroundColor(Color.WHITE);
+
+
     }
 //    public void SavDelFileOnClick(View v) {
 //
@@ -585,7 +617,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 
         File[] elems = sdPath.listFiles();
 
-        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
+        String[] paths = new String[1 + (elems == null ? 0 : elems.length)];
         int i = 0;
         paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
         i++;
@@ -614,22 +646,27 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int id) {
-                                        if(sdFile.exists())
+                                        if (sdFile.exists())
 
                                             sdFile.delete();
 
 
-                                        if(sdFile.exists())
+                                        if (sdFile.exists())
                                             ToastMessageCenter("Файл " + setting.FileNameDat + " не удален!");
                                         else
                                             ToastMessageCenter("Файл " + setting.FileNameDat + " удален!");
                                         btnAddPosition.setText("Добавить позицию ");
-                                        if (!setting.sModeWorking.equals("1")){
+                                        if (!setting.sModeWorking.equals("1")) {
                                             btnSaveToServer.setEnabled(false);
-                                        }else{
+                                        } else {
                                             btnSaveToServer.setEnabled(false);
                                         }
                                         btnDeleteFile.setEnabled(false);
+                                        txtLogScaner.setText("...");
+                                        setTitle("Сканирование");
+                                        txtvBarcode.setText("Штрих-код");
+                                        txtvBarcode.setBackgroundColor(Color.WHITE);
+
                                         dialog.cancel();
                                     }
                                 })
@@ -646,68 +683,70 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 return null;
         }
     }
+
     //===========================   проверка разрешений приложения  ================================
-    private boolean myPremission(){
-        if (hasPermissions()){
+    private boolean myPremission() {
+        if (hasPermissions()) {
             // our app has permissions.
             makeFolder();
-        }
-        else {
+        } else {
             //our app doesn't have permissions, So i m requesting permissions.
             requestPermissionWithRationale();
         }
         return true;
     }
-    private void makeFolder(){
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"fandroid");
 
-        if (!file.exists()){
+    private void makeFolder() {
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "fandroid");
+
+        if (!file.exists()) {
             Boolean ff = file.mkdir();
-            if (ff){
+            if (ff) {
                 Toast.makeText(this, "Folder created successfully", Toast.LENGTH_LONG).show();
-            }
-            else {
+            } else {
                 Toast.makeText(this, "Failed to create folder", Toast.LENGTH_LONG).show();
             }
 
-        }
-        else {
-           // Toast.makeText(this, "Folder already exist", Toast.LENGTH_LONG).show();//Папка уже существует
+        } else {
+            // Toast.makeText(this, "Folder already exist", Toast.LENGTH_LONG).show();//Папка уже существует
         }
     }
-    private boolean hasPermissions(){
+
+    private boolean hasPermissions() {
         int res = 0;
         //string array of permissions,
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        for (String perms : permissions){
+        for (String perms : permissions) {
             /*
-            * с помощью метода checkCallingOrSelfPermission в цикле проверяет
-            * предоставленные приложению разрешения и сравнивает их с тем, которое нам необходимо.
-            * При отсутствии разрешения метод будет возвращать false, а при наличии разрешения — true.
-            */
+             * с помощью метода checkCallingOrSelfPermission в цикле проверяет
+             * предоставленные приложению разрешения и сравнивает их с тем, которое нам необходимо.
+             * При отсутствии разрешения метод будет возвращать false, а при наличии разрешения — true.
+             */
             res = checkCallingOrSelfPermission(perms);
-            if (!(res == PackageManager.PERMISSION_GRANTED)){
+            if (!(res == PackageManager.PERMISSION_GRANTED)) {
                 return false;
             }
         }
 
         return true;
     }
-    private void requestPerms(){
+
+    private void requestPerms() {
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            requestPermissions(permissions,PERMISSION_REQUEST_CODE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         boolean allowed = true;
 
-        switch (requestCode){
+        switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
 
-                for (int res : grantResults){
+                for (int res : grantResults) {
                     // if user granted all permissions.
                     allowed = allowed && (res == PackageManager.PERMISSION_GRANTED);
                 }
@@ -719,14 +758,13 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 break;
         }
 
-        if (allowed){
+        if (allowed) {
             //user granted all permissions we can perform our task.
             makeFolder();
-        }
-        else {
+        } else {
             // we will give warning to user that they haven't granted permissions.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     Toast.makeText(this, "Storage Permissions denied.", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -736,22 +774,25 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         }
 
     }
+
     public void showNoStoragePermissionSnackbar() {
-        Snackbar.make(this.findViewById(R.id.activity_scaner), "Storage permission isn't granted" , Snackbar.LENGTH_LONG)
+        Snackbar.make(this.findViewById(R.id.activity_scaner), "Storage permission isn't granted", Snackbar.LENGTH_LONG)
                 .setAction("SETTINGS", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                openApplicationSettings();
-                Toast.makeText(getApplicationContext(), "Open Permissions and grant the Storage permission",
+                        openApplicationSettings();
+                        Toast.makeText(getApplicationContext(), "Open Permissions and grant the Storage permission",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }).show();
     }
+
     public void openApplicationSettings() {
         Intent appSettingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + getPackageName()));
         startActivityForResult(appSettingsIntent, PERMISSION_REQUEST_CODE);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
@@ -760,6 +801,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     public void requestPermissionWithRationale() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -768,10 +810,11 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             requestPerms();
         }
     }
+
     //========================  конец проверки разрешений  ==============================//
-    public void ToastMessageCenter(String s){
-        Toast toast = Toast.makeText(this, s , Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER , 0, 0);
+    public void ToastMessageCenter(String s) {
+        Toast toast = Toast.makeText(this, s, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 
@@ -779,7 +822,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     public void ok(View v) throws IOException {
         if (txtnBarcode.length() > 0) {
             writeFileSD();
-        }else{
+        } else {
             ToastMessageCenter("Отсутствуют данные по штрихкоду. В файл не записано.");
             return;
         }
@@ -816,7 +859,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     protected void onStart() {
         super.onStart();
 
-      showKeyboard(txtnBarcode);
+        showKeyboard(txtnBarcode);
         txtnBarcode.setFocusable(true);
         txtnBarcode.selectAll();
         txtnBarcode.setCursorVisible(true);
@@ -841,46 +884,83 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     protected void onDestroy() {
         super.onDestroy();
     }
-
+    //включить wifi
+    public void enableWifi() {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            Integer iState = wifiManager.getWifiState();
+            wifiManager.setWifiEnabled(true);
+            iState = wifiManager.getWifiState();
+            Toast toast = Toast.makeText(getApplicationContext(), "Wifi включен", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+       // enableWifi();
+        try {
+            if (setting.loadSetting(this)){
+                if(!setting.executeCommand(setting.sAdressServer)) {
+                    enableWifi();
+                    if(!setting.executeCommand(setting.sAdressServer)) {
+                        txtLogScaner.setText("НЕТ СВЯЗИ С СЕРВЕРОМ!");
+                        txtLogScaner.setBackgroundColor(Color.RED);
+                        return;
+                    }
+                }else{
+                    txtLogScaner.setText("       ...       ");
+                    txtLogScaner.setBackgroundColor(Color.WHITE);
+                }
+            }else {
+                txtLogScaner.setText("НАСТРОЙКИ НЕ ЗАГРУЖЕНЫ!");
+                txtLogScaner.setBackgroundColor(Color.RED);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        switch (v.getId()) {
             case R.id.btnEditDatTxt:
                 Intent intentEditDatTxt = new Intent(this, EditData.class);
                 startActivity(intentEditDatTxt);
 
                 break;
             case R.id.btnSaveToServer:
+                txtLogScaner.setText("...");
+                setTitle("Сканирование");
+                txtvBarcode.setText("Штрих-код");
+                txtvBarcode.setBackgroundColor(Color.WHITE);
+
                 if (!Environment.getExternalStorageState().equals(
                         Environment.MEDIA_MOUNTED)) {
                     txtLogScaner.setText("SD-карта не доступна: " + Environment.getExternalStorageState());
                     // ToastMessageCenter("SD-карта не доступна: " + Environment.getExternalStorageState());
                     return;
                 }
-                try {
-                    setting.loadSetting(this);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (setting.executeCommand(setting.sAdressServer)){
-                    try{
+                 if (setting.executeCommand(setting.sAdressServer)) {
+                    try {
+                        setting.loadSetting(this);//11
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
                         FTPModel mymodel = new FTPModel();
 
 
-                        boolean co = mymodel.connect(setting.sAdressServer,setting.sUserFTP,setting.sPasswordFTP,Integer.parseInt(setting.sPortFTP));
-                        if(co){
+                        boolean co = mymodel.connect(setting.sAdressServer, setting.sUserFTP, setting.sPasswordFTP, Integer.parseInt(setting.sPortFTP));
+                        if (co) {
                             txtLogScaner.setText("ДАННЫЕ СОХРАНЕНЫ");
                             setTitle("ДАННЫЕ СОХРАНЕНЫ");
-                        }else{
-                            txtLogScaner.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
-                            setTitle("ДАННЫЕ НЕ СОХРАНЕНЫ!");
+                        } else {
+                            txtLogScaner.setText("FTP СВЯЗЬ ОТСУТСТВУЕТ!");
+                            setTitle("FTP СВЯЗЬ ОТСУТСТВУЕТ!");
                         }
                         // saveUrl(Environment.getExternalStorageDirectory() + "/Documents/Dat1.txt", "10.250.1.15/asd");
-                    }
-                    catch(Exception e){
+                    } catch (Exception e) {
                         txtLogScaner.setText("НЕТ СВЯЗИ С СЕРВЕРОМ");
                     }
-                }
+                }else{
+                     txtLogScaner.setText("НЕТ СВЯЗИ С СЕРВЕРОМ");
+                 }
         }
     }
     ///////////////////////////////

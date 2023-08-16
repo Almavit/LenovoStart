@@ -6,6 +6,7 @@ import android.os.Environment;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -21,9 +22,7 @@ import java.net.SocketException;
 public class FTPModel {
 
     public FTPClient mFTPClient = null;
-    public FTPClient ftp = null;
-
-
+  //  public FTPClient ftp = null;
 
 
     public boolean connect(String host, String username, String password, int port) {
@@ -49,14 +48,25 @@ public class FTPModel {
             this.port = port;
         }
 
+
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
                 mFTPClient = new FTPClient();
                 //connect to the host
                 mFTPClient.connect(host, port);
-
+             //   Integer iCode = mFTPClient.getReplyCode();//230	Пользователь идентифицирован, продолжайте||| 530	Вход не выполнен! Требуется авторизация (not logged in)|||
+                //220	Служба готова для нового пользователя.
                 boolean status = mFTPClient.login(username, password);
+           //     iCode = mFTPClient.getReplyCode();//230	Пользователь идентифицирован, продолжайте||| 530	Вход не выполнен! Требуется авторизация (not logged in)
+             //  Boolean iconnect = mFTPClient.isConnected();
+             //   Integer iFtpUser = mFTPClient.user(username);//331 - FTP пользователь есть;
+
+               // Integer iStat = mFTPClient.pass(password);//230	Пользователь идентифицирован, продолжайте||| 530	Вход не выполнен! Требуется авторизация (not logged in)
+                // String sConnect = mFTPClient.getStatus().toString();
+                if (!status) {
+                    return status;
+                }
                 mFTPClient.setFileType(FTP.ASCII_FILE_TYPE);
 
                 FileInputStream fInput = new FileInputStream(Environment.getExternalStorageDirectory() + "/Documents/Dat1.txt");
@@ -117,7 +127,7 @@ public class FTPModel {
                 try {
                     outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
                     success = mFTPClient.retrieveFile(filename, outputStream);
-                    if(!success) {
+                    if (!success) {
                         String sssd = mFTPClient.getReplyString();
                         throw new Exception(mFTPClient.getReplyString());
                     }

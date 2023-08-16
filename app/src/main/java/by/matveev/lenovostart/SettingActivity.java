@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
@@ -17,11 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import by.matveev.lenovostart.lib.Filealmat;
 import by.matveev.lenovostart.lib.Setting;
@@ -75,6 +70,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         btnUpdate = (Button) findViewById(R.id.btnUpdate);
         btnUpdate.setOnClickListener(this);
+
+
 
         filealmat = new Filealmat();
 
@@ -148,8 +145,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void run() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Доступно обновление приложения rutracker free до версии " +
-                                lastAppVersion + " - желаете обновиться? " +
+                builder.setMessage("Доступно обновление приложения - желаете обновиться? " +
                                 "Если вы согласны - вы будете перенаправлены к скачиванию APK файла,"
                                 +" который затем нужно будет открыть.")
                         .setCancelable(true)
@@ -184,9 +180,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         })
                         .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                SettingsManager.put(this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
+                                //SettingsManager.put(this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
                                 dialog.cancel();
+                                finish();
+                                dialog.dismiss();
                             }
+
+
                         });
                 AlertDialog alert = builder.create();
                 alert.show();

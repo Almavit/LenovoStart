@@ -136,7 +136,7 @@ public class Setting {
             Process mIpAddrProcess = runtime.exec("/system/bin/ping -c 1 "+ ip);
             int mExitValue = mIpAddrProcess.waitFor();
             //txtLogMessege.setText(" mExitValue " + mExitValue);
-            if(mExitValue==0){
+            if(mExitValue == 0){
                 //txtLogMessege.setText("ЕСТЬ СВЯЗЬ");
                 return true;
             }else{

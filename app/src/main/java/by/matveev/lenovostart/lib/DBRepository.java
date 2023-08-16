@@ -155,6 +155,60 @@ public class DBRepository {
         return list;
     }
 
+    public enum WiFiFields {
+
+        IP_KEY_NUMMAG(0),          // = "nummag";
+        IP_KEY_MASK(1),     // = "ipmask";
+        IP_KEY_SERVER(2),// = "ipserver";
+        IP_KEY_MODEM(3),  // = "ipmodem";
+        IP_KEY_SCANER(4),  // = "ipscaner";
+        IP_KEY_WIFI(5);  // = "ipwifi";
+
+
+        WiFiFields(int i) {
+            this.WiFiFieldCode = i;
+        }
+        public int getFieldCode()
+        {
+            return WiFiFieldCode;
+        }
+        private int WiFiFieldCode;
+    }
+
+    public ArrayList<String> getDataWifi()
+    {
+        ArrayList<String> list = new ArrayList<String>();
+        String[] ColumnsName = null;
+
+        ColumnsName = new String[]{DBSampleHelper.DBConnectIP.IP_NUMMAG,DBSampleHelper.DBConnectIP.IP_MASK,
+                DBSampleHelper.DBConnectIP.IP_SERVER,DBSampleHelper.DBConnectIP.IP_MODEM,DBSampleHelper.DBConnectIP.IP_SCANER, DBSampleHelper.DBConnectIP.IP_WIFI};//,
+        WiFiFields nummag = WiFiFields.IP_KEY_NUMMAG;
+        WiFiFields ipmask = WiFiFields.IP_KEY_MASK;
+        WiFiFields ipserver = WiFiFields.IP_KEY_SERVER;
+        WiFiFields ipmodem = WiFiFields.IP_KEY_MODEM;
+        WiFiFields ipscaner = WiFiFields.IP_KEY_SCANER;
+        WiFiFields ipwifi = WiFiFields.IP_KEY_WIFI;
+        Cursor cursor = db.query(DBSampleHelper.DBConnectIP.TABLE_IP,null , null,null, null, null, null);
+
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+            cursor.moveToFirst();
+            iCountFields = cursor.getColumnCount();
+            do {
+                iCountFields = cursor.getPosition();
+               String sField = cursor.getString(nummag.getFieldCode()); // + "   ;   " +
+//                        cursor.getString(ipmask.getFieldCode()) + "   ;   " +
+//                        cursor.getString(ipserver.getFieldCode()) + "   ;   " +
+//                        cursor.getString(ipmodem.getFieldCode()) + "   ;   " +
+//                        cursor.getString(ipscaner.getFieldCode());
+                list.add(sField);
+            } while (cursor.moveToNext());
+        }
+
+
+        return list;
+
+    }
+
     public ArrayList<String> getDataDat()
     {
 
@@ -167,7 +221,8 @@ public class DBRepository {
 
         String[] datcolumnsName = null;
 
-        datcolumnsName = new String[]{DAT_KEY_ID,DAT_KEY_BARCODE, DAT_KEY_NUMBER, DAT_KEY_QUANTITY, DAT_KEY_PRICE};//,
+        datcolumnsName = new String[]{DBSampleHelper.DBDat.DAT_KEY_ID,DBSampleHelper.DBDat.DAT_KEY_BARCODE,
+                DBSampleHelper.DBDat.DAT_KEY_POSITION, DBSampleHelper.DBDat.DAT_KEY_QUANTITY, DBSampleHelper.DBDat.DAT_KEY_PRICE};//,
         DatFields fieldid = DatFields.DAT_KEY_ID;
         DatFields fieldbarcose = DatFields.DAT_KEY_BARCODE;
         DatFields fieldnumber = DatFields.DAT_KEY_NUMBER;

@@ -32,6 +32,7 @@ import java.util.List;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.DBRepository;
+import by.matveev.lenovostart.lib.DBSampleHelper;
 import by.matveev.lenovostart.lib.Filealmat;
 
 public class EditData extends AppCompatActivity implements View.OnClickListener {
@@ -217,7 +218,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
             return true;
         }
         if (status < 0) {//отрицательный - дэлете
-            int iDataStatus = database.delete(dbHelper.TABLE_DOCUMENT_DAT, " datid=" + sID, null);
+            int iDataStatus = database.delete(DBSampleHelper.DBDat.TABLE_DOCUMENT_DAT, " datid=" + sID, null);
         }
         if (status == 0) {//0 - редактировать
             // String[] row = csvLine.split(";");
@@ -227,14 +228,14 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
 //            sStroks = sStroks + row[3].toString().replaceAll("\\s","");
 //            sStroks = sStroks + row[4].toString().replaceAll("\\s","");
 
-            cv.put(dbHelper.DAT_KEY_ID, row[0].toString().replaceAll("\\s",""));
-            cv.put(dbHelper.DAT_KEY_BARCODE, row[1].toString().replaceAll("\\s",""));
-            cv.put(dbHelper.DAT_KEY_PRICE, row[2].toString().replaceAll("\\s",""));
-            cv.put(dbHelper.DAT_KEY_QUANTITY, row[3].toString().replaceAll("\\s",""));
-            cv.put(dbHelper.DAT_KEY_POSITION, row[4].toString().replaceAll("\\s",""));
+            cv.put(DBSampleHelper.DBDat.DAT_KEY_ID, row[0].toString().replaceAll("\\s",""));
+            cv.put(DBSampleHelper.DBDat.DAT_KEY_BARCODE, row[1].toString().replaceAll("\\s",""));
+            cv.put(DBSampleHelper.DBDat.DAT_KEY_PRICE, row[2].toString().replaceAll("\\s",""));
+            cv.put(DBSampleHelper.DBDat.DAT_KEY_QUANTITY, row[3].toString().replaceAll("\\s",""));
+            cv.put(DBSampleHelper.DBDat.DAT_KEY_POSITION, row[4].toString().replaceAll("\\s",""));
 
 
-            int iDataStatus = database.update(dbHelper.TABLE_DOCUMENT_DAT,cv , " datid = ?" ,  new String[] {sID});
+            int iDataStatus = database.update(DBSampleHelper.DBDat.TABLE_DOCUMENT_DAT,cv , " datid = ?" ,  new String[] {sID});
         }
 //        datBaseCursor = database.query(dbHelper.TABLE_DOCUMENT_DAT, null, null, null, null, null, null);
 //        iCountField = datBaseCursor.getCount();//количество полей
@@ -268,7 +269,7 @@ public class EditData extends AppCompatActivity implements View.OnClickListener 
                 Toast.makeText(this, "ДАННЫЕ НАСТРОЕК ОТСУТСТВУЮТ!!!", Toast.LENGTH_SHORT).show();
                 return false;
             }
-            dbHelper.SaveDataDat(this, dbHelper.TABLE_DOCUMENT_DAT, "", filealmat.reader);
+            dbHelper.SaveDataDat(this, DBSampleHelper.DBDat.TABLE_DOCUMENT_DAT, "", filealmat.reader);
 
         } catch (Exception e) {
             if(null != dbHelper) {

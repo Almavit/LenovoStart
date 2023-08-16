@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.DBRepository;
+import by.matveev.lenovostart.lib.DBSampleHelper;
 
 public class QRcode extends AppCompatActivity implements View.OnClickListener{
 
@@ -76,7 +77,7 @@ public class QRcode extends AppCompatActivity implements View.OnClickListener{
                 sqlStroka = txtQR.getText().toString().replaceAll("\n","");// очистить от символа \n
                 txtQR.setText(sqlStroka);
                 sqlStroka = txtQR.getText().toString().replaceAll("\u001D","");// очистить от символа \u001D
-                sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_QR_CODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
+                sqlStroka = "select * from " + DBSampleHelper.DBQTable.TABLE_DOCUMENT + " where " + DBSampleHelper.DBQTable.KEY_QR_CODE + " = '" + sqlStroka + "'";// создать строку SQL запроса
                 Cursor cursor = db.rawQuery(sqlStroka,null);
                 if ((cursor != null) && (cursor.getCount() > 0)) {
                     cursor.moveToFirst();

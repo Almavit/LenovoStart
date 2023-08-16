@@ -2,28 +2,36 @@ package by.matveev.lenovostart;
 
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.DhcpInfo;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,30 +39,38 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
+
 
 import by.matveev.lenovostart.lib.DBHelper;
+import by.matveev.lenovostart.lib.DBSampleHelper;
 import by.matveev.lenovostart.lib.Filealmat;
 import by.matveev.lenovostart.lib.MyPremission;
-import by.matveev.lenovostart.lib.ProgressTextView;
 import by.matveev.lenovostart.lib.Setting;
-import by.matveev.lenovostart.lib.SettingsManager;
 import by.matveev.lenovostart.lib.WIFIService;
+
+//import androidx.databinding.DataBindingUtil;
+//import androidx.databinding.ViewDataBinding;
+//import androidx.appcompat.app.AppCompatActivity;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Setting setting;
-
-    private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
     //    final String FILENAME_CSV = "999.csv";
     final String DIR_SD = "Documents";
-
     String[] nextLine;
-    ProgressTextView progressTextViewMain;
+    //  ProgressTextView progressTextViewMain;
     String PACKAGE_NAME;
 
     Button btnFourField;
@@ -68,40 +84,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnQR;
     Button btnLoadAll;
     Button btnQrBarcode;
+    Button btnConnect;
 
     TextView txtLog;
+    TextView textview;
     Filealmat filealmat;
 
+    //  ProgressBar progressBar;
 
+    //  private ViewDataBinding binding;
     private static final int PERMISSION_REQUEST_CODE = 123;
+    private WiFiMonitor mWiFiMonitor;           //Объект WiFiMonitor, поиск сети, вывод доступных точек
+    private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
 
+
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PACKAGE_NAME = getApplicationContext().getPackageName();
-
-        filealmat = new Filealmat();
-        //filealmat.makeFolder(this, "");
-//filealmat.makeFolder(this,"");
-
-        setting = new Setting();
-        MyPremission almPremission = new MyPremission();
-        Boolean Premis = true;
-
-        if (!almPremission.myPremission(this)) {
-            Premis = true;
-        } else {
-            Premis = false;
-        }
-        DBHelper db = new DBHelper(this);
-
-        db.createDataBase();
-        db.close();
-//
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        Toolbar toolbars = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbars);
+
 
         btnQrBarcode = (Button) findViewById(R.id.btnQrBarcode);
         btnQrBarcode.setOnClickListener(this);
@@ -118,17 +124,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnTwoFieldQuan = (Button) findViewById(R.id.btnTwoFieldQuan);
         btnTwoFieldQuan.setOnClickListener(this);
 
-        btnOneField = (Button) findViewById(R.id.btnOneField);
-        btnOneField.setOnClickListener(this);
-
         btnEditor = (Button) findViewById(R.id.btnTwoFieldNum);
         btnEditor.setOnClickListener(this);
 
         btnLoadAll = (Button) findViewById(R.id.btnLoadAll);
         btnLoadAll.setOnClickListener(this);
 
-        progressTextViewMain = (ProgressTextView) findViewById(R.id.progressTextViewMain);
-        progressTextViewMain.setValue(0); // устанавливаем нужное значение
+        btnOneField = (Button) findViewById(R.id.btnOneField);
+        btnOneField.setOnClickListener(this);
+
+//        progressTextViewMain = (ProgressTextView) findViewById(R.id.progressTextViewMain);
+//        progressTextViewMain.setValue(0); // устанавливаем нужное значение
 
         btnSetting = (Button) findViewById(R.id.btnSetting);
         btnSetting.setOnClickListener(this);
@@ -136,7 +142,72 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnStartElectron = (Button) findViewById(R.id.btnStartElectron);
         btnStartElectron.setOnClickListener(this);
 
+        btnConnect = (Button) findViewById(R.id.btnConnect);
+        btnConnect.setOnClickListener(this);
+
+
         txtLog = (TextView) findViewById(R.id.txtLog);
+        textview = (TextView) findViewById(R.id.textView);
+
+//        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+//        binding.btnConnect.setOnClickLister(new View.OnClickListener(){
+//
+//            @Override
+//            public void onClick(View v) {
+//                Intent intentConnect = new Intent(MainActivity.this, ConnectMag.class);
+//                startActivity(intentConnect);
+//
+//            }
+//        });
+
+        //  progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        PACKAGE_NAME = getApplicationContext().getPackageName();
+
+        filealmat = new Filealmat();
+        setting = new Setting();
+        try {
+            if (setting.loadSetting(this)) {
+                if (!setting.executeCommand(setting.sAdressServer)) {
+                    txtLog.setText("НЕТ СВЯЗИ С СЕРВЕРОМ!");
+                    txtLog.setBackgroundColor(Color.RED);
+                    return;
+                }
+            } else {
+                txtLog.setText("НАСТРОЙКИ НЕ ЗАГРУЖЕНЫ!");
+                txtLog.setBackgroundColor(Color.RED);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        MyPremission almPremission = new MyPremission();
+        Boolean Premis = true;
+
+        if (!almPremission.myPremission(this)) {
+            Premis = true;
+        } else {
+            Premis = false;
+        }
+        //    DBHelper db = new DBHelper(this);
+        SQLiteDatabase db = new DBHelper(this).getReadableDatabase();
+        new DBHelper(this).onCreate(db);
+
+        db.close();
+        WIFIService wifis = new WIFIService(this);
+
+        wifis.enableWifi();
+       // enableWifi();                                   //Проверяем включен ли WiFi, если нет то включаем
+        //         bindToNetwork();                           //Для версии выше 5, для связки процесса с сетью  (без интернет доступа)
+        IntentFilter intentFilter = new IntentFilter();                    //Создаем объект для отслеживания изменений в сети.
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);    //Произошло изменение сетевого подключения. IntentFilter должен содержать событие.
+
+        registerReceiver(mWiFiMonitor, intentFilter);
+
+        //      enableWifi();                                   //Проверяем включен ли WiFi, если нет то включаем
+        // bindToNetwork();                           //Для версии выше 5, для связки процесса с сетью  (без интернет доступа)
+//        IntentFilter intentFiltera = new IntentFilter();                    //Создаем объект для отслеживания изменений в сети.
+//        intentFiltera.addAction(ConnectivityManager.CONNECTIVITY_ACTION);    //Произошло изменение сетевого подключения. IntentFilter должен содержать событие.
+
+        registerReceiver(mWiFiMonitor, intentFilter);
 
     }
 
@@ -161,11 +232,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //user granted all permissions we can perform our task.
 
             filealmat.makeFolder(this, "");
-            DBHelper db = new DBHelper(this);
+//            DBHelper db = new DBHelper(this);
+//
+//            db.createDataBase();
+//            db.close();
 
-            db.createDataBase();
-            db.close();
-            
 
         } else {
             // we will give warning to user that they haven't granted permissions.
@@ -209,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void onClick(View v) {
+
         Intent intent = new Intent(this, ScanerActivity.class);
 //         DBHelper dbHelper;// = new DBHelper(this);
 
@@ -222,6 +294,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         switch (v.getId()) {
+            case R.id.btnConnect:
+                Intent intentConnect = new Intent(this, ConnectMag.class);
+                startActivity(intentConnect);
+
+                break;
             case R.id.btnFourField:
                 Toast.makeText(MainActivity.this, getString(R.string.action_item1), Toast.LENGTH_SHORT).show();
                 startActivity(intent);
@@ -272,6 +349,91 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnQrBarcode:
                 Toast.makeText(MainActivity.this, "Функция недоступна", Toast.LENGTH_SHORT).show();
+
+                /////////////////////////////////////////
+                String[] commandLine = new String[]{"ifconfig"};
+                Process process = null;
+
+                try {
+                    process = Runtime.getRuntime().exec(commandLine);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+                //    DxIfconfig conf = new DxIfconfig();
+                String line = null;
+                try {
+                    line = bufferedReader.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                if (line.matches("\\s*|\\t|\\r|\\n")) {
+                    //  if (conf.isNotBlank()) {
+                    //   ifconfigs.add(conf);
+                    //   conf = new DxIfconfig();
+                } else if (line.trim().matches("inet addr:(\\d{1,3}\\.){3}\\d{1,3}( ){2}" +
+                        "(Bcast:(\\d{1,3}\\.){3}\\d{1,3}( ){2}){0,1}" +
+                        "Mask:(\\d{1,3}\\.){3}\\d{1,3}")) {
+//                    System.out.println(line.trim());
+
+                    String[] props = line.trim().split("( ){2}");
+                    for (String prop : props) {
+                        if (prop.length() == 0) {
+                            continue;
+                        }
+
+                        String[] kv = prop.split(":");
+                        if (kv[0].startsWith("inet addr")) {
+                            //  conf.inetAddr = kv[1];
+                        } else if (kv[0].startsWith("Bcast")) {
+                            //  conf.bcast = kv[1];
+                        } else if (kv[0].startsWith("Mask")) {
+                            //  conf.mask = kv[1];
+                        }
+                    }
+                }
+                if (line == null) {
+                    break;
+                }
+
+
+//                String action = intent.getAction();
+//                //   Log.d(LOG_TAG, action);
+//                ConnectivityManager cm = (ConnectivityManager) this.getSystemService(CONNECTIVITY_SERVICE);
+//                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//                boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+//                //    Log.d(LOG_TAG, "isConnected: " + isConnected);
+//                Toast.makeText(this, "isConnected: " + isConnected, Toast.LENGTH_LONG).show();
+//                String SSID = activeNetwork.getExtraInfo();
+//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+//                    String dlldl = activeNetwork.getExtraInfo().getBytes(StandardCharsets.UTF_8).toString();
+//                }
+//
+//                if (!isConnected)
+//                    return;
+//                boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+//              //  String ssidd = activeNetwork.getExtraInfo().toString();
+//                // String ipwifi = activeNetwork.getDetailedState().toString();
+//                //   Log.d(LOG_TAG, "isWiFi: " + isWiFi);
+//                Toast.makeText(this, "isWiFi: " + isWiFi, Toast.LENGTH_LONG).show();
+//                if (!isWiFi)
+//                    return;
+//                WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(WIFI_SERVICE);
+//                // параметры WIFI сканера
+//                WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+//
+//                String ipwifi = wifiIpAddress(this);
+//
+//                //  Log.d(LOG_TAG, connectionInfo.getSSID());
+//                Toast.makeText(this, "Connected to Internet: " + connectionInfo.getSSID(), Toast.LENGTH_LONG).show();
+//
+
+                /////////////////////////////////////////
+
                 break;
             case R.id.btnStartElectron:
                 //Intent intentStartElectronDocument = new Intent(this, StartElectronDocument.class);
@@ -282,6 +444,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                Intent intentQR = new Intent(this, QRcode.class);
 //                startActivity(intentQR);
                 Toast.makeText(MainActivity.this, "Функция недоступна", Toast.LENGTH_SHORT).show();
+
+
                 break;
 
             case R.id.btnSetting:
@@ -293,38 +457,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
             case R.id.btnLoadAll:
-                Setting setting = new Setting();
-//              setting.loadSetting(this);
-                //Filealmat filealmat = new Filealmat();
-
-//                if (!setting.executeCommand(sAdressServer)) {
-//                    txtLog.setBackgroundColor(Color.RED);
-//                    break;
-//                }
-//===============================
                 try {
                     txtLog.setText("       ...       ");
                     txtLog.setBackgroundColor(Color.WHITE);
+// запускаем длительную операцию
+
                     Toast.makeText(this, "ЖДИТЕ! ИДЕТ ЗАГРУЗКА ДАННЫХ", Toast.LENGTH_LONG);
-//==================================================================
-
-//                    NotificationCompat.Builder builder =
-//                            new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
-//                                    .setSmallIcon(R.drawable.ic_media_play_dark)
-//                                    .setContentTitle("Напоминание")
-//                                    .setContentText("Пора покормить кота")
-//                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-//
-//                    NotificationManagerCompat notificationManager =
-//                            NotificationManagerCompat.from(MainActivity.this);
-//                    notificationManager.notify(NOTIFY_ID, builder.build());
-
-//==================================================================
                     if (filealmat.LoadSaveCsvToDB(this, DIR_SD, "price.csv",
-                            "select * from " + DBHelper.TABLE_DOCUMENT_PRICE, DBHelper.TABLE_DOCUMENT_PRICE)) {
+                            "select * from " + DBSampleHelper.DBPrice.TABLE_DOCUMENT_PRICE, DBSampleHelper.DBPrice.TABLE_DOCUMENT_PRICE)) {
                         txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
                         Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);
                         txtLog.setBackgroundColor(Color.GREEN);
+
+                        //    textview.setBackgroundColor(Color.WHITE);
+                        //    btnLoadAll.getBackground().setColorFilter(Color.parseColor("Данные обновлены"), PorterDuff.Mode.DARKEN);
                     } else {
                         txtLog.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
                         txtLog.setBackgroundColor(Color.RED);
@@ -338,11 +484,160 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                //               progressBar.setVisibility(ProgressBar.INVISIBLE);
 //===============================
 
 //===========================================
         }
     }
+
+////////////////////////==========================/////////////////////////////////
+
+    //включить wifi
+    public void enableWifi() {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
+            Toast toast = Toast.makeText(getApplicationContext(), "Wifi включен", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    private void bindToNetwork() {
+        final ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest.Builder builder;
+        // Log.d(TAG, "All OK 123 !!!!!!!!!!!!!!!");
+        Toast.makeText(this, "All OK !!!!!!!!!!!!!!!", Toast.LENGTH_LONG).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new NetworkRequest.Builder();
+            builder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+            connectivityManager.requestNetwork(builder.build(), new ConnectivityManager.NetworkCallback() {
+
+                @Override
+                public void onAvailable(Network network) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        connectivityManager.bindProcessToNetwork(network);
+                        //Log.d(TAG, "All OK !!!!!!!!!!!!!!!");
+                    } else {
+                        ConnectivityManager.setProcessDefaultNetwork(network);
+                    }
+                    try {
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    connectivityManager.unregisterNetworkCallback(this);
+                }
+            });
+        }
+    }
+
+
+    class WiFiMonitor extends BroadcastReceiver {
+        private String LOG_TAG = "myWiFiMonitor";
+
+        //   @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            Log.d(LOG_TAG, action);
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            Log.d(LOG_TAG, "isConnected: " + isConnected);
+            Toast.makeText(context, "isConnected: " + isConnected, Toast.LENGTH_LONG).show();
+            String ddd = activeNetwork.getExtraInfo();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                String dlldl = activeNetwork.getExtraInfo().getBytes(StandardCharsets.UTF_8).toString();
+            }
+
+            if (!isConnected)
+                return;
+            boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+            String ssidd = activeNetwork.getExtraInfo().toString();
+            // String ipwifi = activeNetwork.getDetailedState().toString();
+            Log.d(LOG_TAG, "isWiFi: " + isWiFi);
+            Toast.makeText(context, "isWiFi: " + isWiFi, Toast.LENGTH_LONG).show();
+            if (!isWiFi)
+                return;
+            WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
+            // параметры WIFI сканера
+            WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+
+            String ipwifi = wifiIpAddress(context);
+
+            Log.d(LOG_TAG, connectionInfo.getSSID());
+            Toast.makeText(context, "Connected to Internet: " + connectionInfo.getSSID(), Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+
+    protected String wifiIpAddress(Context context) {
+        String ipAddressString;
+        String ipGatewayString;
+        String ipServerString;
+        String ipNetmaskString;
+        String s_dns1;
+        String s_dns2;
+        String s_gateway;
+        String s_ipAddress;
+        String s_leaseDuration;
+        String s_netmask;
+        String s_serverAddress;
+        TextView info;
+        DhcpInfo d;
+        WifiManager wifii;
+
+        wifii = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        d = wifii.getDhcpInfo();
+        String sss = d.toString();
+        s_dns1 = "DNS 1: " + String.valueOf(d.dns1);
+        s_dns2 = "DNS 2: " + String.valueOf(d.dns2);
+        s_gateway = "Default Gateway: " + String.valueOf(d.gateway);
+        s_ipAddress = "IP Address: " + String.valueOf(d.ipAddress);
+        s_leaseDuration = "Lease Time: " + String.valueOf(d.leaseDuration);
+        s_netmask = "Subnet Mask: " + String.valueOf(d.netmask);
+        s_serverAddress = "Server IP: " + String.valueOf(d.serverAddress);
+
+        //////
+
+        WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
+        int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
+        int ipGateway = d.gateway;
+        int ipServer = d.serverAddress;
+        int ipNetmask = d.netmask;
+        // Convert little-endian to big-endianif needed
+        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
+            ipAddress = Integer.reverseBytes(ipAddress);
+            ipGateway = Integer.reverseBytes(ipGateway);
+            ipServer = Integer.reverseBytes(ipServer);
+            ipNetmask = Integer.reverseBytes(ipNetmask);
+        }
+
+        byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
+        byte[] ipByteGateway = BigInteger.valueOf(ipGateway).toByteArray();
+        // byte[] ipByteServer = BigInteger.valueOf(ipServer).toByteArray();
+        byte[] ipByteNetmask = BigInteger.valueOf(ipNetmask).toByteArray();
+
+        try {
+            ipAddressString = InetAddress.getByAddress(ipByteArray).getHostAddress();
+            ipGatewayString = InetAddress.getByAddress(ipByteGateway).getHostAddress();
+            // ipServerString = InetAddress.getByAddress(ipByteServer).getHostAddress();
+            //  ipNetmaskString = InetAddress.getByAddress(ipByteNetmask).getHostAddress();
+        } catch (UnknownHostException ex) {
+            Log.e("WIFIIP", "Unable to get host address.");
+            ipAddressString = null;
+        }
+
+
+////////////////////////////////////
+////////////////////////////////
+        return ipAddressString;
+    }
+
+////////////////////////==========================/////////////////////////////////
+
 
     /////////////////////////////////
     public void Update(final Integer lastAppVersion, Context context) {
@@ -386,7 +681,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         })
                         .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                SettingsManager.put(this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
+                                //SettingsManager.put(this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
                                 dialog.cancel();
                             }
                         });
@@ -452,6 +747,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
+        enableWifi();                                   //Проверяем включен ли WiFi, если нет то включаем
+        // String wifiIpAddress;
+        String ipAdressScaner = wifiIpAddress(this);
+        try {
+            if (setting.loadSetting(this)) {
+                if (!setting.executeCommand(setting.sAdressServer)) {
+                    txtLog.setText("НЕТ СВЯЗИ С СЕРВЕРОМ!");
+                    txtLog.setBackgroundColor(Color.RED);
+                    return;
+                } else {
+                    txtLog.setText("       ...       ");
+                    txtLog.setBackgroundColor(Color.WHITE);
+                }
+            } else {
+                txtLog.setText("НАСТРОЙКИ НЕ ЗАГРУЖЕНЫ!");
+                txtLog.setBackgroundColor(Color.RED);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //Toast.makeText(MainActivity.this, "onStart", Toast.LENGTH_LONG).show();
     }
 

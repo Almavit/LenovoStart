@@ -33,6 +33,7 @@ import java.util.ArrayList;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.DBRepository;
+import by.matveev.lenovostart.lib.DBSampleHelper;
 import by.matveev.lenovostart.lib.FTPModel;
 import by.matveev.lenovostart.lib.ProgressTextView;
 
@@ -223,7 +224,7 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
             case R.id.btnClearBase:
                 try{
                     database = dbHelper.getWritableDatabase();
-                    database.delete(DBHelper.TABLE_DOCUMENT,null,null);
+                    database.delete(DBSampleHelper.DBQTable.TABLE_DOCUMENT,null,null);
                     txtLogMessege.setBackgroundColor(Color.WHITE);
                     txtLogMessege.setText(" ТАБЛИЦА ПУСТАЯ ");
                 } catch (SQLException sqle) {
@@ -285,10 +286,10 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                     //basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT,null);
                     //iCountField = basecursor.getCount();//количество полей
 
-                    database.delete(DBHelper.TABLE_DOCUMENT,null,null);
+                    database.delete(DBSampleHelper.DBQTable.TABLE_DOCUMENT,null,null);
 
                     database = dbHelper.getWritableDatabase();
-                    Cursor basecursor = database.rawQuery("select * from " + DBHelper.TABLE_DOCUMENT,null);
+                    Cursor basecursor = database.rawQuery("select * from " + DBSampleHelper.DBQTable.TABLE_DOCUMENT,null);
                     // определяем, какие столбцы из курсора будут выводиться в ListView
                     iCountStrok = basecursor.getCount();//количество строк
 
@@ -320,10 +321,10 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                         sqlStroka = nextLine[7].toString();// price
                         sqlStroka = nextLine[8].toString();// status
 
-                         sqlStroka = "select * from " + DBHelper.TABLE_DOCUMENT + " where " + DBHelper.KEY_BARCODE +
-                                 " = '" + nextLine[5].toString() + "' AND " + DBHelper.KEY_NUM_NAKL +
+                         sqlStroka = "select * from " + DBSampleHelper.DBQTable.TABLE_DOCUMENT + " where " + DBSampleHelper.DBQTable.KEY_BARCODE +
+                                 " = '" + nextLine[5].toString() + "' AND " + DBSampleHelper.DBQTable.KEY_NUM_NAKL +
                                  " = '" + nextLine[1].toString() + "' AND " +
-                                DBHelper.KEY_DATE + " = '" + nextLine[2].toString() + "'";
+                                 DBSampleHelper.DBQTable.KEY_DATE + " = '" + nextLine[2].toString() + "'";
                         basecursor = database.rawQuery(sqlStroka,null);
                         basecursor.moveToFirst();// установка курсора в начало
                         iCountField = basecursor.getCount();//количество полей
@@ -336,27 +337,27 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
 //                            sValueFieldNumNakldn = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_QR_CODE));
 //                            sValueFieldBarcode   = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_BARCODE));
 //                            sValueFieldDate      = basecursor.getString(basecursor.getColumnIndex(DBHelper.KEY_DATE));
-                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-                            database.update(DBHelper.TABLE_DOCUMENT, contentValues, null, null);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_QR_CODE, nextLine[0]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_NUM_NAKL, nextLine[1]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_DATE, nextLine[2]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_NAME_POST, nextLine[3]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_NUM_POZ, nextLine[4]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_BARCODE, nextLine[5]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_NAME_TOV, nextLine[6]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_QUANTITY, nextLine[7]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_STATUS, nextLine[8]);
+                            database.update(DBSampleHelper.DBQTable.TABLE_DOCUMENT, contentValues, null, null);
                         }else{
-                            contentValues.put(DBHelper.KEY_QR_CODE, nextLine[0]);
-                            contentValues.put(DBHelper.KEY_NUM_NAKL, nextLine[1]);
-                            contentValues.put(DBHelper.KEY_DATE, nextLine[2]);
-                            contentValues.put(DBHelper.KEY_NAME_POST, nextLine[3]);
-                            contentValues.put(DBHelper.KEY_NUM_POZ, nextLine[4]);
-                            contentValues.put(DBHelper.KEY_BARCODE, nextLine[5]);
-                            contentValues.put(DBHelper.KEY_NAME_TOV, nextLine[6]);
-                            contentValues.put(DBHelper.KEY_QUANTITY, nextLine[7]);
-                            contentValues.put(DBHelper.KEY_STATUS, nextLine[8]);
-                            database.insert(DBHelper.TABLE_DOCUMENT, null, contentValues);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_QR_CODE, nextLine[0]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_NUM_NAKL, nextLine[1]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_DATE, nextLine[2]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_NAME_POST, nextLine[3]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_NUM_POZ, nextLine[4]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_BARCODE, nextLine[5]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_NAME_TOV, nextLine[6]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_QUANTITY, nextLine[7]);
+                            contentValues.put(DBSampleHelper.DBQTable.KEY_STATUS, nextLine[8]);
+                            database.insert(DBSampleHelper.DBQTable.TABLE_DOCUMENT, null, contentValues);
                         }
 
                     }

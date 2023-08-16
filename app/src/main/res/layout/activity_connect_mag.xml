@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ConnectMag">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="8dp">
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Подразделение " />
+
+            <Spinner
+                android:id="@+id/spinMag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="auto"
+                android:focusableInTouchMode="true"
+                android:scrollbarSize="25dp"
+                android:scrollbars="horizontal|vertical"
+                android:spinnerMode="dropdown"
+                android:verticalScrollbarPosition="right"
+                android:visibility="visible" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:hint="IP mask">
+
+                <EditText
+                    android:id="@+id/txtIPmask"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Режим работы"
+                    android:text="IP mask"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/hintAdressServer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ip mag"
+                app:hintEnabled="true">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/txtIpmag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Адрес магазина"
+                        android:text="Ip mag"
+                        android:textAlignment="center"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/hintIpmodem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ip modem"
+                app:hintEnabled="true">
+
+                <EditText
+                    android:id="@+id/txtIpmodem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ползователь FTP"
+                    android:text="Ip modem"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/hintIpscaner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ip scaner"
+                app:hintEnabled="true">
+
+                <EditText
+                    android:id="@+id/txtIpscaner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="ipscaner"
+                    android:inputType="text"
+                    android:text="ipscaner"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:passwordToggleEnabled="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/hintPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                app:hintEnabled="true">
+
+                <EditText
+                    android:id="@+id/txtPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:text="pass"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/btnLoadConnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="LoadAllConnect"
+                    android:text="Загрузить"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/btnSaveConnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="SaveConnect"
+                    android:text="Сохранить"
+                    android:textSize="24sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtlogConnect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:textAlignment="center"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnUpdateConnect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ОБНОВЛЕНИЕ"
+                android:textSize="24sp" />
+
+
+        </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

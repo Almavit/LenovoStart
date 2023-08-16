@@ -1,11 +1,7 @@
 package by.matveev.lenovostart.lib;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.util.Log;
@@ -22,21 +18,24 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 
 public class Filealmat {
     public String PatshFile;
     public String NameFileCSV;
+    public String NameFileCSV_IP = "wifi.csv";
     public String NameDirectory = "Documents";
     public String NameFileAPK = "app-debug.apk";
     final String LOG_TAG = "PatshDIR_SD";
     //public Activity activity;
     private static final String ENCODING_WIN1251 = "windows-1251";
+    private static final String ENCODING_DOS = "Cp866";
     public CSVReader reader;
     public Integer NumberOfRecords = 0;
 
 
-//    @Override
+    //    @Override
 //    public void onCreate() {
 //
 //    }
@@ -207,28 +206,6 @@ public class Filealmat {
         } else {
 
         }
-////        // получаем путь к SD
-//        File sdPath = Environment.getExternalStorageDirectory();
-////        // добавляем свой каталог к пути
-//        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName);
-////        // создаем каталог
-//        sdPath.mkdirs();
-////
-//        File[] elems = sdPath.listFiles();
-////
-//        String[] paths = new String[1 + (elems == null? 0 : elems.length)];
-//        int i = 0;
-//        paths[i] = sdPath.getAbsolutePath();//добавляем в список повторно сканируемых путей саму папку - что бы она отобразилась если была создана после подключения к компьютеру
-//        i++;
-//        if (elems != null) {
-//            for (File elem : elems) {
-//                paths[i] = elem.getAbsolutePath();//добавляем в список повторно сканируемых путей содержимое папки (у меня не было вложенных папок)
-//                i++;
-//            }
-//        }
-//        MediaScannerConnection.scanFile(context, paths, null, null);//заставляем повторно сканировать пути - после этого они должны отобразится на компьютере
-//        File sdFile = new File(sdPath, FileNameCSV);
-
 //        // формируем объект File, который содержит путь к файлу
         File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
                 DirName + "/" + FileNameCSV);
@@ -237,13 +214,8 @@ public class Filealmat {
         if (csvfile.exists()) {
             //Файл в наличии
             try {
-
                 reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
                         ';', '\n', 0);
-//                csvfile.close();
-//                if (csvfile.exists()) {
-//                    int i = 0;
-//                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {
@@ -255,31 +227,64 @@ public class Filealmat {
         }
     }
 
+    public boolean ConvertDBFtoCSVFile(Context context, String DirName, String FileNameDBF, String FileNameCSV) {
+
+        String FilePath = Environment.getExternalStorageDirectory().toString() + "/" + DirName + "/" + FileNameDBF;
+        if (LoadFileFtp(context, DirName, FileNameDBF)) {
+        }
+        try {
+            RandomAccessFile file = new RandomAccessFile(FilePath, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        RandomAccessFile file = null;
+        try {
+            file = new RandomAccessFile(FilePath, "rw");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            file.seek(32);
+            //чтение
+            byte[] bytes = new byte[524];
+            file.read(bytes);
+            //читаем строку, начиная с текущего положения курсора и до конца строки
+            String text = file.readLine();
+//            String texta = text.getBytes("Windows-1251").toString();
+//            String texts = (new String(bytes,"US-ASCII"));
+            file.close();
+            Integer iFor;
+            // открываем поток для записи если файла нет
+            if (text.length() > 0) {
+                String[] word = text.split("");
+                String barcode = text.substring(20, 33);
+                String nametov = text.substring(33, 113);
+                for (String words : word) {
+                    text = word[21];
+                    text = words.substring(20, 13);
+                }
+            }
+            String FileCSVPath = Environment.getExternalStorageDirectory().toString() + "/" + DirName + "/" + FileNameCSV;
+            BufferedWriter bw = new BufferedWriter(new FileWriter(FileCSVPath));
+            // пишем данные
+            if (text.length() > 0) {
+                text = text.toString();
+                // ++NumberOfRecords;
+            }
+            bw.append(text);
+            // закрываем поток
+
+            bw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     //  получить данные из csv файла по сети
     public boolean LoadCsvFileFtp(Context context, String DirName, String FileNameCSV) throws IOException {
-//        Setting setting = new Setting();
-//        if (!setting.loadSetting(context)){
-//            return false;
-//        }
-//        if (!setting.executeCommand(setting.sAdressServer)) {
-//            // txtLog.setBackgroundColor(Color.RED);
-//            return false;
-//        }
-//        //SQLiteDatabase db;
-//        //подключаемся к FTP серверу
-//        FTPModel mymodel = new FTPModel();
-//        // получает корневой каталог
-//        File sdPath = Environment.getExternalStorageDirectory();
-//        // добавляем свой каталог устройства к пути куда загружаем файл с сервера
-//        sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName + "/" + FileNameCSV);
-//        // загрузка csv файла с FTP сервера
-//        boolean ko = mymodel.downloadAndSaveFile(setting.sAdressServer, Integer.parseInt(setting.sPortFTP),
-//                setting.sUserFTP, setting.sPasswordFTP, FileNameCSV, sdPath);
-//        if (ko) {
-//
-//        } else {
-//            return false;// не загрузилось
-//        }
         if (!LoadFileFtp(context, DirName, FileNameCSV)) {
 
             return false;
@@ -290,7 +295,6 @@ public class Filealmat {
         if (csvfile.exists()) {
             reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
                     ';', '\n', 0);
-            //String[] nextLine = reader.readNext();
             csvfile.exists();
         }
         return true;
@@ -328,6 +332,7 @@ public class Filealmat {
         return true;
     }
 
+
     //сохранение данные из файла csv в БД SQLite
     public boolean LoadSaveCsvToDB(Context context, String DirName, String FileNameCSV, String SqlStroka, String TableName) throws IOException, InterruptedException {
 
@@ -339,8 +344,19 @@ public class Filealmat {
             return false;
         } else {
             DBHelper dbHelper = new DBHelper(context);
-            if (!dbHelper.SaveDataPrice(context, TableName, SqlStroka, reader)) {
-                return false;
+
+            if (FileNameCSV.equals("price.csv")) {
+                if (!dbHelper.SaveDataPrice(context, TableName, SqlStroka, reader)) {
+                    return false;
+                }
+            }
+            if (FileNameCSV.equals("wifi.csv")) {
+//                if (!dbHelper.SaveDataIP(context, TableName, SqlStroka, reader)) {
+//                    return false;
+//                }}
+                if (!dbHelper.DBSaveData(context, TableName, SqlStroka, reader)) {
+                    return false;
+                }
             }
             dbHelper.close();
             reader.close();

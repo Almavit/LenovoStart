@@ -34,42 +34,49 @@ import com.opencsv.CSVReader;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static  final int DATABASE_VERSION = 3;
-    public static  final String DIR_SD = "Documents";
-    public static  final String DATABASE_NAME = Environment.getExternalStorageDirectory()+ "/" + DIR_SD + "/" + "base/"  + "DocumentDB.db";
-    public static  final String TABLE_DOCUMENT = "Document";
-    public static  final String TABLE_DOCUMENT_DAT = "Dat";
-    public static  final String TABLE_DOCUMENT_PRICE = "Price";
-//    public static  final String KEY_ID = "_id";
-    public static  final String KEY_QR_CODE = "qrcode";
-    public static  final String KEY_NUM_NAKL = "numnakl";
-    public static  final String KEY_DATE = "date";
-    public static  final String KEY_NAME_POST = "namepost";
-    public static  final String KEY_NUM_POZ = "numpoz";
-    public static  final String KEY_BARCODE = "barcode";
-    public static  final String KEY_NAME_TOV = "nametov";
-    public static  final String KEY_PRICE = "price";
-    public static  final String KEY_PRICEOTP = "priceotp";
-    public static  final String KEY_QUANTITY = "quantity";
-    public static  final String KEY_STATUS = "status";
+    public static final int DATABASE_VERSION = 3;
+    public static final String DIR_SD = "Documents";
+    public static final String DATABASE_NAME = Environment.getExternalStorageDirectory() + "/" + DIR_SD + "/" + "base/" + "DocumentDB.db";
+//    public static final String TABLE_DOCUMENT = "Document";
+//    public static final String TABLE_DOCUMENT_DAT = "Dat";
+//    public static final String TABLE_DOCUMENT_PRICE = "Price";
+//    public static final String TABLE_IP = "IPtable";
+    //    public static  final String KEY_ID = "_id";
+//    public static final String KEY_QR_CODE = "qrcode";
+//    public static final String KEY_NUM_NAKL = "numnakl";
+//    public static final String KEY_DATE = "date";
+//    public static final String KEY_NAME_POST = "namepost";
+//    public static final String KEY_NUM_POZ = "numpoz";
+//    public static final String KEY_BARCODE = "barcode";
+//    public static final String KEY_NAME_TOV = "nametov";
+//    public static final String KEY_PRICE = "price";
+//    public static final String KEY_PRICEOTP = "priceotp";
+//    public static final String KEY_QUANTITY = "quantity";
+//    public static final String KEY_STATUS = "status";
 
-    public static  final String DAT_KEY_ID = "datid";
-    public static  final String DAT_KEY_BARCODE = "datbarcode";
-    public static  final String DAT_KEY_PRICE = "datprice";
-    public static  final String DAT_KEY_QUANTITY = "datquantity";
-    public static  final String DAT_KEY_POSITION = "datposition";
+//    public static final String DAT_KEY_ID = "datid";
+//    public static final String DAT_KEY_BARCODE = "datbarcode";
+//    public static final String DAT_KEY_PRICE = "datprice";
+//    public static final String DAT_KEY_QUANTITY = "datquantity";
+//    public static final String DAT_KEY_POSITION = "datposition";
 
     //public static  final String PRICE_NUM_NAKL = "numnakl";
     //public static  final String KEY_DATE = "date";
     //public static  final String KEY_NAME_POST = "namepost";
     //public static  final String KEY_NUM_POZ = "numpoz";
-    public static  final String PRICE_BARCODE = "barcode";
-    public static  final String PRICE_NAME_TOV = "nametov";
-    public static  final String PRICE_PRICEOTP = "priceotp";
-    public static  final String PRICE_PRICE = "price";
-    public static  final String PRICE_DATA = "data";
+//    public static final String PRICE_BARCODE = "barcode";
+//    public static final String PRICE_NAME_TOV = "nametov";
+//    public static final String PRICE_PRICEOTP = "priceotp";
+//    public static final String PRICE_PRICE = "price";
+//    public static final String PRICE_DATA = "data";
     //public static  final String KEY_QUANTITY = "quantity";
     //public static  final String KEY_STATUS = "status";
+
+//    public static final String IP_NUMMAG = "nummag";
+//    public static final String IP_MASK = "ipmask";
+//    public static final String IP_SERVER = "ipserver";
+//    public static final String IP_MODEM = "ipmodem";
+//    public static final String IP_SCANER = "ipscaner";
 
     ContentValues ScontentValues = new ContentValues();
     private SQLiteDatabase dataBase;
@@ -79,78 +86,84 @@ public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase myDataBase;
     String DB_PATH = null;
 
-    public DBHelper(Context context){
+    public DBHelper(Context context) {
 
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
         this.fContext = context;
     }
 
-   /**
+
+    /**
      * Creates a empty database on the system and rewrites it with your own
      * database.
-     * */
+     */
     public void createDataBase() {
-       // String myPath = DATABASE_NAME;
+        // String myPath = DATABASE_NAME;
         SQLiteDatabase checkDB = null;
-        try{
-
-
         try {
-            checkDB = SQLiteDatabase.openDatabase(DATABASE_NAME, null, SQLiteDatabase.OPEN_READONLY);
-            // checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
-        } catch (SQLiteException e) {
-            //файл базы данных отсутствует
-        }
-        if (checkDB != null) {
-            //ничего не делаем – файл базы данных уже есть
-        } else {
-            checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
-        }
+
+
+            try {
+                checkDB = SQLiteDatabase.openDatabase(DATABASE_NAME, null, SQLiteDatabase.OPEN_READONLY);
+                // checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
+            } catch (SQLiteException e) {
+                //файл базы данных отсутствует
+            }
+            if (checkDB != null) {
+                //ничего не делаем – файл базы данных уже есть
+            } else {
+                checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
+            }
             checkDB.close();
             // checkDB = null;
             checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
 
-            String SqlText = "create table if not exists " + TABLE_DOCUMENT + "(" +
-//                KEY_ID + " integer primary key, " +
-                    KEY_QR_CODE + " text, " +
-                    KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
-                    KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
-                    KEY_PRICEOTP + " text, " + KEY_PRICE + " text, " +
-                    KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")";
-            checkDB.execSQL(SqlText );
-
-        checkDB.close();
-       // checkDB = null;
-        checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
-
-
-
-        String SqlTextDat = "create table if not exists " + TABLE_DOCUMENT_DAT + "(" + DAT_KEY_ID + " integer, " +
-                DAT_KEY_BARCODE + " text, " + DAT_KEY_PRICE + " text, " + DAT_KEY_QUANTITY + " text, " +
-                 DAT_KEY_POSITION+ " text)";
-        checkDB.execSQL(SqlTextDat);
-
-            checkDB.close();
+//            String SqlText = "create table if not exists " + TABLE_DOCUMENT + "(" +
+////                KEY_ID + " integer primary key, " +
+//                    KEY_QR_CODE + " text, " +
+//                    KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
+//                    KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
+//                    KEY_PRICEOTP + " text, " + KEY_PRICE + " text, " +
+//                    KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")";
+//            checkDB.execSQL(SqlText);
+//
+//            checkDB.close();
+            // checkDB = null;
+//            checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
+//
+//
+//            String SqlTextDat = "create table if not exists " + TABLE_DOCUMENT_DAT + "(" + DAT_KEY_ID + " integer, " +
+//                    DAT_KEY_BARCODE + " text, " + DAT_KEY_PRICE + " text, " + DAT_KEY_QUANTITY + " text, " +
+//                    DAT_KEY_POSITION + " text)";
+//            checkDB.execSQL(SqlTextDat);
+//
+//            checkDB.close();
 
             //checkDB.close();
             // checkDB = null;
-            checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
+//            checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
+//
+//            String SqlTextIP = "create table if not exists " + TABLE_IP + "(" + IP_NUMMAG + " text, " +
+//                    IP_MASK + " text, " + IP_SERVER + " text, " + IP_MODEM + " text, " + IP_SCANER + " text)";
+//            checkDB.execSQL(SqlTextIP);
+//
+//            checkDB.close();
 
-            String SqlTextPrice = "create table if not exists " + TABLE_DOCUMENT_PRICE + "(" + PRICE_BARCODE + " text, " +
-                    PRICE_NAME_TOV + " text, " + PRICE_PRICEOTP + " text, "  + PRICE_PRICE + " text, " + PRICE_DATA +  " text)";
-            checkDB.execSQL(SqlTextPrice);
-
-
-
-
+            //checkDB.close();
+            // checkDB = null;
+//            checkDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null, null);
+//
+//            String SqlTextPrice = "create table if not exists " + TABLE_DOCUMENT_PRICE + "(" + PRICE_BARCODE + " text, " +
+//                    PRICE_NAME_TOV + " text, " + PRICE_PRICEOTP + " text, " + PRICE_PRICE + " text, " + PRICE_DATA + " text)";
+//            checkDB.execSQL(SqlTextPrice);
 
 
             Cursor cursor = null;
             try {
                 String column = "";
                 String name = "";
-                cursor = checkDB.rawQuery("PRAGMA table_info("+ TABLE_DOCUMENT_PRICE +")", null);
+                cursor = checkDB.rawQuery("PRAGMA table_info(" + DBSampleHelper.DBPrice.TABLE_DOCUMENT_PRICE + ")", null);//проверка состояния таблицы
                 if (cursor != null) {
                     Integer iCountursor = cursor.getCount();
                     while (cursor.moveToNext()) {
@@ -178,7 +191,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-
     public void openDataBase() throws SQLException {
         String path = DATABASE_NAME;
         dataBase = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
@@ -194,63 +206,138 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists " + TABLE_DOCUMENT);
 //
-//        onCreate(db);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-      //  createDataBase();
-/*        db.execSQL("create table " + TABLE_DOCUMENT + "(" +
-//                KEY_ID + " integer primary key, " +
-                KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
-                KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
-                KEY_PRICE + " text, " +
-                KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );*/
+
+       // db.execSQL(DBSampleHelper.DBConnectIP.DROP_TABLE);
+        db.execSQL(DBSampleHelper.DBConnectIP.CREATE_TABLE);
+        db.execSQL(DBSampleHelper.DBPrice.CREATE_TABLE);
+        db.execSQL(DBSampleHelper.DBDat.CREATE_TABLE);
+        db.execSQL(DBSampleHelper.DBQTable.CREATE_TABLE);
     }
 
-    public boolean SaveDataPrice(Context contex,String TableName, String SqlStroka,CSVReader reader) throws IOException, InterruptedException {
+    public boolean DBSaveData(Context contex, String TableName, String SqlStroka, CSVReader reader) {
+        DBHelper dbHelper = new DBHelper(contex);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        if (TableName.equals(DBSampleHelper.DBConnectIP.TABLE_IP)) {
+            if(!WhileTableWrite(contex, db, TableName, reader)){
+                return false;
+            }
+        }
+        if (TableName.equals(DBSampleHelper.DBQTable.TABLE_DOCUMENT)) {
+
+        }
+        if (TableName.equals(DBSampleHelper.DBDat.TABLE_DOCUMENT_DAT)) {
+
+        }
+        if (TableName.equals(DBSampleHelper.DBPrice.TABLE_DOCUMENT_PRICE)) {
+
+        }
+
+        return true;
+    }
+
+    public boolean WhileTableWrite(Context contex, SQLiteDatabase db, String DropTableName, CSVReader reader) {
+        String[] nextLine = null;
+       // DBHelper dbHelper = new DBHelper(contex);
+     //   SQLiteDatabase dbdb = dbHelper.getWritableDatabase();
+        //dbdb.execSQL("DROP TABLE IF EXISTS " + DropTableName);
+        db.delete(DropTableName, null, null);
+    //    dbdb.close();
+     //   dbdb = dbHelper.getWritableDatabase();
+
+        while (true) {
+            try {
+                if (!((nextLine = reader.readNext()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }// считываем данные с CSV  файла
+            ScontentValues = ContentValuesIPSetting(nextLine);
+            Long iSSS = db.insert(DropTableName, null, ScontentValues);
+            if (iSSS <= 0) {
+                db.close();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean SaveDataIP(Context contex, String TableName, String SqlStroka, CSVReader reader) throws IOException, InterruptedException {
+        Integer ISS = 0;
         DBHelper dbHelper = new DBHelper(contex);
         String[] nextLine = null;
         SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
-
-
-        Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-        Integer iCount = basecursor.getCount();
+        //   Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+        //     Integer iCount = basecursor.getCount();
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
-        dbdb.delete(TableName,null,null);
+        dbdb.delete(TableName, null, null);
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
-        basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-        iCount = basecursor.getCount();
-        dbdb.close();
-        dbdb = dbHelper.getWritableDatabase();
-        Integer ISSSSS = 0;
-
-//        List sdsdsdsdsd = reader.readAll();
-//        String dddd = sdsdsdsdsd.toString();
+//        basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+//        iCount = basecursor.getCount();
+//        dbdb.close();
+//        dbdb = dbHelper.getWritableDatabase();
         while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
-            ISSSSS++;
-            ScontentValues = ContentValuesPriceCsv(nextLine);
-            dbdb.insert(TableName, null, ScontentValues);
-             //nextLine = null;
+            ScontentValues = ContentValuesIPSetting(nextLine);
+            Long iSSS = dbdb.insert(TableName, null, ScontentValues);
+            ISS++;
+            if (iSSS <= 0) {
+                dbdb.close();
+                return false;
+            }
+            //nextLine = null;
         }
         dbdb.close();
-            return true;
+        return true;
     }
 
-    public boolean SaveDataDat(Context contex,String TableName, String SqlStroka,CSVReader reader) throws IOException {
+    public boolean SaveDataPrice(Context contex, String TableName, String SqlStroka, CSVReader reader) throws IOException, InterruptedException {
         DBHelper dbHelper = new DBHelper(contex);
-        String[] nextLine =  null;
+        String[] nextLine = null;
+        Integer ISSSSS = 0;
+        SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
+        //   Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+        //   Integer iCount = basecursor.getCount();
+        dbdb.close();
+        dbdb = dbHelper.getWritableDatabase();
+        dbdb.delete(TableName, null, null);
+        dbdb.close();
+        dbdb = dbHelper.getWritableDatabase();
+        //    basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
+        //      iCount = basecursor.getCount();
+        dbdb.close();
+        dbdb = dbHelper.getWritableDatabase();
+
+
+        while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
+            //
+            ScontentValues = ContentValuesPriceCsv(nextLine);
+            Long iSSS = dbdb.insert(TableName, null, ScontentValues);
+            if (iSSS <= 0) {
+                dbdb.close();
+                return false;
+            }
+            ISSSSS++;
+        }
+        dbdb.close();
+        return true;
+    }
+
+    public boolean SaveDataDat(Context contex, String TableName, String SqlStroka, CSVReader reader) throws IOException {
+        DBHelper dbHelper = new DBHelper(contex);
+        String[] nextLine = null;
         String[] sID = new String[1];
         SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
 
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
-        dbdb.delete(TableName,null,null);
+        dbdb.delete(TableName, null, null);
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
         Integer ISSSSS = 0;
@@ -262,7 +349,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             sID[0] = str;
 
-            nextLine = concatArray(sID,nextLine);
+            nextLine = concatArray(sID, nextLine);
 
             ScontentValues = ContentValuesDat(nextLine);
             dbdb.insert(TableName, null, ScontentValues);
@@ -271,6 +358,7 @@ public class DBHelper extends SQLiteOpenHelper {
         dbdb.close();
         return true;
     }
+
     // метод для склеивания двух строковых массивов
     private String[] concatArray(String[] a, String[] b) {
         if (a == null)
@@ -283,44 +371,60 @@ public class DBHelper extends SQLiteOpenHelper {
         return r;
     }
 
-    public ContentValues ContentValuesQRCsv(String[] csvreader){
+
+    public ContentValues ContentValuesQRCsv(String[] csvreader) {
 
         ContentValues ScontentValues = new ContentValues();
 
-        ScontentValues.put(DBHelper.KEY_QR_CODE, csvreader[0]);
-        ScontentValues.put(DBHelper.KEY_NUM_NAKL, csvreader[1]);
-        ScontentValues.put(DBHelper.KEY_DATE, csvreader[2]);
-        ScontentValues.put(DBHelper.KEY_NAME_POST, csvreader[3]);
-        ScontentValues.put(DBHelper.KEY_NUM_POZ, csvreader[4]);
-        ScontentValues.put(DBHelper.KEY_BARCODE, csvreader[5]);
-        ScontentValues.put(DBHelper.KEY_NAME_TOV, csvreader[6]);
-        ScontentValues.put(DBHelper.KEY_QUANTITY, csvreader[7]);
-        ScontentValues.put(DBHelper.KEY_STATUS, csvreader[8]);
+        ScontentValues.put(DBSampleHelper.DBQTable.KEY_QR_CODE, csvreader[0]);
+        ScontentValues.put(DBSampleHelper.DBQTable.KEY_NUM_NAKL, csvreader[1]);
+        ScontentValues.put(DBSampleHelper.DBQTable.KEY_DATE, csvreader[2]);
+        ScontentValues.put(DBSampleHelper.DBQTable.KEY_NAME_POST, csvreader[3]);
+        ScontentValues.put(DBSampleHelper.DBQTable.KEY_NUM_POZ, csvreader[4]);
+        ScontentValues.put(DBSampleHelper.DBQTable.KEY_BARCODE, csvreader[5]);
+        ScontentValues.put(DBSampleHelper.DBQTable.KEY_NAME_TOV, csvreader[6]);
+        ScontentValues.put(DBSampleHelper.DBQTable.KEY_QUANTITY, csvreader[7]);
+        ScontentValues.put(DBSampleHelper.DBQTable.KEY_STATUS, csvreader[8]);
 
         return ScontentValues;
     }
-    public ContentValues ContentValuesDat(String[] csvreader){
+
+    public ContentValues ContentValuesDat(String[] csvreader) {
 
         ContentValues ScontentValues = new ContentValues();
 
-        ScontentValues.put(DBHelper.DAT_KEY_ID, csvreader[0]);
-        ScontentValues.put(DBHelper.DAT_KEY_BARCODE, csvreader[1]);
-        ScontentValues.put(DBHelper.DAT_KEY_PRICE, csvreader[2]);
-        ScontentValues.put(DBHelper.DAT_KEY_QUANTITY, csvreader[3]);
-        ScontentValues.put(DBHelper.DAT_KEY_POSITION, csvreader[4]);
+        ScontentValues.put(DBSampleHelper.DBDat.DAT_KEY_ID, csvreader[0]);
+        ScontentValues.put(DBSampleHelper.DBDat.DAT_KEY_BARCODE, csvreader[1]);
+        ScontentValues.put(DBSampleHelper.DBDat.DAT_KEY_PRICE, csvreader[2]);
+        ScontentValues.put(DBSampleHelper.DBDat.DAT_KEY_QUANTITY, csvreader[3]);
+        ScontentValues.put(DBSampleHelper.DBDat.DAT_KEY_POSITION, csvreader[4]);
 
         return ScontentValues;
     }
-    public ContentValues ContentValuesPriceCsv(String[] csvreader){
+
+    public ContentValues ContentValuesPriceCsv(String[] csvreader) {
 
 
-            ContentValues ScontentValues = new ContentValues();
+        ContentValues ScontentValues = new ContentValues();
 
-            ScontentValues.put(DBHelper.PRICE_BARCODE, csvreader[0]);
-            ScontentValues.put(DBHelper.PRICE_NAME_TOV, csvreader[1]);
-            ScontentValues.put(DBHelper.PRICE_PRICEOTP, csvreader[2]);
-            ScontentValues.put(DBHelper.PRICE_PRICE, csvreader[3]);
-            ScontentValues.put(DBHelper.PRICE_DATA, csvreader[4]);
+        ScontentValues.put(DBSampleHelper.DBPrice.PRICE_BARCODE, csvreader[0]);
+        ScontentValues.put(DBSampleHelper.DBPrice.PRICE_NAME_TOV, csvreader[1]);
+        ScontentValues.put(DBSampleHelper.DBPrice.PRICE_PRICEOTP, csvreader[2]);
+        ScontentValues.put(DBSampleHelper.DBPrice.PRICE_PRICE, csvreader[3]);
+        ScontentValues.put(DBSampleHelper.DBPrice.PRICE_DATA, csvreader[4]);
+
+        return ScontentValues;
+    }
+
+    public ContentValues ContentValuesIPSetting(String[] settingIPreader) {
+
+        ContentValues ScontentValues = new ContentValues();
+
+        ScontentValues.put(DBSampleHelper.DBConnectIP.IP_NUMMAG, settingIPreader[0]);
+        ScontentValues.put(DBSampleHelper.DBConnectIP.IP_MASK, settingIPreader[1]);
+        ScontentValues.put(DBSampleHelper.DBConnectIP.IP_SERVER, settingIPreader[2]);
+        ScontentValues.put(DBSampleHelper.DBConnectIP.IP_MODEM, settingIPreader[3]);
+        ScontentValues.put(DBSampleHelper.DBConnectIP.IP_SCANER, settingIPreader[4]);
 
         return ScontentValues;
     }
