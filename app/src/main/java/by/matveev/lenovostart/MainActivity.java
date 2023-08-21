@@ -47,6 +47,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView txtLog;
     TextView textview;
     Filealmat filealmat;
-
+    WIFIService wifis = null;
     //  ProgressBar progressBar;
 
     //  private ViewDataBinding binding;
@@ -163,6 +164,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //  progressBar = (ProgressBar) findViewById(R.id.progressBar);
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
+        try {
+            wifis = new WIFIService(this);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         filealmat = new Filealmat();
         setting = new Setting();
         try {
@@ -192,10 +200,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new DBHelper(this).onCreate(db);
 
         db.close();
-        WIFIService wifis = new WIFIService(this);
 
-        wifis.enableWifi();
-       // enableWifi();                                   //Проверяем включен ли WiFi, если нет то включаем
+
+
+        //wifis.enableWifi();
+        // enableWifi();                                   //Проверяем включен ли WiFi, если нет то включаем
         //         bindToNetwork();                           //Для версии выше 5, для связки процесса с сетью  (без интернет доступа)
         IntentFilter intentFilter = new IntentFilter();                    //Создаем объект для отслеживания изменений в сети.
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);    //Произошло изменение сетевого подключения. IntentFilter должен содержать событие.

@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.Network;
@@ -19,19 +20,43 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigInteger;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
+
+import by.matveev.lenovostart.MainActivity;
 
 public class WIFIService extends Service {
-    String ipAdressScaner;
+    public String ipAdressScaner;
+    public String ipMaskScaner;
+    public String ipGatewayScaner;
+    public String ipDNS1Scaner;
+    public String ipDNS2Scaner;
+   // public String ipServerScaner;
+    public String ipDNS1;
+    public String ipDNS2;
+    IntentFilter intentFilter = new IntentFilter();                    //Создаем объект для отслеживания изменений в сети.
+    private WiFiMonitor mWiFiMonitor;           //Объект WiFiMonitor, поиск сети, вывод доступных точек
+
+    public WIFIService(Context context) throws SocketException, UnknownHostException {
+        // This works both in tethering and when connected to an Access Point
 
 
-    public WIFIService(Context context) {
+        enableWifi(context);
+        wifiIpAddress(context);
 
+        //bindToNetwork();
 
-        ipAdressScaner = "asas";
+       // intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);    //Произошло изменение сетевого подключения. IntentFilter должен содержать событие.
+
+       // registerReceiver(mWiFiMonitor, intentFilter);
+
     }
 
     @Override
@@ -59,17 +84,17 @@ public class WIFIService extends Service {
     @Override
     public void onDestroy() {//Service Destroyed
         Toast.makeText(this, "Сервис выключен", Toast.LENGTH_LONG).show();
-        String ipAdressScaner;
-        ipAdressScaner = "asas";
+
     }
 
-    public boolean enableWifi() {
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        if (!wifiManager.isWifiEnabled()) {
+    public boolean enableWifi(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
+       // if (!wifiManager.isWifiEnabled()) {
+        while(!wifiManager.isWifiEnabled()){
             wifiManager.setWifiEnabled(true);
-            Toast toast = Toast.makeText(getApplicationContext(), "Wifi включен", Toast.LENGTH_SHORT);
-            toast.show();
-            return  true;
+//            Toast toast = Toast.makeText(context, "Wifi включен", Toast.LENGTH_SHORT);
+//            toast.show();
+            //return  true;
         }
         return true;
     }
@@ -78,7 +103,7 @@ public class WIFIService extends Service {
         final ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkRequest.Builder builder;
         // Log.d(TAG, "All OK 123 !!!!!!!!!!!!!!!");
-        Toast.makeText(this, "All OK !!!!!!!!!!!!!!!", Toast.LENGTH_LONG).show();
+        // Toast.makeText(this, "All OK !!!!!!!!!!!!!!!", Toast.LENGTH_LONG).show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder = new NetworkRequest.Builder();
             builder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
@@ -135,7 +160,7 @@ public class WIFIService extends Service {
             // параметры WIFI сканера
             WifiInfo connectionInfo = wifiManager.getConnectionInfo();
 
-            String ipwifi = wifiIpAddress(context);
+          //  String ipwifi = wifiIpAddress(context);
 
             Log.d(LOG_TAG, connectionInfo.getSSID());
             Toast.makeText(context, "Connected to Internet: " + connectionInfo.getSSID(), Toast.LENGTH_LONG).show();
@@ -144,7 +169,7 @@ public class WIFIService extends Service {
     }
 
 
-    protected String wifiIpAddress(Context context) {
+    protected Boolean wifiIpAddress(Context context) throws SocketException {
         String ipAddressString;
         String ipGatewayString;
         String ipServerString;
@@ -172,39 +197,83 @@ public class WIFIService extends Service {
         s_serverAddress = "Server IP: " + String.valueOf(d.serverAddress);
 
         //////
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+        Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+
+
+        while (interfaces.hasMoreElements())
+        {
+            NetworkInterface networkInterface = interfaces.nextElement();
+
+            if (networkInterface.isLoopback())
+                continue; // Don't want to broadcast to the loopback interface
+
+            for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses())
+            {
+                InetAddress broadcast = interfaceAddress.getBroadcast();
+
+                // Android seems smart enough to set to null broadcast to
+                //  the external mobile network. It makes sense since Android
+                //  silently drop UDP broadcasts involving external mobile network.
+                if (broadcast == null)
+                    continue;
+                else{
+               //     InetAddress ip = interfaceAddress.getAddress();
+              //      ipAdressScaner = ip.toString().replaceAll("/", "");
+                    short subnetmask = interfaceAddress.getNetworkPrefixLength(); //is another way to express subnet mask
+
+                    ipMaskScaner = Short.toString(subnetmask);
+
+                }
+
+                // Use the broadcast
+            }
+        }
+
 
         WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
         int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
+        ipAddress = d.ipAddress;
         int ipGateway = d.gateway;
         int ipServer = d.serverAddress;
         int ipNetmask = d.netmask;
+        int ipDNS1 = d.dns1;
+        int ipDNS2 = d.dns2;
         // Convert little-endian to big-endianif needed
         if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
             ipAddress = Integer.reverseBytes(ipAddress);
             ipGateway = Integer.reverseBytes(ipGateway);
             ipServer = Integer.reverseBytes(ipServer);
             ipNetmask = Integer.reverseBytes(ipNetmask);
+            ipDNS1=Integer.reverseBytes(ipDNS1);
+            ipDNS2=Integer.reverseBytes(ipDNS2);
+
         }
 
         byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
         byte[] ipByteGateway = BigInteger.valueOf(ipGateway).toByteArray();
-        // byte[] ipByteServer = BigInteger.valueOf(ipServer).toByteArray();
+  //      byte[] ipByteServer = BigInteger.valueOf(ipServer).toByteArray();
         byte[] ipByteNetmask = BigInteger.valueOf(ipNetmask).toByteArray();
+        byte[] ipByteDNS1 = BigInteger.valueOf(ipDNS1).toByteArray();
+        byte[] ipByteDNS2 = BigInteger.valueOf(ipDNS2).toByteArray();
 
         try {
-            ipAddressString = InetAddress.getByAddress(ipByteArray).getHostAddress();
-            ipGatewayString = InetAddress.getByAddress(ipByteGateway).getHostAddress();
-            // ipServerString = InetAddress.getByAddress(ipByteServer).getHostAddress();
-            ipNetmaskString = InetAddress.getByAddress(ipByteNetmask).getHostAddress();
+            ipAdressScaner = InetAddress.getByAddress(ipByteArray).getHostAddress();
+            ipGatewayScaner = InetAddress.getByAddress(ipByteGateway).getHostAddress();
+            ipDNS1Scaner = InetAddress.getByAddress(ipByteDNS1).getHostAddress();
+        //    ipDNS2Scaner = InetAddress.getByAddress(ipByteDNS2).getHostAddress();
+     //       ipServerScaner = InetAddress.getByAddress(ipByteServer).getHostAddress();
+    //        ipNetmaskString = InetAddress.getByAddress(ipByteNetmask).getHostAddress();
         } catch (UnknownHostException ex) {
             Log.e("WIFIIP", "Unable to get host address.");
-            ipAddressString = null;
+           // ipAddressString = null;
+            return false;
         }
 
 
 ////////////////////////////////////
 ////////////////////////////////
-        return ipAddressString;
+        return true;
     }
 
 ////////////////////////==========================/////////////////////////////////

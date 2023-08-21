@@ -1,5 +1,6 @@
 package by.matveev.lenovostart;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.DBRepository;
@@ -208,6 +210,7 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
                     "select * from " + DBSampleHelper.DBConnectIP.TABLE_IP, DBSampleHelper.DBConnectIP.TABLE_IP)) {
 
                 if (AdapterWiFi()) {
+                    SelectIPMask("10.250.1");
 
                     txtlogConnect.setText("ДАННЫЕ ОБНОВЛЕНЫ");
                     Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);
@@ -229,7 +232,23 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
         // return false;
     }
 
-    ;
+    public boolean SelectIPMask(String sIPMask) {
+        final DBRepository repositorys = new DBRepository(getApplicationContext());
+        ArrayList<String> list = new ArrayList<String>();
+
+        list.addAll(repositorys.getSelectIP(sIPMask));
+        ArrayAdapter adapter = (ArrayAdapter) spinMag.getAdapter();
+        int position = adapter.getPosition(list.get(0).toString());
+        spinMag.setSelection(position);
+        txtIPmask.setText(list.get(1).toString());
+        txtIpmag.setText(list.get(4).toString());
+        txtIpscaner.setText(list.get(3).toString());
+        txtIpmodem.setText(list.get(2).toString());
+
+
+
+        return true;
+    }
 
     public boolean AdapterWiFi() {
         final DBRepository repositorys = new DBRepository(getApplicationContext());

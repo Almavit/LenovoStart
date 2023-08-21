@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 
-
 public class DBRepository {
     private SQLiteDatabase db;
     //private SQLiteDatabase Datdb;
@@ -20,31 +19,31 @@ public class DBRepository {
 
     String sssssss;
 
-    public static  final String KEY_QR_CODE = "qrcode";
-    public static  final String KEY_NUM_NAKL = "numnakl";
-    public static  final String KEY_DATE = "date";
-    public static  final String KEY_NAME_POST = "namepost";
-    public static  final String KEY_NUM_POZ = "numpoz";
-    public static  final String KEY_BARCODE = "barcode";
-    public static  final String KEY_NAME_TOV = "nametov";
-    public static  final String KEY_PRICE = "price";
-    public static  final String KEY_QUANTITY = "quantity";
-    public static  final String KEY_STATUS = "status";
+    public static final String KEY_QR_CODE = "qrcode";
+    public static final String KEY_NUM_NAKL = "numnakl";
+    public static final String KEY_DATE = "date";
+    public static final String KEY_NAME_POST = "namepost";
+    public static final String KEY_NUM_POZ = "numpoz";
+    public static final String KEY_BARCODE = "barcode";
+    public static final String KEY_NAME_TOV = "nametov";
+    public static final String KEY_PRICE = "price";
+    public static final String KEY_QUANTITY = "quantity";
+    public static final String KEY_STATUS = "status";
 
-    public static  final String TABLE_DOCUMENT = "Document";
+    public static final String TABLE_DOCUMENT = "Document";
 
-    public static  final String DAT_KEY_ID = "id";
-    public static  final String DAT_KEY_BARCODE = "barcode";
-    public static  final String DAT_KEY_PRICE = "price";
-    public static  final String DAT_KEY_QUANTITY = "quantity";
-    public static  final String DAT_KEY_NUMBER = "number";
+    public static final String DAT_KEY_ID = "id";
+    public static final String DAT_KEY_BARCODE = "barcode";
+    public static final String DAT_KEY_PRICE = "price";
+    public static final String DAT_KEY_QUANTITY = "quantity";
+    public static final String DAT_KEY_NUMBER = "number";
 
-    public static  final String DAT_TABLE_DOCUMENT = "Dat";
+    public static final String DAT_TABLE_DOCUMENT = "Dat";
 
-   // @SuppressLint("WrongConstant")
+    // @SuppressLint("WrongConstant")
     public DBRepository(Context context) {
         //Подключение к базе данных
-       db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
+        db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
 //       Datdb = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
  /*        db.execSQL("create table " + TABLE_DOCUMENT + "(" +
 //                KEY_ID + " integer primary key, " +
@@ -52,10 +51,11 @@ public class DBRepository {
                 KEY_NUM_POZ + " text, " + KEY_BARCODE + " text, " + KEY_NAME_TOV + " text, " +
                 KEY_PRICE + " text, " +
                 KEY_QUANTITY + " text, " + KEY_STATUS + " text" + ")"  );*/
-    //    db = new DBHelper(context).getWritableDatabase();
-   //     cont = context;
-       // return db;
+        //    db = new DBHelper(context).getWritableDatabase();
+        //     cont = context;
+        // return db;
     }
+
     //Создадим перечисление с полями таблицы Dat.
     public enum DatFields {
 
@@ -68,12 +68,14 @@ public class DBRepository {
         DatFields(int i) {
             this.datfieldCode = i;
         }
-        public int getFieldCode()
-        {
+
+        public int getFieldCode() {
             return datfieldCode;
         }
+
         private int datfieldCode;
     }
+
     //Создадим перечисление с полями таблицы Document.
     public enum Fields {
         KEY_QR_CODE(0), // = "";
@@ -86,29 +88,31 @@ public class DBRepository {
         //    KEY_PRICE(0), // = "price";
         KEY_QUANTITY(7), // = "quantity";
         KEY_STATUS(8);   // = "status";
+
         Fields(int i) {
             this.fieldCode = i;
         }
-        public int getFieldCode()
-        {
+
+        public int getFieldCode() {
             return fieldCode;
         }
+
         private int fieldCode;
     }
     ////======================
 
 
-    public ArrayList<String>  getDataQR(){
+    public ArrayList<String> getDataQR() {
         String asdf;
-        String[] columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL,KEY_DATE, KEY_NAME_POST,
-                KEY_NUM_POZ,KEY_BARCODE,KEY_NAME_TOV,KEY_QUANTITY,KEY_STATUS};
+        String[] columnsName = new String[]{KEY_QR_CODE, KEY_NUM_NAKL, KEY_DATE, KEY_NAME_POST,
+                KEY_NUM_POZ, KEY_BARCODE, KEY_NAME_TOV, KEY_QUANTITY, KEY_STATUS};
         ArrayList<String> list = new ArrayList<String>();
         //columnsName = new String[]{fieldsColumns};
         Fields field = Fields.KEY_QR_CODE;
 
         //1
 
-        Cursor cursor = db.query("Document",columnsName , null,null, KEY_BARCODE, null, null);
+        Cursor cursor = db.query("Document", columnsName, null, null, KEY_BARCODE, null, null);
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             iCountFields = cursor.getColumnCount();
@@ -125,19 +129,17 @@ public class DBRepository {
     }
 
 
-
-    public ArrayList<String> getDataAllNakld()
-    {
-       // String asdf;
+    public ArrayList<String> getDataAllNakld() {
+        // String asdf;
         String naAAA;
         String[] columnsName = null;
-        columnsName = new String[]{KEY_QR_CODE,KEY_NUM_NAKL};//, "count(*)"
+        columnsName = new String[]{KEY_QR_CODE, KEY_NUM_NAKL};//, "count(*)"
         //columnsName = "numnakl";
         Fields field = Fields.KEY_NUM_NAKL;
         ArrayList<String> list = new ArrayList<String>();
 
 
-        Cursor cursor = db.query("Document",columnsName , null,null, KEY_NUM_NAKL, null, null);
+        Cursor cursor = db.query("Document", columnsName, null, null, KEY_NUM_NAKL, null, null);
         iCountFields = cursor.getColumnCount();
 
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -168,34 +170,75 @@ public class DBRepository {
         WiFiFields(int i) {
             this.WiFiFieldCode = i;
         }
-        public int getFieldCode()
-        {
+
+        public int getFieldCode() {
             return WiFiFieldCode;
         }
+
         private int WiFiFieldCode;
     }
 
-    public ArrayList<String> getDataWifi()
-    {
+    public ArrayList<String> getSelectIP(String sIPMask) {
         ArrayList<String> list = new ArrayList<String>();
-        String[] ColumnsName = null;
 
-        ColumnsName = new String[]{DBSampleHelper.DBConnectIP.IP_NUMMAG,DBSampleHelper.DBConnectIP.IP_MASK,
-                DBSampleHelper.DBConnectIP.IP_SERVER,DBSampleHelper.DBConnectIP.IP_MODEM,DBSampleHelper.DBConnectIP.IP_SCANER, DBSampleHelper.DBConnectIP.IP_WIFI};//,
         WiFiFields nummag = WiFiFields.IP_KEY_NUMMAG;
         WiFiFields ipmask = WiFiFields.IP_KEY_MASK;
         WiFiFields ipserver = WiFiFields.IP_KEY_SERVER;
         WiFiFields ipmodem = WiFiFields.IP_KEY_MODEM;
         WiFiFields ipscaner = WiFiFields.IP_KEY_SCANER;
         WiFiFields ipwifi = WiFiFields.IP_KEY_WIFI;
-        Cursor cursor = db.query(DBSampleHelper.DBConnectIP.TABLE_IP,null , null,null, null, null, null);
+
+        Cursor cursor = db.query(true, DBSampleHelper.DBConnectIP.TABLE_IP,
+                new String[]{DBSampleHelper.DBConnectIP.IP_NUMMAG, DBSampleHelper.DBConnectIP.IP_MASK,
+                        DBSampleHelper.DBConnectIP.IP_SERVER, DBSampleHelper.DBConnectIP.IP_MODEM,
+                        DBSampleHelper.DBConnectIP.IP_SCANER, DBSampleHelper.DBConnectIP.IP_WIFI},
+                DBSampleHelper.DBConnectIP.IP_MASK + " = ?",
+                new String[]{sIPMask}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+//            cursor.moveToFirst();
+//            iCountFields = cursor.getColumnCount();
+//            do {
+            cursor.moveToFirst();
+            iCountFields = cursor.getPosition();
+            String sField = cursor.getString(nummag.getFieldCode());// + "   ;   " +
+
+            list.add(sField);
+            sField = cursor.getString(ipmask.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipserver.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipmodem.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipscaner.getFieldCode());
+            list.add(sField);
+            sField = cursor.getString(ipscaner.getFieldCode());
+            list.add(sField);
+//            } while (cursor.moveToNext());
+        }
+
+        return list;
+    }
+
+    public ArrayList<String> getDataWifi() {
+        ArrayList<String> list = new ArrayList<String>();
+        String[] ColumnsName = null;
+
+//        ColumnsName = new String[]{DBSampleHelper.DBConnectIP.IP_NUMMAG,DBSampleHelper.DBConnectIP.IP_MASK,
+//                DBSampleHelper.DBConnectIP.IP_SERVER,DBSampleHelper.DBConnectIP.IP_MODEM,DBSampleHelper.DBConnectIP.IP_SCANER, DBSampleHelper.DBConnectIP.IP_WIFI};//,
+        WiFiFields nummag = WiFiFields.IP_KEY_NUMMAG;
+//        WiFiFields ipmask = WiFiFields.IP_KEY_MASK;
+//        WiFiFields ipserver = WiFiFields.IP_KEY_SERVER;
+//        WiFiFields ipmodem = WiFiFields.IP_KEY_MODEM;
+//        WiFiFields ipscaner = WiFiFields.IP_KEY_SCANER;
+//        WiFiFields ipwifi = WiFiFields.IP_KEY_WIFI;
+        Cursor cursor = db.query(DBSampleHelper.DBConnectIP.TABLE_IP, null, null, null, null, null, null);
 
         if ((cursor != null) && (cursor.getCount() > 0)) {
             cursor.moveToFirst();
             iCountFields = cursor.getColumnCount();
             do {
                 iCountFields = cursor.getPosition();
-               String sField = cursor.getString(nummag.getFieldCode()); // + "   ;   " +
+                String sField = cursor.getString(nummag.getFieldCode()); // + "   ;   " +
 //                        cursor.getString(ipmask.getFieldCode()) + "   ;   " +
 //                        cursor.getString(ipserver.getFieldCode()) + "   ;   " +
 //                        cursor.getString(ipmodem.getFieldCode()) + "   ;   " +
@@ -209,8 +252,7 @@ public class DBRepository {
 
     }
 
-    public ArrayList<String> getDataDat()
-    {
+    public ArrayList<String> getDataDat() {
 
         Integer id;
         String barcode;
@@ -221,7 +263,7 @@ public class DBRepository {
 
         String[] datcolumnsName = null;
 
-        datcolumnsName = new String[]{DBSampleHelper.DBDat.DAT_KEY_ID,DBSampleHelper.DBDat.DAT_KEY_BARCODE,
+        datcolumnsName = new String[]{DBSampleHelper.DBDat.DAT_KEY_ID, DBSampleHelper.DBDat.DAT_KEY_BARCODE,
                 DBSampleHelper.DBDat.DAT_KEY_POSITION, DBSampleHelper.DBDat.DAT_KEY_QUANTITY, DBSampleHelper.DBDat.DAT_KEY_PRICE};//,
         DatFields fieldid = DatFields.DAT_KEY_ID;
         DatFields fieldbarcose = DatFields.DAT_KEY_BARCODE;
@@ -235,7 +277,7 @@ public class DBRepository {
         //db.delete(DAT_TABLE_DOCUMENT,null,null);
         //db.close();
 
-        Cursor cursor = db.query(DAT_TABLE_DOCUMENT,null , null,null, null, null, null);
+        Cursor cursor = db.query(DAT_TABLE_DOCUMENT, null, null, null, null, null, null);
         ArrayList<String> list = new ArrayList<String>();
 
         int iF = cursor.getCount();
@@ -249,14 +291,14 @@ public class DBRepository {
                         cursor.getString(fieldprice.getFieldCode()) + "   ;   " +
                         cursor.getString(fieldquantity.getFieldCode()) + "   ;   " +
                         cursor.getString(fieldnumber.getFieldCode());
-                 list.add(sField);
+                list.add(sField);
             } while (cursor.moveToNext());
         }
         return list;
     }
-//=========================================================|||||||
-    public ArrayList<String> getDataNakld(String numNakl)
-    {
+
+    //=========================================================|||||||
+    public ArrayList<String> getDataNakld(String numNakl) {
         Integer iFields;
 //        String asdf;
 //        String naAAA;
@@ -280,12 +322,12 @@ public class DBRepository {
 //        Fields nameTovNakld = Fields.KEY_NAME_TOV;
 //        Fields quntityNakld = Fields.KEY_QUANTITY;
 //        Fields statusNakld = Fields.KEY_STATUS;
-        columns = new String[] {KEY_NUM_NAKL + ", " + KEY_DATE + ", " + KEY_NAME_POST + ", " + KEY_NUM_POZ + ", " + KEY_BARCODE + ", " + KEY_NAME_TOV + ", " + KEY_QUANTITY + ", " + KEY_STATUS};
+        columns = new String[]{KEY_NUM_NAKL + ", " + KEY_DATE + ", " + KEY_NAME_POST + ", " + KEY_NUM_POZ + ", " + KEY_BARCODE + ", " + KEY_NAME_TOV + ", " + KEY_QUANTITY + ", " + KEY_STATUS};
 
         ArrayList<String> list = new ArrayList<String>();
 
         // cursor help http://developer.alexanderklimov.ru/android/sqlite/cursor.php
-        Cursor cursor = db.query("Document",null, KEY_NUM_NAKL + " = " +
+        Cursor cursor = db.query("Document", null, KEY_NUM_NAKL + " = " +
                 numNakl, null, null, null, KEY_NUM_POZ);
 
 
@@ -297,13 +339,11 @@ public class DBRepository {
 
             iCountFields = cursor.getPosition();
 
-                    list.add(cursor.getString(numNakld.getFieldCode()));
-                    list.add(cursor.getString(datNakld.getFieldCode()));
+            list.add(cursor.getString(numNakld.getFieldCode()));
+            list.add(cursor.getString(datNakld.getFieldCode()));
         }
         return list;
     }
-
-
 
 
 }
