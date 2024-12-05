@@ -123,6 +123,9 @@ public class Filealmat {
         }
 
         Setting setting = new Setting();
+//
+//        setting.loadSetting(contex);
+
         if (sdFile.getName().equals(setting.FileNameSetting)) {
             // открываем поток для записи настроек
             //ToastMessageCenter("Запись");
@@ -282,9 +285,39 @@ public class Filealmat {
         }
         return true;
     }
+    public boolean LoadFileCsv(String DirName, String FileNameCSV){
 
+        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" + DirName + "/" + FileNameCSV);
+        if (csvfile.exists()) {
+            try {
+                reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+                        ';', '\n', 0);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            csvfile.exists();
+//            try {
+//                Integer iSize = reader.readAll().size();
+//
+//                if (reader.readAll().size() <= 0) {
+//                    return false;
+//                    //данные осутствуют
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+        }else{
+            return false;
+            // файл отсутствует
+        }
+        return true;
+    }
     //  получить данные из csv файла по сети
-    public boolean LoadCsvFileFtp(Context context, String DirName, String FileNameCSV) throws IOException {
+    public boolean LoadCsvFileFtp(Context context, String DirName, String FileNameCSV){
+
+        //Загрузка из сети
         if (!LoadFileFtp(context, DirName, FileNameCSV)) {
 
             return false;
@@ -293,8 +326,14 @@ public class Filealmat {
 //////////////////////////////////
         File csvfile = new File(Environment.getExternalStorageDirectory() + "/" + DirName + "/" + FileNameCSV);
         if (csvfile.exists()) {
-            reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-                    ';', '\n', 0);
+            try {
+                reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
+                        ';', '\n', 0);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
             csvfile.exists();
         }
         return true;
@@ -338,32 +377,27 @@ public class Filealmat {
 
         boolean returnstatus = true;
         ContentValues ScontentValues = new ContentValues();
-        Setting setting = new Setting();
+ //       Setting setting = new Setting();
 
         if (!LoadCsvFileFtp(context, DirName, FileNameCSV)) {
-            return false;
+            returnstatus = false;
         } else {
             DBHelper dbHelper = new DBHelper(context);
 
             if (FileNameCSV.equals("price.csv")) {
                 if (!dbHelper.SaveDataPrice(context, TableName, SqlStroka, reader)) {
-                    return false;
+                    returnstatus = false;
                 }
             }
             if (FileNameCSV.equals("wifi.csv")) {
-//                if (!dbHelper.SaveDataIP(context, TableName, SqlStroka, reader)) {
-//                    return false;
-//                }}
                 if (!dbHelper.DBSaveData(context, TableName, SqlStroka, reader)) {
-                    return false;
+                    returnstatus = false;
                 }
             }
             dbHelper.close();
             reader.close();
             ScontentValues.clear();
         }
-
-
         return returnstatus;
     }
 //    @Override

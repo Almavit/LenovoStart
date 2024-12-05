@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -39,58 +40,51 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Четыре поля"
-                    android:textSize="20sp" />
+                    android:textSize="24sp" />
 
                 <Button
                     android:id="@+id/btnTwoField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Штрих + цена"
-                    android:textSize="20sp" />
+                    android:textSize="24sp" />
 
                 <Button
                     android:id="@+id/btnTwoFieldQuan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Штрих + кол-во"
-                    android:textSize="20sp" />
+                    android:textSize="24sp" />
 
                 <Button
                     android:id="@+id/btnOneField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="ШТРИХКОД"
-                    android:textSize="20sp" />
+                    android:textSize="24sp" />
 
                 <Button
                     android:id="@+id/btnTwoFieldNum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Штрих + № позиции"
-                    android:textSize="20sp" />
-
-                <Button
-                    android:id="@+id/btnQrBarcode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="QR + ШТРИХКОД"
-                    android:textSize="20sp"
-                    android:visibility="invisible"
-                    tools:visibility="visible" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="#91B393"
+                    android:shadowColor="#FFFFFF"
                     android:text="..."
                     android:textAlignment="center"
                     android:textSize="20sp" />
 
                 <Button
-                    android:id="@+id/btnLoadAll"
+                    android:id="@+id/btnLoadPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Загрузить все"
+                    android:text="Загрузить прайс"
                     android:textSize="20sp" />
 
                 <TextView
@@ -103,6 +97,32 @@
                     android:textStyle="normal|bold"
                     tools:text="..." />
 
+                <TextView
+                    android:id="@+id/txtDivision"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Подразделение" />
+
+                <Spinner
+                    android:id="@+id/spinNumMag"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:duplicateParentState="false"
+                    android:visibility="visible" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="21dp"
+                    android:background="?android:attr/listDivider" />
+
+                <Button
+                    android:id="@+id/btnRefreshMag"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Изменить магазин"
+                    android:textSize="24sp" />
+
                 <Button
                     android:id="@+id/btnSetting"
                     android:layout_width="match_parent"
@@ -111,17 +131,33 @@
                     android:textSize="20sp" />
 
                 <Button
-                    android:id="@+id/btnConnect"
+                    android:id="@+id/btnClearPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Связь"
-                    android:textSize="20sp" />
+                    android:text="Очистить прайс"
+                    android:textSize="18sp" />
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                </ListView>
 
                 <Button
                     android:id="@+id/btnStartElectron"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
                     android:text="Накладные"
+                    android:textSize="20sp"
+                    android:visibility="invisible"
+                    tools:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/btnQrBarcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="QR + ШТРИХКОД"
                     android:textSize="20sp"
                     android:visibility="invisible"
                     tools:visibility="invisible" />
@@ -135,13 +171,13 @@
                     android:visibility="invisible"
                     tools:visibility="invisible" />
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="false"
-                    android:visibility="invisible" />
+                <!--                <ProgressBar-->
+<!--                    android:id="@+id/progressBar"-->
+<!--                    style="@style/Widget.AppCompat.ProgressBar"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:indeterminate="false"-->
+<!--                    android:visibility="invisible" />-->
 
 
             </LinearLayout>

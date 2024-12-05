@@ -21,10 +21,10 @@
             <Spinner
                 android:id="@+id/spinMag"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:focusable="auto"
-                android:focusableInTouchMode="true"
-                android:scrollbarSize="25dp"
+                android:focusableInTouchMode="false"
+                android:scrollbarSize="30dp"
                 android:scrollbars="horizontal|vertical"
                 android:spinnerMode="dropdown"
                 android:verticalScrollbarPosition="right"
@@ -39,8 +39,8 @@
                     android:id="@+id/txtIPmask"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Режим работы"
-                    android:text="IP mask"
+                    android:hint="10.250.1"
+                    android:text="192.168.1"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -56,14 +56,15 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:hint="ip server">
 
                     <EditText
                         android:id="@+id/txtIpmag"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Адрес магазина"
-                        android:text="Ip mag"
+                        android:hint="16"
+                        android:text="100"
                         android:textAlignment="center"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -74,15 +75,15 @@
                 android:id="@+id/hintIpmodem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ip modem"
+                android:hint="wifi name"
                 app:hintEnabled="true">
 
                 <EditText
                     android:id="@+id/txtIpmodem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ползователь FTP"
-                    android:text="Ip modem"
+                    android:hint="Office33"
+                    android:text="wifi-name"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -103,9 +104,9 @@
                     android:id="@+id/txtIpscaner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="ipscaner"
+                    android:hint="130"
                     android:inputType="text"
-                    android:text="ipscaner"
+                    android:text="1"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -129,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Password"
                     android:inputType="textPassword"
-                    android:text="pass"
+                    android:text="WTy_74Ag"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -150,7 +151,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="LoadAllConnect"
+                    android:onClick="LoadSetting"
                     android:text="Загрузить"
                     android:textSize="24sp" />
 
@@ -170,15 +171,25 @@
                 android:layout_height="wrap_content"
                 android:text="..."
                 android:textAlignment="center"
-                android:textSize="36sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btnUpdateConnect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ОБНОВЛЕНИЕ"
+                android:onClick="LoadAllSetting"
+                android:text="ОБНОВЛЕНИЕ НАСТРОЕК"
                 android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/btnCreatenewWIFI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="CreateWIFI"
+                android:text="Create new  WIFI"
+                android:textSize="24sp"
+                tools:visibility="invisible" />
 
 
         </LinearLayout>

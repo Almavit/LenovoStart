@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -31,9 +33,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     EditText txtPathFile;
     EditText txtPortFTP;
     EditText txtModeWorking;
+    TextView txtlogSetting;
     Button btnSaveSetting;
     Button btnLoadSetting;
     Button btnUpdate;
+    Button btnConnectWIFI;
     Filealmat filealmat;
     private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
 
@@ -61,6 +65,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         txtPortFTP = (EditText) findViewById(R.id.txtPortFTP);
         txtPortFTP.setOnClickListener(this);
 
+        txtlogSetting = (TextView) findViewById(R.id.txtlogSetting);
+
 
         btnSaveSetting = (Button) findViewById(R.id.btnSaveSetting);
         btnSaveSetting.setOnClickListener(this);
@@ -72,6 +78,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         btnUpdate.setOnClickListener(this);
 
 
+        btnConnectWIFI = (Button) findViewById(R.id.btnConnectWIFI);
+        btnConnectWIFI.setOnClickListener(this);
+
+
 
         filealmat = new Filealmat();
 
@@ -81,6 +91,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         Setting setting = new Setting();
         switch (v.getId()){
+             case R.id.btnConnectWIFI:
+                    Intent intentConnect = new Intent(this, ConnectMag.class);
+                    startActivity(intentConnect);
+
+                    break;
             case R.id.btnUpdate:
 
                 String apkurl = "";
@@ -92,17 +107,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.btnSaveSetting:
                 try {
-
-                    String[] stringsetting = new String[6];
-                    stringsetting[0] =
-                            stringsetting[0] = txtAdressServer.getText().toString();
-                            stringsetting[1] = txtUserFTP.getText().toString();
-                            stringsetting[2] = txtPasswordFTP.getText().toString();
-                            stringsetting[3] = txtPortFTP.getText().toString();
-                            stringsetting[4] = txtPathFile.getText().toString();
-                            stringsetting[5] = txtModeWorking.getText().toString();
-                            setting.nextLine = stringsetting;
-                    if(!setting.saveSetting(this)){
+                    if(!setting.saveSetting(this, txtAdressServer.getText().toString(), txtUserFTP.getText().toString(),
+                            txtPasswordFTP.getText().toString(),txtPortFTP.getText().toString(), txtPathFile.getText().toString(),
+                            txtModeWorking.getText().toString())){//(!setting.saveSetting(this)){
                         Toast.makeText(getApplicationContext(), "НАСТРОЙКИ НЕ СОХРАНЕНЫ",
                                 Toast.LENGTH_SHORT).show();
                         break;
@@ -153,7 +160,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                             public void onClick(DialogInterface dialog, int id) {
                                 String sd = filealmat.NameDirectory;
                                 if(!filealmat.LoadFileFtp(context, filealmat.NameDirectory,filealmat.NameFileAPK)) {
-                                    //no
+                                    txtlogSetting.setText("ФАЙЛ " + filealmat.NameFileAPK + " ОТСУТСТВУЕТ!");
+                                    txtlogSetting.setBackgroundColor(Color.RED);
                                 }else{
                                     // создаём новое намерение
                                     Intent intent = new Intent(Intent.ACTION_VIEW);

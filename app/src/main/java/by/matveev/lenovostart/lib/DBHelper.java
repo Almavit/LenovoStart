@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 //import static android.content.ContextWrapper.*;
 //import static android.content.Context.*;
@@ -32,52 +35,16 @@ import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 import com.opencsv.CSVReader;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 3;
     public static final String DIR_SD = "Documents";
     public static final String DATABASE_NAME = Environment.getExternalStorageDirectory() + "/" + DIR_SD + "/" + "base/" + "DocumentDB.db";
-//    public static final String TABLE_DOCUMENT = "Document";
-//    public static final String TABLE_DOCUMENT_DAT = "Dat";
-//    public static final String TABLE_DOCUMENT_PRICE = "Price";
-//    public static final String TABLE_IP = "IPtable";
-    //    public static  final String KEY_ID = "_id";
-//    public static final String KEY_QR_CODE = "qrcode";
-//    public static final String KEY_NUM_NAKL = "numnakl";
-//    public static final String KEY_DATE = "date";
-//    public static final String KEY_NAME_POST = "namepost";
-//    public static final String KEY_NUM_POZ = "numpoz";
-//    public static final String KEY_BARCODE = "barcode";
-//    public static final String KEY_NAME_TOV = "nametov";
-//    public static final String KEY_PRICE = "price";
-//    public static final String KEY_PRICEOTP = "priceotp";
-//    public static final String KEY_QUANTITY = "quantity";
-//    public static final String KEY_STATUS = "status";
 
-//    public static final String DAT_KEY_ID = "datid";
-//    public static final String DAT_KEY_BARCODE = "datbarcode";
-//    public static final String DAT_KEY_PRICE = "datprice";
-//    public static final String DAT_KEY_QUANTITY = "datquantity";
-//    public static final String DAT_KEY_POSITION = "datposition";
-
-    //public static  final String PRICE_NUM_NAKL = "numnakl";
-    //public static  final String KEY_DATE = "date";
-    //public static  final String KEY_NAME_POST = "namepost";
-    //public static  final String KEY_NUM_POZ = "numpoz";
-//    public static final String PRICE_BARCODE = "barcode";
-//    public static final String PRICE_NAME_TOV = "nametov";
-//    public static final String PRICE_PRICEOTP = "priceotp";
-//    public static final String PRICE_PRICE = "price";
-//    public static final String PRICE_DATA = "data";
-    //public static  final String KEY_QUANTITY = "quantity";
-    //public static  final String KEY_STATUS = "status";
-
-//    public static final String IP_NUMMAG = "nummag";
-//    public static final String IP_MASK = "ipmask";
-//    public static final String IP_SERVER = "ipserver";
-//    public static final String IP_MODEM = "ipmodem";
-//    public static final String IP_SCANER = "ipscaner";
-
+    public String setTime = "";
     ContentValues ScontentValues = new ContentValues();
     private SQLiteDatabase dataBase;
 
@@ -93,7 +60,85 @@ public class DBHelper extends SQLiteOpenHelper {
         this.fContext = context;
     }
 
+    public ArrayList getSelectIPMask(Context contex, String sIPMask){
+        ArrayList<String> list = new ArrayList<String>();
+        DBHelper dbHelper = new DBHelper(contex);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+        DBRepository.WiFiFields nummag = DBRepository.WiFiFields.IP_KEY_NUMMAG;
+        DBRepository.WiFiFields ipmask = DBRepository.WiFiFields.IP_KEY_MASK;
+        DBRepository.WiFiFields ipserver = DBRepository.WiFiFields.IP_KEY_SERVER;
+        DBRepository.WiFiFields ipmodem = DBRepository.WiFiFields.IP_KEY_MODEM;
+        DBRepository.WiFiFields ipscaner = DBRepository.WiFiFields.IP_KEY_SCANER;
+        DBRepository.WiFiFields ipwifi = DBRepository.WiFiFields.IP_KEY_WIFI;
+
+        Cursor cursor = db.query(true, DBSampleHelper.DBConnectIP.TABLE_IP,
+                new String[]{DBSampleHelper.DBConnectIP.IP_NUMMAG, DBSampleHelper.DBConnectIP.IP_MASK,
+                        DBSampleHelper.DBConnectIP.IP_SERVER, DBSampleHelper.DBConnectIP.IP_MODEM,
+                        DBSampleHelper.DBConnectIP.IP_SCANER, DBSampleHelper.DBConnectIP.IP_WIFI},
+                DBSampleHelper.DBConnectIP.IP_MASK + " = ?",
+                new String[]{sIPMask}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+
+            cursor.moveToFirst();
+
+            String sField = cursor.getString(nummag.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipmask.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipserver.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipmodem.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipscaner.getFieldCode());
+            list.add(sField);
+            sField = cursor.getString(ipwifi.getFieldCode());
+            list.add(sField);
+//            } while (cursor.moveToNext());
+        }
+
+        return list;
+    }
+    public ArrayList getSelectIPName(Context contex, String sIPName){
+        ArrayList<String> list = new ArrayList<String>();
+        DBHelper dbHelper = new DBHelper(contex);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        DBRepository.WiFiFields nummag = DBRepository.WiFiFields.IP_KEY_NUMMAG;
+        DBRepository.WiFiFields ipmask = DBRepository.WiFiFields.IP_KEY_MASK;
+        DBRepository.WiFiFields ipserver = DBRepository.WiFiFields.IP_KEY_SERVER;
+        DBRepository.WiFiFields ipmodem = DBRepository.WiFiFields.IP_KEY_MODEM;
+        DBRepository.WiFiFields ipscaner = DBRepository.WiFiFields.IP_KEY_SCANER;
+        DBRepository.WiFiFields ipwifi = DBRepository.WiFiFields.IP_KEY_WIFI;
+
+        Cursor cursor = db.query(true, DBSampleHelper.DBConnectIP.TABLE_IP,
+                new String[]{DBSampleHelper.DBConnectIP.IP_NUMMAG, DBSampleHelper.DBConnectIP.IP_MASK,
+                        DBSampleHelper.DBConnectIP.IP_SERVER, DBSampleHelper.DBConnectIP.IP_MODEM,
+                        DBSampleHelper.DBConnectIP.IP_SCANER, DBSampleHelper.DBConnectIP.IP_WIFI},
+                DBSampleHelper.DBConnectIP.IP_NUMMAG + " = ?",
+                new String[]{sIPName}, null, null, null, null);
+        if ((cursor != null) && (cursor.getCount() > 0)) {
+
+            cursor.moveToFirst();
+
+            String sField = cursor.getString(nummag.getFieldCode());// + "   ;   " +
+
+            list.add(sField);
+            sField = cursor.getString(ipmask.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipserver.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipmodem.getFieldCode());// + "   ;   " +
+            list.add(sField);
+            sField = cursor.getString(ipscaner.getFieldCode());
+            list.add(sField);
+            sField = cursor.getString(ipwifi.getFieldCode());
+            list.add(sField);
+//            } while (cursor.moveToNext());
+        }
+
+        return list;
+    }
     /**
      * Creates a empty database on the system and rewrites it with your own
      * database.
@@ -241,23 +286,54 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean WhileTableWrite(Context contex, SQLiteDatabase db, String DropTableName, CSVReader reader) {
+    public boolean DeleteDB(Context context, String tableName){
+        DBHelper dbHelper = new DBHelper(context);
+        boolean status = false;
+        SQLiteDatabase dd = dbHelper.getWritableDatabase();//getReadableDatabase
+        //DBHelper dbHelper = new DBHelper(context);
+        try {
+            dd.close();
+            dd = dbHelper.getWritableDatabase();
+            Integer iCode = dd.delete(tableName, null, null);
+            // iCode  количество удаленных записей
+            if (iCode < 0){
+                return status;
+            }else{
+                status = true;
+            }
+
+        }finally {
+            dd.close();
+            //dbdb = this.getWritableDatabase();
+        }
+
+        return status;
+    }
+    public boolean WhileTableWrite(Context contex, SQLiteDatabase db, String TableName, CSVReader reader) {
         String[] nextLine = null;
+        Long iSSS;
+
        // DBHelper dbHelper = new DBHelper(contex);
      //   SQLiteDatabase dbdb = dbHelper.getWritableDatabase();
         //dbdb.execSQL("DROP TABLE IF EXISTS " + DropTableName);
-        db.delete(DropTableName, null, null);
+        db.delete(TableName, null, null);
     //    dbdb.close();
      //   dbdb = dbHelper.getWritableDatabase();
-
+//        ScontentValues = ValuesIPSetting(reader);
+//        Long iSSS = db.insert(TableName, null, ScontentValues);
+//        if (iSSS <= 0) {
+//            db.close();
+//            return false;
+//        }
         while (true) {
             try {
-                if (!((nextLine = reader.readNext()) != null)) break;
+                if (!((nextLine = reader.readNext()) != null))
+                    break;
             } catch (IOException e) {
                 e.printStackTrace();
             }// считываем данные с CSV  файла
             ScontentValues = ContentValuesIPSetting(nextLine);
-            Long iSSS = db.insert(DropTableName, null, ScontentValues);
+            iSSS = db.insert(TableName, null, ScontentValues);
             if (iSSS <= 0) {
                 db.close();
                 return false;
@@ -268,26 +344,22 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public boolean SaveDataIP(Context contex, String TableName, String SqlStroka, CSVReader reader) throws IOException, InterruptedException {
-        Integer ISS = 0;
+        Integer iFor = 0;
+        Long codeError;
         DBHelper dbHelper = new DBHelper(contex);
         String[] nextLine = null;
         SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
-        //   Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-        //     Integer iCount = basecursor.getCount();
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
         dbdb.delete(TableName, null, null);
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
-//        basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-//        iCount = basecursor.getCount();
-//        dbdb.close();
-//        dbdb = dbHelper.getWritableDatabase();
+
         while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
             ScontentValues = ContentValuesIPSetting(nextLine);
-            Long iSSS = dbdb.insert(TableName, null, ScontentValues);
-            ISS++;
-            if (iSSS <= 0) {
+            codeError = dbdb.insert(TableName, null, ScontentValues);
+            iFor++;
+            if (codeError <= 0) {
                 dbdb.close();
                 return false;
             }
@@ -299,33 +371,114 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean SaveDataPrice(Context contex, String TableName, String SqlStroka, CSVReader reader) throws IOException, InterruptedException {
         DBHelper dbHelper = new DBHelper(contex);
+        Integer iCo = 0;
+      //  SQLiteDatabase checkDB = null;
         String[] nextLine = null;
-        Integer ISSSSS = 0;
+        Long iCodeError;
+        Integer iCount = 0;
         SQLiteDatabase dbdb = dbHelper.getWritableDatabase();//getReadableDatabase
-        //   Cursor basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-        //   Integer iCount = basecursor.getCount();
-        dbdb.close();
-        dbdb = dbHelper.getWritableDatabase();
-        dbdb.delete(TableName, null, null);
-        dbdb.close();
-        dbdb = dbHelper.getWritableDatabase();
-        //    basecursor = dbdb.rawQuery(SqlStroka, null);//"select * from " + DBHelper.TABLE_DOCUMENT
-        //      iCount = basecursor.getCount();
-        dbdb.close();
-        dbdb = dbHelper.getWritableDatabase();
+//        dbdb.close();
+        if(!DeleteDB(contex, TableName)){
 
-
-        while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
-            //
-            ScontentValues = ContentValuesPriceCsv(nextLine);
-            Long iSSS = dbdb.insert(TableName, null, ScontentValues);
-            if (iSSS <= 0) {
-                dbdb.close();
-                return false;
-            }
-            ISSSSS++;
+            return false;
         }
-        dbdb.close();
+//        dbdb = dbHelper.getWritableDatabase();
+//        dbdb.delete(TableName, null, null);
+//        dbdb.close();
+//        dbdb = dbHelper.getWritableDatabase();
+//        dbdb.close();
+//        dbdb = dbHelper.getWritableDatabase();
+///////////////////////////////////////////
+
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(dbdb, TableName);
+        // Get the numeric indexes for each of the columns that we're updating
+        final int barcode = ih.getColumnIndex(DBSampleHelper.DBPrice.PRICE_BARCODE);
+        final int nametov = ih.getColumnIndex(DBSampleHelper.DBPrice.PRICE_NAME_TOV);
+        final int priceotp = ih.getColumnIndex(DBSampleHelper.DBPrice.PRICE_PRICEOTP);
+        final int price = ih.getColumnIndex(DBSampleHelper.DBPrice.PRICE_PRICE);
+        final int pricedata = ih.getColumnIndex(DBSampleHelper.DBPrice.PRICE_DATA);
+        final long startTime = System.currentTimeMillis();
+        try {
+            dbdb.execSQL("PRAGMA synchronous=OFF");
+            dbdb.setLockingEnabled(false);
+            dbdb.beginTransaction();
+            while (((nextLine = reader.readNext()) != null)) {
+                // ... Create the data for this row (not shown) ...
+                // Get the InsertHelper ready to insert a single row
+                try{
+                    if(!nextLine[0].equals("")) {
+                        iCo++;
+                        ih.prepareForInsert();
+                        // Add the data for each column
+                        ih.bind(barcode, nextLine[0]);
+                        ih.bind(nametov, nextLine[1]);
+                        ih.bind(priceotp, nextLine[2]);
+                        ih.bind(price, nextLine[3]);
+                        ih.bind(pricedata, nextLine[4]);
+                        // Insert the row into the database.
+                        ih.execute();
+                    }
+                }catch (Exception e){
+
+                    return false;
+                }
+            }
+            dbdb.setTransactionSuccessful();
+        } finally {
+            dbdb.endTransaction();
+            dbdb.setLockingEnabled(true);
+            dbdb.execSQL("PRAGMA synchronous=NORMAL");
+            ih.close();
+            dbdb.close();
+            final long endtime = System.currentTimeMillis();
+            long millis = endtime - startTime;  // obtained from StopWatch
+            long minutes = (millis / 1000)  / 60;
+            int seconds = (int)((millis / 1000) % 60);
+            setTime = String.valueOf(minutes) + " минут " + String.valueOf(seconds) + " секунд";
+        }
+////////////////////////////////////////
+       // dbdb.execSQL("PRAGMA synchronous=NORMAL");
+//        dbdb.execSQL("PRAGMA synchronous=OFF");
+//        dbdb.beginTransaction();
+//        dbdb.setLockingEnabled(false);
+//
+//
+//        try{
+//            while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
+//
+//                if(!nextLine[0].equals("")) {
+//                    try{
+//                        ScontentValues = ContentValuesPriceCsv(nextLine);
+//                        iCodeError = dbdb.insert(TableName, null, ScontentValues);
+//                        iCo++;
+//
+//                        if (iCodeError <= 0) {
+//                            dbdb.close();
+//                            return false;
+//                        }
+//                    }catch (Exception e){
+//                        return false;
+//                    }
+//                }
+//            }
+//
+//        }finally {
+//            final long endtime = System.currentTimeMillis();
+//            long millis = endtime - startTime;  // obtained from StopWatch
+//            long minutes = (millis / 1000)  / 60;
+//            int seconds = (int)((millis / 1000) % 60);
+//            dbdb.setLockingEnabled(true);
+//            dbdb.endTransaction();
+//            setTime = String.valueOf(minutes) + " минут " + String.valueOf(seconds) + " секунд";
+//            //dbdb.execSQL("PRAGMA synchronous=NORMAL");
+//            Integer iNumDB = iCo;
+//            dbdb.close();
+//
+//         //   if (Globals.ENABLE_LOGGING) {
+//        //    }
+//
+//        }
+
         return true;
     }
 
@@ -340,12 +493,12 @@ public class DBHelper extends SQLiteOpenHelper {
         dbdb.delete(TableName, null, null);
         dbdb.close();
         dbdb = dbHelper.getWritableDatabase();
-        Integer ISSSSS = 0;
+        Integer iFor = 0;
 
 
         while ((nextLine = reader.readNext()) != null) {// считываем данные с CSV  файла
-            ISSSSS++;
-            String str = Integer.toString(ISSSSS);
+            iFor++;
+            String str = Integer.toString(iFor);
 
             sID[0] = str;
 
@@ -425,7 +578,31 @@ public class DBHelper extends SQLiteOpenHelper {
         ScontentValues.put(DBSampleHelper.DBConnectIP.IP_SERVER, settingIPreader[2]);
         ScontentValues.put(DBSampleHelper.DBConnectIP.IP_MODEM, settingIPreader[3]);
         ScontentValues.put(DBSampleHelper.DBConnectIP.IP_SCANER, settingIPreader[4]);
+        ScontentValues.put(DBSampleHelper.DBConnectIP.IP_WIFI, settingIPreader[5]);
 
         return ScontentValues;
     }
+
+
+//    public ContentValues ValuesIPSetting(CSVReader reader) {
+//        String[] nextLine = null;
+//        ContentValues ScontentValues = new ContentValues();
+//
+//        while (true) {
+//            try {
+//                if (!((nextLine = reader.readNext()) != null))
+//                    break;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }// считываем данные с CSV  файла
+//            ScontentValues.put(DBSampleHelper.DBConnectIP.IP_NUMMAG, nextLine[0]);
+//            ScontentValues.put(DBSampleHelper.DBConnectIP.IP_MASK, nextLine[1]);
+//            ScontentValues.put(DBSampleHelper.DBConnectIP.IP_SERVER, nextLine[2]);
+//            ScontentValues.put(DBSampleHelper.DBConnectIP.IP_MODEM, nextLine[3]);
+//            ScontentValues.put(DBSampleHelper.DBConnectIP.IP_SCANER, nextLine[4]);
+//            ScontentValues.put(DBSampleHelper.DBConnectIP.IP_WIFI, nextLine[5]);
+//
+//        }
+//        return ScontentValues;
+//    }
 }

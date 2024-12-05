@@ -18,10 +18,40 @@ import java.io.File;
 public class MyPremission {
 
     private static final int PERMISSION_REQUEST_CODE = 123;
+    public Boolean premissionsactive = true;
 
+    public boolean PremissionGPS(Context context){
+        if(hasPremmisionGPS(context)){
+            // our app has permissions.
+
+        }
+        else {
+            //our app doesn't have permissions, So i m requesting permissions.
+            requestPermissionWithRationaleGPS(context);
+            premissionsactive = false;
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean hasPremmisionGPS(Context context) {
+        int res = 0;
+        //string array of permissions,
+        String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION};
+        for (String perms : permissions){
+            //с помощью метода checkCallingOrSelfPermission в цикле проверяет
+            //предоставленные приложению разрешения и сравнивает их с тем, которое нам необходимо.
+            //При отсутствии разрешения метод будет возвращать false, а при наличии разрешения — true.
+            res = checkCallingOrSelfPermission(context, perms);
+            if (!(res == PackageManager.PERMISSION_GRANTED)){
+                return false;
+            }
+        }
+        return true;
+    }
 
     public boolean myPremission(Context context){
-        int CodError;
         if (hasPermissions(context)){
             // our app has permissions.
             Filealmat makefolder = new Filealmat();
@@ -30,9 +60,11 @@ public class MyPremission {
         else {
             //our app doesn't have permissions, So i m requesting permissions.
             requestPermissionWithRationale(context);
+            premissionsactive = false;
+            return false;
         }
-
-        if (0 != ExternalStorageState((Activity) context)){
+        if (0 != ExternalStorageState(context)){
+            premissionsactive = false;
             return false;
         }
         return true;
@@ -42,7 +74,6 @@ public class MyPremission {
         int res = 0;
         //string array of permissions,
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
         for (String perms : permissions){
             /*
              * с помощью метода checkCallingOrSelfPermission в цикле проверяет
@@ -54,7 +85,6 @@ public class MyPremission {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -76,6 +106,8 @@ public class MyPremission {
 //        }
 //    }
     private void requestPermissionWithRationale(Context context) {
+
+
         if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
                 Manifest.permission.READ_EXTERNAL_STORAGE)) {
             requestPerms((Activity) context);
@@ -86,17 +118,42 @@ public class MyPremission {
     private void requestPerms(Activity activity){
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            requestPermissions(activity, permissions, PERMISSION_REQUEST_CODE);//вывод сообщения
+            requestPermissions(activity, permissions, PERMISSION_REQUEST_CODE);//вывод сообщения разрешения на доступ к файлам медиа и папкам
+
+        }
+    }
+    private void requestPermissionWithRationaleGPS(Context context) {
+
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
+                Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            requestPermsGPS((Activity) context);
+        } else {
+            requestPermsGPS((Activity) context);
+        }
+    }
+    private void requestPermsGPS(Activity activity){
+        String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            requestPermissions(activity, permissions, PERMISSION_REQUEST_CODE);//вывод сообщения разрешения на доступ к файлам медиа и папкам
+
         }
     }
 
-    public int ExternalStorageState(Activity activity){
+    public int ExternalStorageState( Context context){
+//        handleExternalStorageState(mExternalStorageAvailable,
+//                mExternalStorageWriteable);
         //        // проверяем доступность SD
  //       while (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+
+//        У нас есть два состояния памяти. Одно - внутренняя карта памяти, а другое - внешняя SD-карта.
+//        Это зависит от производителей устройств, как они создали путь к карте памяти.
+//        Итак, если вы проверяете доступность SD-карты, то оно может возвращать true в обоих случаях
             if (!Environment.getExternalStorageState().equals(
                     Environment.MEDIA_MOUNTED)) {
                 //Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
-                Toast.makeText(activity, "SD-карта не доступна: " + Environment.getExternalStorageState(), Toast.LENGTH_LONG).show();
+                //Toast.makeText( "SD-карта не доступна: " + Environment.getExternalStorageState(), Toast.LENGTH_LONG).show();
                 return -2;
             }
 //        }

@@ -23,7 +23,7 @@ public class DBSampleHelper {
                 IP_MASK + " TEXT, " + IP_SERVER + " TEXT, " + IP_MODEM + " TEXT, " + IP_SCANER + " TEXT," + IP_WIFI + " TEXT" +")";
         public static final String DROP_TABLE = "drop table " + TABLE_IP;
 
-        public static final String SELECT_TABLE = "SELECT * " + " TABLE " + TABLE_IP + "WHERE " + IP_MASK + " LIKE ";
+
     }
 
     public static class DBPrice implements BaseColumns {

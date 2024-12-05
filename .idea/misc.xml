@@ -7,6 +7,9 @@
         <entry key="..\:/Android/LenovoStart/app/src/main/res/layout/activity_electron_document.xml" value="0.1359375" />
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/drawable/ic_launcher_vesta_background.xml" value="0.2495" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/drawable/ic_launcher_vesta_foreground.xml" value="0.2495" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/a_price_scaner.xml" value="0.33061594202898553" />
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/activity_connect_mag.xml" value="0.30027173913043476" />
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/activity_edit_data.xml" value="0.3079710144927536" />
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/activity_electron_document.xml" value="0.2682291666666667" />
@@ -24,8 +27,16 @@
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/fragment_first2.xml" value="0.2359375" />
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/fragment_second.xml" value="0.2359375" />
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/fragment_second2.xml" value="0.2359375" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/price_scaner.xml" value="0.33061594202898553" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/simple_list_el_nakl.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/simple_list_item_dat.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/spinner_dropdown_item.xml" value="0.3283514492753623" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/layout/spinner_text.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/menu/menu_main.xml" value="0.240625" />
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2495" />
         <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/mipmap-anydpi-v26/ic_launcher_vesta.xml" value="0.1" />
+        <entry key="..\:/AndroidStudio/LenovoStart/app/src/main/res/mipmap-anydpi-v26/ic_launcher_vesta_round.xml" value="0.2495" />
         <entry key="..\:/android/LenovoStart/app/src/main/res/layout/activity_main.xml" value="0.34739583333333335" />
         <entry key="..\:/android/LenovoStart/app/src/main/res/layout/activity_qrcode.xml" value="0.34739583333333335" />
         <entry key="..\:/android/LenovoStart/app/src/main/res/layout/activity_select_control.xml" value="0.17291666666666666" />

@@ -49,7 +49,6 @@ import by.matveev.lenovostart.lib.EAN13CodeBuilder;
 import by.matveev.lenovostart.lib.FTPModel;
 import by.matveev.lenovostart.lib.Filealmat;
 import by.matveev.lenovostart.lib.Setting;
-import by.matveev.lenovostart.lib.WIFIService;
 
 
 public class ScanerActivity extends AppCompatActivity implements View.OnClickListener {
@@ -136,6 +135,9 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 
         btnEditDatTxt = (Button) findViewById(R.id.btnEditDatTxt);
         btnEditDatTxt.setOnClickListener(this);
+
+
+        hideKeyboard(txtnBarcode);
 
         Intent intent = getIntent();
 
@@ -249,10 +251,17 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 //                    txtPriceRoz.setText(sPrice);
 //                    txtPriceOtp.setText(sPriceOtp);
 
-                        sTextView = "ЦЕНЫ:   " + sPriceOtp + "   |   " + cursor.getString(3) + "   |        "   + sDateTovar; //+ "ДАТА ""\n"
-                        setTitle(sBarcode + "  |  " + sNameTovar);
+                        sTextView = sDateTovar + "  ||  " + sNameTovar;//"ЦЕНЫ:   " + sPriceOtp + "   |   " + cursor.getString(3) + "   |        "   + sDateTovar; //+ "ДАТА ""\n"
+                        sTextView = sTextView.substring(0,42);
+                        setTitle(sBarcode);// + "  |  " + sNameTovar);
                         txtvBarcode.setText(sTextView);
                         txtvBarcode.setBackgroundColor(Color.GREEN);
+                        //float sizeText = txtvPrice.getTextSize();
+                        txtvPrice.setTextSize(70);
+                        txtvPrice.setGravity(Gravity.CENTER);
+                        txtvPrice.setBackgroundColor(Color.GREEN);
+                        txtvPrice.setText(cursor.getString(3) + " руб.");
+
 //            музыка
 //                    try {
 //                        Uri notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -267,6 +276,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                         txtvBarcode.setBackgroundColor(Color.WHITE);
                         setTitle("Сканирование");
                         txtLogScaner.setText("...");
+                        txtvPrice.setBackgroundColor(Color.WHITE);
+                        txtvPrice.setText("Цена");
+                        txtvPrice.setGravity(Gravity.LEFT);
+                        txtvPrice.setTextSize(22);
                     }
                     db.close();
                     if (txtdPrice.getVisibility() == View.VISIBLE) {
@@ -423,13 +436,16 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    public void hideKeyboard() {
-        imm.toggleSoftInput(0, 0);
+    public void hideKeyboard(EditText editText) {
+        InputMethodManager imms = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imms.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        //imm.toggleSoftInput(0, 0);
     }
 
     void FocusView() throws IOException {
         if (txtnBarcode.length() > 0) {
             writeFileSD();
+
         } else {
             ToastMessageCenter("Отсутствуют данные по штрихкоду. В файл не записано.");
             return;
@@ -442,6 +458,21 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
             txtdPrice.getText().clear();
         if (txtdQuantity.length() > 0 && txtdQuantity.getVisibility() == View.VISIBLE)
             txtdQuantity.getText().clear();
+        if (txtvPrice.length() > 0 && txtvPrice.getVisibility() == View.VISIBLE){
+//            txtvPrice.setText("Цена");
+//
+//            txtvBarcode.setText("Штрих-код");
+//            txtvBarcode.setBackgroundColor(Color.WHITE);
+//            setTitle("Сканирование");
+//            txtLogScaner.setText("...");
+//            txtvPrice.setBackgroundColor(Color.WHITE);
+//            //txtvPrice.setText("");
+//            txtvPrice.setGravity(Gravity.LEFT);
+//            txtvPrice.setTextSize(22);
+        }
+
+
+
         txtnBarcode.selectAll();
     }
 
@@ -592,7 +623,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         setTitle("Сканирование");
         txtvBarcode.setText("Штрих-код");
         txtvBarcode.setBackgroundColor(Color.WHITE);
-
+        txtvPrice.setBackgroundColor(Color.WHITE);
+        txtvPrice.setText("");
+        txtvPrice.setTextSize(22);
+        txtvPrice.setGravity(Gravity.LEFT);
 
     }
 //    public void SavDelFileOnClick(View v) {
@@ -647,10 +681,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                                     public void onClick(DialogInterface dialog,
                                                         int id) {
                                         if (sdFile.exists())
-
                                             sdFile.delete();
-
-
                                         if (sdFile.exists())
                                             ToastMessageCenter("Файл " + setting.FileNameDat + " не удален!");
                                         else
@@ -666,7 +697,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                                         setTitle("Сканирование");
                                         txtvBarcode.setText("Штрих-код");
                                         txtvBarcode.setBackgroundColor(Color.WHITE);
-
+                                        txtvPrice.setBackgroundColor(Color.WHITE);
+                                        txtvPrice.setText("");
+                                        txtvPrice.setTextSize(22);
+                                        txtvPrice.setGravity(Gravity.LEFT);
                                         dialog.cancel();
                                     }
                                 })
@@ -821,6 +855,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 
     public void ok(View v) throws IOException {
         if (txtnBarcode.length() > 0) {
+//            txtnBarcode.event
             writeFileSD();
         } else {
             ToastMessageCenter("Отсутствуют данные по штрихкоду. В файл не записано.");
@@ -860,10 +895,16 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         super.onStart();
 
         showKeyboard(txtnBarcode);
+
         txtnBarcode.setFocusable(true);
         txtnBarcode.selectAll();
         txtnBarcode.setCursorVisible(true);
+        hideKeyboard(txtnBarcode);
+
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(txtnBarcode.getWindowToken(), 0);
     }
+
 
     @Override
     protected void onResume() {
@@ -929,6 +970,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 setTitle("Сканирование");
                 txtvBarcode.setText("Штрих-код");
                 txtvBarcode.setBackgroundColor(Color.WHITE);
+                txtvPrice.setBackgroundColor(Color.WHITE);
+                txtvPrice.setText("");
+                txtvPrice.setTextSize(22);
+                txtvPrice.setGravity(Gravity.LEFT);
 
                 if (!Environment.getExternalStorageState().equals(
                         Environment.MEDIA_MOUNTED)) {
@@ -944,8 +989,6 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                     }
                     try {
                         FTPModel mymodel = new FTPModel();
-
-
                         boolean co = mymodel.connect(setting.sAdressServer, setting.sUserFTP, setting.sPasswordFTP, Integer.parseInt(setting.sPortFTP));
                         if (co) {
                             txtLogScaner.setText("ДАННЫЕ СОХРАНЕНЫ");

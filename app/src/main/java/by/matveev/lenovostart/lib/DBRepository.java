@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
@@ -43,8 +44,18 @@ public class DBRepository {
     // @SuppressLint("WrongConstant")
     public DBRepository(Context context) {
         //Подключение к базе данных
-        db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
-//       Datdb = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
+        try {
+            //db = new DBHelper(context).getReadableDatabase();
+            db = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
+        }finally {
+            if(db == null){
+                db = null;
+            }else{
+
+            }
+
+        }
+        //       Datdb = SQLiteDatabase.openOrCreateDatabase(DBHelper.DATABASE_NAME, null, null);
  /*        db.execSQL("create table " + TABLE_DOCUMENT + "(" +
 //                KEY_ID + " integer primary key, " +
                 KEY_NUM_NAKL + " text, " + KEY_DATE + " text, " + KEY_NAME_POST + " text, " +
@@ -177,48 +188,6 @@ public class DBRepository {
 
         private int WiFiFieldCode;
     }
-
-    public ArrayList<String> getSelectIP(String sIPMask) {
-        ArrayList<String> list = new ArrayList<String>();
-
-        WiFiFields nummag = WiFiFields.IP_KEY_NUMMAG;
-        WiFiFields ipmask = WiFiFields.IP_KEY_MASK;
-        WiFiFields ipserver = WiFiFields.IP_KEY_SERVER;
-        WiFiFields ipmodem = WiFiFields.IP_KEY_MODEM;
-        WiFiFields ipscaner = WiFiFields.IP_KEY_SCANER;
-        WiFiFields ipwifi = WiFiFields.IP_KEY_WIFI;
-
-        Cursor cursor = db.query(true, DBSampleHelper.DBConnectIP.TABLE_IP,
-                new String[]{DBSampleHelper.DBConnectIP.IP_NUMMAG, DBSampleHelper.DBConnectIP.IP_MASK,
-                        DBSampleHelper.DBConnectIP.IP_SERVER, DBSampleHelper.DBConnectIP.IP_MODEM,
-                        DBSampleHelper.DBConnectIP.IP_SCANER, DBSampleHelper.DBConnectIP.IP_WIFI},
-                DBSampleHelper.DBConnectIP.IP_MASK + " = ?",
-                new String[]{sIPMask}, null, null, null, null);
-        if ((cursor != null) && (cursor.getCount() > 0)) {
-//            cursor.moveToFirst();
-//            iCountFields = cursor.getColumnCount();
-//            do {
-            cursor.moveToFirst();
-            iCountFields = cursor.getPosition();
-            String sField = cursor.getString(nummag.getFieldCode());// + "   ;   " +
-
-            list.add(sField);
-            sField = cursor.getString(ipmask.getFieldCode());// + "   ;   " +
-            list.add(sField);
-            sField = cursor.getString(ipserver.getFieldCode());// + "   ;   " +
-            list.add(sField);
-            sField = cursor.getString(ipmodem.getFieldCode());// + "   ;   " +
-            list.add(sField);
-            sField = cursor.getString(ipscaner.getFieldCode());
-            list.add(sField);
-            sField = cursor.getString(ipscaner.getFieldCode());
-            list.add(sField);
-//            } while (cursor.moveToNext());
-        }
-
-        return list;
-    }
-
     public ArrayList<String> getDataWifi() {
         ArrayList<String> list = new ArrayList<String>();
         String[] ColumnsName = null;
@@ -226,11 +195,7 @@ public class DBRepository {
 //        ColumnsName = new String[]{DBSampleHelper.DBConnectIP.IP_NUMMAG,DBSampleHelper.DBConnectIP.IP_MASK,
 //                DBSampleHelper.DBConnectIP.IP_SERVER,DBSampleHelper.DBConnectIP.IP_MODEM,DBSampleHelper.DBConnectIP.IP_SCANER, DBSampleHelper.DBConnectIP.IP_WIFI};//,
         WiFiFields nummag = WiFiFields.IP_KEY_NUMMAG;
-//        WiFiFields ipmask = WiFiFields.IP_KEY_MASK;
-//        WiFiFields ipserver = WiFiFields.IP_KEY_SERVER;
-//        WiFiFields ipmodem = WiFiFields.IP_KEY_MODEM;
-//        WiFiFields ipscaner = WiFiFields.IP_KEY_SCANER;
-//        WiFiFields ipwifi = WiFiFields.IP_KEY_WIFI;
+
         Cursor cursor = db.query(DBSampleHelper.DBConnectIP.TABLE_IP, null, null, null, null, null, null);
 
         if ((cursor != null) && (cursor.getCount() > 0)) {
@@ -271,11 +236,6 @@ public class DBRepository {
         DatFields fieldquantity = DatFields.DAT_KEY_QUANTITY;
         DatFields fieldprice = DatFields.DAT_KEY_PRICE;
 
-//        DBHelper dbHelper = new DBHelper(contex);
-        //db.close();
-        //db = dbHelper.getWritableDatabase();
-        //db.delete(DAT_TABLE_DOCUMENT,null,null);
-        //db.close();
 
         Cursor cursor = db.query(DAT_TABLE_DOCUMENT, null, null, null, null, null, null);
         ArrayList<String> list = new ArrayList<String>();
@@ -300,28 +260,12 @@ public class DBRepository {
     //=========================================================|||||||
     public ArrayList<String> getDataNakld(String numNakl) {
         Integer iFields;
-//        String asdf;
-//        String naAAA;
-//        String nameTov;
-//        String namePostav;
-//        String numPoz;
-//        String Barcodes;
-//        String DataNakl;
-//        String numNakldn;
-//        String quntityTov;
-//        String statusTov;
-//        String[] columnsName = null;
         String[] columns = null;
 //        columnsName = new String[]{KEY_NUM_NAKL};//, "count(*)"
         // columnsName = "numnakl";
         Fields numNakld = Fields.KEY_NUM_NAKL;
         Fields datNakld = Fields.KEY_DATE;
-//        Fields postavNakld = Fields.KEY_NAME_POST;
-//        Fields numPozNakld = Fields.KEY_NUM_POZ;
-//        Fields barcodeNakld = Fields.KEY_BARCODE;
-//        Fields nameTovNakld = Fields.KEY_NAME_TOV;
-//        Fields quntityNakld = Fields.KEY_QUANTITY;
-//        Fields statusNakld = Fields.KEY_STATUS;
+
         columns = new String[]{KEY_NUM_NAKL + ", " + KEY_DATE + ", " + KEY_NAME_POST + ", " + KEY_NUM_POZ + ", " + KEY_BARCODE + ", " + KEY_NAME_TOV + ", " + KEY_QUANTITY + ", " + KEY_STATUS};
 
         ArrayList<String> list = new ArrayList<String>();

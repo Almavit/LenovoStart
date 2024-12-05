@@ -31,10 +31,16 @@ public class Setting {
     final String PATH_FILE = "path_file";
     final String PORT_FTP = "21";
     final String MODE_WORKING = "1";
-    public String[] nextLine = null;
 
+
+
+    public boolean NewIP(){
+
+      return true;
+    }
+    //
     public boolean loadSetting(Context context) throws IOException {
-
+        String[] nextLine = null;
         filealmat = new Filealmat();
         CSVReader reader;
         sPref = context.getSharedPreferences(FileNameSetting, MODE_PRIVATE);
@@ -56,7 +62,7 @@ public class Setting {
             if (sAdressServer.equals(""))
                 return false;
 
-        }else{
+        }else{// если файла setting.csv нет
             sAdressServer = sPref.getString(ADRESS_SERVER, "");
             sUserFTP = sPref.getString(USER_NAME, "");
             sPasswordFTP = sPref.getString(USER_PASSWORD, "");
@@ -64,19 +70,7 @@ public class Setting {
             sPathFile = sPref.getString(PATH_FILE, "");
             sModeWorking = sPref.getString(MODE_WORKING, "");
 
-            if (sAdressServer.equals("")){
-
-              //return false;
-            }else{
-                nextLine = new String[6];
-                nextLine[0] = sAdressServer;
-                nextLine[1] = sUserFTP;
-                nextLine[2] = sPasswordFTP;
-                nextLine[3] = sPortFTP;
-                nextLine[4] = sPathFile;
-                nextLine[5] = sModeWorking;
-            }
-            if(!saveSetting(context)){
+            if(!saveSetting(context,sAdressServer, sUserFTP, sPasswordFTP, sPortFTP, sPathFile, sModeWorking)){
                 return false;
             }
         }
@@ -84,24 +78,25 @@ public class Setting {
 
         return true;
     }
-    public boolean saveSetting(Context context) throws IOException {
-       // String[] nextLine = null;
-        //String text = "";
+    public boolean saveSetting(Context context, String adress_serv, String user_ftp, String user_pass, String port_ftp, String path_file, String mode_working) throws IOException {
         filealmat = new Filealmat();
         StringBuilder sbText  = new StringBuilder();
 
-        sPref = context.getSharedPreferences("setting", MODE_PRIVATE);
+        sPref = context.getSharedPreferences("setting.csv", MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
 
-        if (nextLine!= null) {
-            ed.putString(ADRESS_SERVER, nextLine[0].toString());
-            ed.putString(USER_NAME, nextLine[1].toString());
-            ed.putString(USER_PASSWORD, nextLine[2].toString());
-            ed.putString(PORT_FTP, nextLine[3].toString());
-            ed.putString(PATH_FILE, nextLine[4].toString());
-            ed.putString(MODE_WORKING, nextLine[5].toString());
+        if (!adress_serv.equals("")) {
+            ed.putString(ADRESS_SERVER, adress_serv);//nextLine[0].toString());
+            ed.putString(USER_NAME, user_ftp);//nextLine[1].toString());
+            ed.putString(USER_PASSWORD, user_pass);//nextLine[2].toString());
+            ed.putString(PORT_FTP, port_ftp);//nextLine[3].toString());
+            ed.putString(PATH_FILE, path_file);//nextLine[4].toString());
+            ed.putString(MODE_WORKING, mode_working);//nextLine[5].toString());
             ed.commit();
-        }else{
+            sbText.append(adress_serv + ";" + user_ftp + ";" +
+                    user_pass + ";" + port_ftp + ";" +
+                    path_file + ";" + mode_working);
+        }else{// пустые значения заполняем значениями по умолчанию
             ed.putString(ADRESS_SERVER, "10.250.1.16");
             ed.putString(USER_NAME, "FTPsession");
             ed.putString(USER_PASSWORD, "12345");
@@ -109,18 +104,16 @@ public class Setting {
             ed.putString(PATH_FILE, "Documents");
             ed.putString(MODE_WORKING, "1");
             ed.commit();
-            return false;
+            sbText.append("10.250.1.16" + ";" + "FTPsession" + ";" +
+                    "12345" + ";" + "21" + ";" +
+                    "Documents" + ";" + "1");
         }
-        for (int iFor = 0; iFor < nextLine.length; iFor++)
-        {
-            if(iFor != nextLine.length-1){
-                sbText.append(nextLine[iFor] + ";");
-            }else{
-                sbText.append(nextLine[iFor] );
-            }
-
-        }
-
+        sAdressServer = sPref.getString(ADRESS_SERVER, "");
+        sUserFTP = sPref.getString(USER_NAME, "");
+        sPasswordFTP = sPref.getString(USER_PASSWORD, "");
+        sPortFTP = sPref.getString(PORT_FTP, "");
+        sPathFile = sPref.getString(PATH_FILE, "");
+        sModeWorking = sPref.getString(MODE_WORKING, "");
         if(0 != filealmat.writeFileSD(context,filealmat.NameDirectory,"setting.csv",sbText)){
             return false;
         }

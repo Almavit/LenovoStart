@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="by.matveev.lenovostart">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="by.matveev.lenovostart"
+    android:installLocation="internalOnly"
+    >
 
     <uses-sdk android:minSdkVersion="13" />
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_WR" />
+<!--    <uses-permission android:name="android.permission.SET_DEBUG_APP"-->
+<!--        tools:ignore="ProtectedPermissions" />-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- <uses-permission android:name="android.permission.INSTALL_PACKAGES" /> -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- <uses-permission android:name="android.permission.DELETE_PACKAGES" /> -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher_vesta"
+        android:label="@string/run_name"
         android:roundIcon="@mipmap/ic_launcher_vesta"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".ConnectMag"
+            android:windowSoftInputMode="stateHidden"
             android:exported="false" />
         <activity
             android:name=".qr_barcode"
@@ -49,7 +53,8 @@
         <service
             android:name=".lib.WIFIService"
             android:enabled="true"
-            android:exported="true" /> <!-- <activity android:name=".electron_document"></activity> -->
+            android:exported="true" />
+        <!-- <activity android:name=".electron_document"></activity> -->
         <!-- <activity android:name=".SettingActivity" /> -->
         <activity
             android:name=".StartElectronDocument"
@@ -58,6 +63,7 @@
         <activity
             android:name=".SettingActivity"
             android:label="Настройка"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".electron_document"
@@ -66,6 +72,7 @@
         <activity
             android:name=".ScanerActivity"
             android:label="Сканирование"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
