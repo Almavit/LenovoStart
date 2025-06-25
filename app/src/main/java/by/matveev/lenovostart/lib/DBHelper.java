@@ -99,6 +99,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return list;
     }
+
     public ArrayList getSelectIPName(Context contex, String sIPName){
         ArrayList<String> list = new ArrayList<String>();
         DBHelper dbHelper = new DBHelper(contex);
@@ -320,7 +321,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //    dbdb.close();
      //   dbdb = dbHelper.getWritableDatabase();
 //        ScontentValues = ValuesIPSetting(reader);
-//        Long iSSS = db.insert(TableName, null, ScontentValues);
+        // iSSS = db.insert(TableName, null, ScontentValues);
 //        if (iSSS <= 0) {
 //            db.close();
 //            return false;
@@ -331,6 +332,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     break;
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             }// считываем данные с CSV  файла
             ScontentValues = ContentValuesIPSetting(nextLine);
             iSSS = db.insert(TableName, null, ScontentValues);

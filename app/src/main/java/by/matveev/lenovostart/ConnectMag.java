@@ -3,6 +3,8 @@ package by.matveev.lenovostart;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -41,7 +43,7 @@ import by.matveev.lenovostart.lib.Filealmat;
 import by.matveev.lenovostart.lib.Setting;
 import by.matveev.lenovostart.lib.WIFIService;
 
-public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class ConnectMag extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     Setting setting;
     Button btnLoadConnect;
@@ -78,7 +80,7 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
         //       txtIpscaner.setOnClickListener(this);
 
         btnLoadConnect = (Button) findViewById(R.id.btnLoadConnect);
-        //      btnLoadConnect.setOnClickListener(this);
+        btnLoadConnect.setOnClickListener(this);
 
         btnSaveConnect = (Button) findViewById(R.id.btnSaveConnect);
         //       btnSaveConnect.setOnClickListener(this);
@@ -89,7 +91,7 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
 
         spinMag = (Spinner) findViewById(R.id.spinMag);
         spinMag.setOnItemSelectedListener(this);
-
+        DBHelper dbHelper = new DBHelper(this);
         try {
             wifis = new WIFIService(this);
         } catch (SocketException e) {
@@ -97,20 +99,16 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-
-//        if (wifis.addAdapterWiFi(this, spinMag)) {
-//            if (!wifis.ipNameSSID.equals("")){
-//                wifis.SelectIPMask(this, wifis.ipMaskAddress,0,spinMag);
-//                txtlogConnect.setText("ДАННЫЕ ОБНОВЛЕНЫ");
-//                Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);
-//                txtlogConnect.setBackgroundColor(Color.GREEN);
-//            } else {
-//                txtlogConnect.setText("ДАННЫЕ НЕ ЗАГРУЖЕНЫ! НЕТ СВЯЗИ");
-//                txtlogConnect.setBackgroundColor(Color.RED);
-//            }
-//        }
     }
-
+    @Override
+    public void onClick(View v) {
+        Setting setting = new Setting();
+        switch (v.getId()) {
+            case R.id.btnLoadConnect:
+                LoadSettingMag(this);
+                break;
+        }
+    }
     public void CreateNewWIFI(View v, String nameSSID, String pass) {
         try {
             WIFIService wifis = new WIFIService(this);
@@ -184,17 +182,6 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
                 txtlogConnect.setBackgroundColor(Color.RED);
             }
         }
-           // setting.nextLine = stringsetting;
-//        DBHelper dbHelper = new DBHelper(this);
-//        dbHelper.sa
-//        try {
-//
-//            setting.saveSetting(this, sIPAdressServer, setting.sUserFTP, setting.sPasswordFTP,
-//                    setting.sPortFTP, setting.sPathFile, setting.sModeWorking);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -277,93 +264,16 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
     }
 
     ////////////////////////////////////////////////////////////
-//    public void test(Context context, String networkSSID, String password) {
-//        try {
-//            WIFIService wifis = new WIFIService(this);
-//            //=================================
-//            if (!wifis.AddConnectWIFI(this, networkSSID, password))
-//                Toast.makeText(getApplicationContext(), "WIFI СОЕДИНЕНИЕ ОТСУТСТВУЕТ",
-//                        Toast.LENGTH_SHORT).show();
-//        }catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            Thread.sleep(5000); // пауза на 1 секунду
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-//
-//        WifiConfiguration wifiConf = null;
-//        //  WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-//        WifiInfo connectionInfo = manager.getConnectionInfo();
-//        List<WifiConfiguration> configuredNetworks = manager.getConfiguredNetworks();
-//
-//        for (WifiConfiguration conf : configuredNetworks) {
-//            if (conf.networkId == connectionInfo.getNetworkId()) {
-//                wifiConf = conf;
-//                break;
-//            }
-//        }
-//        String fff = wifiConf.SSID;
-//        try {
-//                if (wifiConf != null)
-//                {
-//                    try
-//                    {
-//                        setStaticIpConfiguration(manager, wifiConf,
-//                                InetAddress.getByName("10.250.1.130"), 24,
-//                                InetAddress.getByName("10.250.1.3"),
-//                                new InetAddress[] { InetAddress.getByName("8.8.8.8"), InetAddress.getByName("0.0.0.0") });
-//                    }
-//                    catch (Exception e)
-//                    {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//
-//            setIpAssignment("STATIC", wifiConf); //or "DHCP" for dynamic setting
-//           // setIpAddress(InetAddress.getByName("192.168.0.100"), 24, wifiConf);
-//           // setGateway(InetAddress.getByName("4.4.4.4"), wifiConf);
-//          //  setDNS(InetAddress.getByName("4.4.4.4"), wifiConf);
-//            manager.updateNetwork(wifiConf); //apply the setting
-//            manager.saveConfiguration(); //Save it
-//            setting = new Setting();
-//            Integer iCountConnect = 0;
-//            if (setting.loadSetting(this)) {
-//
-//                while (!setting.executeCommand(setting.sAdressServer)) {
-//                    Thread.sleep(10000);
-//                    iCountConnect++;
-//                    if(iCountConnect > 10) {
-//                        break;
-//                    }
-//                }
-//            }
-//            if(iCountConnect <= 10) {
-//                txtlogConnect.setText("НОВЫЙ WIFI АДРЕС");
-//                txtlogConnect.setBackgroundColor(Color.GREEN);
-//            }else{
-//                txtlogConnect.setText("НЕТ СВЯЗИ С СЕРВЕРОМ");
-//                txtlogConnect.setBackgroundColor(Color.RED);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-//    public void CreateWIFI(View v) {
-//
-////          test(this, "\"Office33\"", "WTy_74Ag");
-//
-//    }
-
-    public void LoadSetting(View v) throws SocketException, UnknownHostException {
+    public void LoadSettingMag(Context context )  {
         ArrayList<String> list = new ArrayList<String>();
-        WIFIService wifis = new WIFIService(this);
+        WIFIService wifis = null;
+        try {
+            wifis = new WIFIService(this);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         DBHelper dbHelper = new DBHelper(this);
         String sqlStroka;
        // String tableName;
@@ -371,20 +281,69 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
         //tableName = DBSampleHelper.DBConnectIP.TABLE_IP;
         sqlStroka = "select * from " + DBSampleHelper.DBConnectIP.TABLE_IP;
 //        try {
-            if (!filealmat.LoadFileCsv( filealmat.NameDirectory, "wifi.csv")) {
+            if (!filealmat.LoadCsv(context,  filealmat.NameDirectory, "wifi.csv")) {
                 txtlogConnect.setText("ФАЙЛ wifi.csv отсутствует или поврежден");
                 txtlogConnect.setBackgroundColor(Color.RED);
 
             } else {
-//            if (!filealmat.LoadCsvFileFtp(this, filealmat.NameDirectory, "wifi.csv")) {
-//                txtlogConnect.setText("ФАЙЛ wifi.csv не загружен");
-//                txtlogConnect.setBackgroundColor(Color.RED);
-//            } else {
                 if (!dbHelper.DBSaveData(this, DBSampleHelper.DBConnectIP.TABLE_IP, sqlStroka, filealmat.reader)) {
                     txtlogConnect.setText("ДАННЫЕ wifi.csv В БД НЕ СОХРАНЕНЫ");
                     txtlogConnect.setBackgroundColor(Color.RED);
+                    return;
                 }
 // добавить в текстовые поля параметры настроек
+            list = wifis.NameSSIDcsv(this, spinMag);// список настроек с DB SqlLite IPTable
+                if (0 != list.size()){
+                    if (list.get(1).toString() != null && !list.get(1).toString().isEmpty() && !list.get(1).toString().equals("null")){
+                        txtIPmask.setText(list.get(1).toString());
+                    }else{
+                        txtlogConnect.setText("НЕТ МАСКИ СЕТИ wifi.csv");
+                        txtlogConnect.setBackgroundColor(Color.RED);
+                        txtIPmask.setText("");
+                    }
+                    if (list.get(2).toString() != null && !list.get(2).toString().isEmpty() && !list.get(2).toString().equals("null")){
+                        txtIpmag.setText(list.get(2).toString());
+                    }else{
+                        txtlogConnect.setText("НЕТ IP магазина wifi.csv");
+                        txtlogConnect.setBackgroundColor(Color.RED);
+                        txtIpmag.setText("");
+                    }
+                    if (list.get(3).toString() != null && !list.get(3).toString().isEmpty() && !list.get(3).toString().equals("null")){
+                        txtIpmodem.setText(list.get(3).toString());
+                    }else{
+                        txtlogConnect.setText("НЕТ IP модема wifi.csv");
+                        txtlogConnect.setBackgroundColor(Color.RED);
+                        txtIpmodem.setText("");
+                    }
+                    if (list.get(4).toString() != null && !list.get(4).toString().isEmpty() && !list.get(4).toString().equals("null")){
+                        txtIpscaner.setText(list.get(4).toString());
+                    }else{
+                        txtIpscaner.setText("");
+                        txtlogConnect.setText("НЕТ IP сканера wifi.csv");
+                        txtlogConnect.setBackgroundColor(Color.RED);
+                    }
+                    if (list.get(5).toString() != null && !list.get(5).toString().isEmpty() && !list.get(5).toString().equals("null")){
+                        //sNameWifi = list.get(5).toString();
+                    }else{
+                        txtlogConnect.setText("НЕТ имени SSID wifi.csv");
+                        txtlogConnect.setBackgroundColor(Color.RED);
+                    }
+                    txtIPmask.setText(list.get(1).toString());
+                    txtIpmag.setText(list.get(2).toString());
+                    txtIpmodem.setText(list.get(3).toString());
+                    txtIpscaner.setText(list.get(4).toString());
+                    txtIpmodem.setText(list.get(5).toString());
+
+                    txtlogConnect.setText("ДАННЫЕ ОБНОВЛЕНЫ");
+                    Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);
+                    txtlogConnect.setBackgroundColor(Color.GREEN);
+
+
+                } else {
+                            txtlogConnect.setText("НЕТ ДАННЫХ ИЗ ФАЙЛА wifi.csv");
+                            txtlogConnect.setBackgroundColor(Color.RED);
+                        }
+//
                 if (wifis.addAdapterWiFi(this, spinMag)) {
                     if (!wifis.ipNameSSID.equals("null")){
                         list = wifis.SelectIPMask(this, wifis.ipMaskAddress, 0,spinMag);
@@ -440,12 +399,8 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
                     }
                 }
             }
-
-//        }
-
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void LoadAllSetting(View v) {
 
         filealmat = new Filealmat();
@@ -454,7 +409,7 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
 // запускаем длительную операцию
 
         Toast.makeText(this, "ЖДИТЕ! ", Toast.LENGTH_LONG);
-        if (!filealmat.LoadFileCsv( filealmat.NameDirectory, "wifi.csv")) {
+        if (!filealmat.LoadFileCsv(this,  filealmat.NameDirectory, "wifi.csv")) {
             txtlogConnect.setText("ФАЙЛ wifi.csv отсутствует или поврежден");
             txtlogConnect.setBackgroundColor(Color.RED);
 
@@ -527,4 +482,11 @@ public class ConnectMag extends AppCompatActivity implements AdapterView.OnItemS
         }
     }
 
+
+
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
 }

@@ -58,6 +58,10 @@ import by.matveev.lenovostart.MainActivity;
 import by.matveev.lenovostart.R;
 
 public class WIFIService extends Service {
+
+    public WIFIService() {
+        super();
+    }
     public String ipAdressScaner = "";
     public String ipMaskScaner = "";
     public String ipGatewayScaner = "";
@@ -119,9 +123,6 @@ public class WIFIService extends Service {
         // if (!wifiManager.isWifiEnabled()) {
         while (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
-//            Toast toast = Toast.makeText(context, "Wifi включен", Toast.LENGTH_SHORT);
-//            toast.show();
-            //return  true;
         }
         return true;
     }
@@ -217,7 +218,7 @@ public class WIFIService extends Service {
         return scanResultList.size();
     }
     // список настроек с DB SqlLite IPTable
-    private ArrayList<String> NameSSIDcsv(Context context, Spinner spinner){
+    public ArrayList<String> NameSSIDcsv(Context context, Spinner spinner){
         ArrayList<String> list = new ArrayList<String>();
         list = SelectIPMask(context, "", spinner.getSelectedItemPosition(), spinner);
         if ((list.get(5) == null)&&(list.get(5).equals(""))) {
@@ -369,7 +370,7 @@ public class WIFIService extends Service {
 //        wifiManagers.reconnect();
 
         try {
-            Thread.sleep(7000); // пауза на 1 секунду
+            Thread.sleep(21000); // пауза на 1 секунду
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

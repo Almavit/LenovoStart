@@ -3,6 +3,7 @@ package by.matveev.lenovostart.lib;
 import android.content.ContentValues;
 import android.content.Context;
 import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,12 +15,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 public class Filealmat {
     public String PatshFile;
@@ -209,10 +213,9 @@ public class Filealmat {
         } else {
 
         }
-//        // формируем объект File, который содержит путь к файлу
+//        // формируем объект File, который содержит путь к файлу 56
         File csvfile = new File(Environment.getExternalStorageDirectory() + "/" +
                 DirName + "/" + FileNameCSV);
-
 // Проверка наличия файла
         if (csvfile.exists()) {
             //Файл в наличии
@@ -221,15 +224,44 @@ public class Filealmat {
                         ';', '\n', 0);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+                return false;
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
+                return false;
             }
             return true;
         } else {
             return false;
         }
     }
+    // 55
+    public boolean LoadFileCsv(Context context, String DirName, String FileNameCSV){
+        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" + DirName + "/" + FileNameCSV);
+        if (!csvfile.exists()) {
+            System.err.println("Файл не найден: " + csvfile.getAbsolutePath());
+            return false;
+        }
+        MyPremission almPremission = new MyPremission();
+        if (!almPremission.myPremission(context)) {
+            return false;
+        } else {
 
+        }
+        try {
+
+//            reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile), ENCODING_WIN1251),';', '\n', 0);
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251);
+            reader = new CSVReader(isr, ';', '\n', 0);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        csvfile.exists();
+        return true;
+    }
     public boolean ConvertDBFtoCSVFile(Context context, String DirName, String FileNameDBF, String FileNameCSV) {
 
         String FilePath = Environment.getExternalStorageDirectory().toString() + "/" + DirName + "/" + FileNameDBF;
@@ -285,35 +317,20 @@ public class Filealmat {
         }
         return true;
     }
-    public boolean LoadFileCsv(String DirName, String FileNameCSV){
 
-        File csvfile = new File(Environment.getExternalStorageDirectory() + "/" + DirName + "/" + FileNameCSV);
-        if (csvfile.exists()) {
-            try {
-                reader = new CSVReader(new InputStreamReader(new FileInputStream(csvfile.getAbsolutePath()), ENCODING_WIN1251),
-                        ';', '\n', 0);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            csvfile.exists();
-//            try {
-//                Integer iSize = reader.readAll().size();
-//
-//                if (reader.readAll().size() <= 0) {
-//                    return false;
-//                    //данные осутствуют
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-        }else{
+
+    public boolean LoadFileCsvFromUri(Context context, Uri fileUri) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
+            InputStreamReader isr = new InputStreamReader(inputStream, Charset.forName(ENCODING_WIN1251));
+            reader = new CSVReader(isr, ';', '\n', 0);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
-            // файл отсутствует
         }
-        return true;
     }
+
     //  получить данные из csv файла по сети
     public boolean LoadCsvFileFtp(Context context, String DirName, String FileNameCSV){
 

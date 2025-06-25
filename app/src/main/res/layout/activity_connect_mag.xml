@@ -5,7 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ConnectMag">
-        <LinearLayout
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -153,7 +159,7 @@
                     android:layout_weight="1"
                     android:onClick="LoadSetting"
                     android:text="Загрузить"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
 
                 <Button
                     android:id="@+id/btnSaveConnect"
@@ -162,7 +168,7 @@
                     android:layout_weight="1"
                     android:onClick="SaveConnect"
                     android:text="Сохранить"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <TextView
@@ -182,16 +188,14 @@
                 android:text="ОБНОВЛЕНИЕ НАСТРОЕК"
                 android:textSize="24sp" />
 
-            <Button
-                android:id="@+id/btnCreatenewWIFI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="CreateWIFI"
-                android:text="Create new  WIFI"
-                android:textSize="24sp"
-                tools:visibility="invisible" />
+        <Button
+            android:id="@+id/btnCreatenewWIFI"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            tools:visibility="invisible" />
 
 
         </LinearLayout>
-
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

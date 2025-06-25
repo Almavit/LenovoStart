@@ -127,6 +127,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //  private ViewDataBinding binding;
     private static final int PERMISSION_REQUEST_CODE = 123;
+    ////////II
+    private static final int REQUEST_CODE_STORAGE = 1001;
+    private static final int REQUEST_CODE_MANAGE_ALL_FILES = 1002;
+    ////////II
     private WiFiMonitor mWiFiMonitor;           //Объект WiFiMonitor, поиск сети, вывод доступных точек
     private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
     private int requestCode;
@@ -146,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
        // progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
 
+        checkStoragePermission(); // Вызов при старте II
 
         spinNumMag = (Spinner) findViewById(R.id.spinNumMag);
         spinNumMag.setOnItemSelectedListener(this);
@@ -206,131 +211,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         filealmat = new Filealmat();
         setting = new Setting();
         almPremission = new MyPremission();
-        //Premis = true;
-        // проверяем доступность SD не исправлять
-//        if (almPremission.PremissionGPS(this)) {
-//            almPremission.premissionsactive = true;
-//        } else {
-//            almPremission.premissionsactive = false;
-//        }
         if (almPremission.myPremission(this)) {
 
             db = new DBHelper(this).getReadableDatabase();
             new DBHelper(this).onCreate(db);
             db.close();
 
-//                if (wifis.addAdapterWiFi(this, spinNumMag)) {
-//                    WIFIService wifis = null;
-//                    try {
-//                        wifis = new WIFIService(this);
-//                    } catch (SocketException e) {
-//                        e.printStackTrace();
-//                    } catch (UnknownHostException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (!wifis.ipNameSSID.equals("null")){
-//                        wifis.SelectIPMask(this, wifis.ipMaskAddress,0,spinNumMag);
-//                        //txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
-//                        Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);
-//                        //txtlogConnect.setBackgroundColor(Color.GREEN);
-//                    } else {
-//                        //txtlogConnect.setText("ДАННЫЕ НЕ ЗАГРУЖЕНЫ! НЕТ СВЯЗИ");
-//                        //txtlogConnect.setBackgroundColor(Color.RED);
-//                    }
-//                }
-//            try{
-//                if(!wifis.ipNameSSID.equals("null")){
-//                    if ((!wifis.ipMaskAddress.equals(""))||(wifis.ipMaskAddress != null)) {// &(wifis.ipNameSSID == null)
-//
-//                        ArrayList<String> list = new ArrayList<String>();
-//                        list.addAll(dbHelper.getSelectIPMask(this, wifis.ipMaskAddress));
-//                        if(list.size() > 0){
-//                            String sIPAdressServer = list.get(1).toString() + "." + list.get(2).toString();
-//
-//                            try {
-//                                if (setting.loadSetting(this)) {
-//
-//                                    if (!sIPAdressServer.equals(setting.sAdressServer)) {
-//                                        if ((sIPAdressServer == null) || (setting.sAdressServer == null)) {
-//                                            // пустые строки
-//                                        } else {
-//                                            if ((sIPAdressServer == "") || (setting.sAdressServer == "")) {
-//// пустые строки
-//                                            } else {
-//                                                try {
-//                                                    if (!setting.saveSetting(this, sIPAdressServer, setting.sUserFTP, setting.sPasswordFTP,
-//                                                            setting.sPortFTP, setting.sPathFile, setting.sModeWorking)) {
-//                                                        Toast.makeText(getApplicationContext(), "НАСТРОЙКИ НЕ СОХРАНЕНЫ",
-//                                                                Toast.LENGTH_SHORT).show();
-//
-//                                                    } else {
-//                                                        Toast.makeText(getApplicationContext(), "НАСТРОЙКИ СОХРАНЕНЫ",
-//                                                                Toast.LENGTH_SHORT).show();
-//
-//                                                    }
-//                                                } catch (IOException e) {
-//                                                    e.printStackTrace();
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                            try {
-//                                if (setting.loadSetting(this)) {
-//                                    if (!setting.executeCommand(setting.sAdressServer)) {
-//                                        txtLog.setText("НЕТ СВЯЗИ С СЕРВЕРОМ!");
-//                                        txtLog.setBackgroundColor(Color.RED);
-//                                        return;
-//                                    }
-//                                } else {
-//                                    txtLog.setText("НАСТРОЙКИ НЕ ЗАГРУЖЕНЫ!");
-//                                    txtLog.setBackgroundColor(Color.RED);
-//                                }
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                        } else {
-//                            txtLog.setText("НЕТ СВЯЗИ С СЕРВЕРОМ!");
-//                            txtLog.setBackgroundColor(Color.RED);
-//                        }
-//                        IntentFilter intentFilter = new IntentFilter();                    //Создаем объект для отслеживания изменений в сети.
-//                        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);    //Произошло изменение сетевого подключения. IntentFilter должен содержать событие.
-//                        registerReceiver(mWiFiMonitor, intentFilter);
-//                        registerReceiver(mWiFiMonitor, intentFilter);
-//                    }
-//                }else{
-//                    txtLog.setText("НЕТ СВЯЗИ С СЕРВЕРОМ! Отсутствует WIFI имя");
-//                    txtLog.setBackgroundColor(Color.RED);
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
         } else {
             almPremission.premissionsactive = false;
         }
 
-
-        //  db = new DBHelper(this).getReadableDatabase();
-        // new DBHelper(this).onCreate(db);
-
-        // db.close();
-
     }
 //=============================
-
-//    button.setOnClickListener(new View.OnClickListener(){
-//        @Override
-//        public void onClick(View v) {
-//            final WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-//            ScanReceiver scanReceiver = new ScanReceiver();
-//            registerReceiver(scanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-//            wifi.startScan();         } });
-//    requestPermissions(new String[{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
-//}
 
     static class ScanReceiver extends BroadcastReceiver {
         private String LOG_TAG = " ";
@@ -350,55 +242,90 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //=============================
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//        String selectedPosition = spinNumMag.getSelectedItem().toString();
-//        if(position == numPositionSpinner){
-//            spinNumMag.setSelection(position);
-//        }else {
-//        }
         Integer numberPosition = position;
         wifis.SelectIPMask(this, "", numberPosition, spinNumMag);            //your code here for selection
-
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-//
         Toast.makeText(this, "onNothingSelected", Toast.LENGTH_LONG).show();
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        boolean allowed = true;
-
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-
-                for (int res : grantResults) {
-                    // if user granted all permissions.
-                    allowed = allowed && (res == PackageManager.PERMISSION_GRANTED);
-                }
-                break;
-            default:
-                // if user not granted permissions.
-                allowed = false;
-                break;
-        }
-        if (allowed) {
-            //user granted all permissions we can perform our task.
-            filealmat.makeFolder(this, "");
-
-
+    ///////II
+    private void checkStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android 11 и выше
+            if (!Environment.isExternalStorageManager()) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, REQUEST_CODE_MANAGE_ALL_FILES);
+            } else {
+                Toast.makeText(this, "Доступ к файлам разрешён", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            // we will give warning to user that they haven't granted permissions.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, "Storage Permissions denied.", Toast.LENGTH_SHORT).show();
+            // Android 7–10
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                } else {
-                    showNoStoragePermissionSnackbar();
-                }
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, REQUEST_CODE_STORAGE);
+            } else {
+                Toast.makeText(this, "Разрешения уже получены", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        ///////II
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE_STORAGE) {
+            boolean granted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    granted = false;
+                    break;
+                }
+            }
+
+            if (granted) {
+                Toast.makeText(this, "Разрешения предоставлены", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Разрешения НЕ предоставлены", Toast.LENGTH_SHORT).show();
+            }
+        }
+//        boolean allowed = true;
+//
+//        switch (requestCode) {
+//            case PERMISSION_REQUEST_CODE:
+//
+//                for (int res : grantResults) {
+//                    // if user granted all permissions.
+//                    allowed = allowed && (res == PackageManager.PERMISSION_GRANTED);
+//                }
+//                break;
+//            default:
+//                // if user not granted permissions.
+//                allowed = false;
+//                break;
+//        }
+//        if (allowed) {
+//            //user granted all permissions we can perform our task.
+//            filealmat.makeFolder(this, "");
+//
+//
+//        } else {
+//            // we will give warning to user that they haven't granted permissions.
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                    Toast.makeText(this, "Storage Permissions denied.", Toast.LENGTH_SHORT).show();
+//
+//                } else {
+//                    showNoStoragePermissionSnackbar();
+//                }
+//            }
+//        }
     }
 
     public void showNoStoragePermissionSnackbar() {
@@ -429,17 +356,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            // Filealmat makefolder = new Filealmat();
-            filealmat.makeFolder(this, "");
-            return;
-        }
         super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == PERMISSION_REQUEST_CODE) {
+//            // Filealmat makefolder = new Filealmat();
+//            filealmat.makeFolder(this, "");
+//            return;
+//        }
+        ///////II
+        if (requestCode == REQUEST_CODE_MANAGE_ALL_FILES) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE предоставлено", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE НЕ предоставлено", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 //===================================================/////////////////////////////////////////////////////////////////
-
-
-    //===================================================
+//===================================================
     public void onClick(View v) {
         Intent intent = new Intent(this, ScanerActivity.class);
 
@@ -507,139 +442,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     });
                    // AlertDialog alert = builder.create();
                        builder.show();
-                    //alert.cancel();
-                    //break;
-
-//                    Toast.makeText(getApplicationContext(), "ПРОЦЕСС ЗАПУЩЕН",
-//                            Toast.LENGTH_SHORT).show();
-//                    final WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-//                    List<ScanResult> scanResultList = wifi.getScanResults();
-//                    // получаем список активных wifi подключений
-//                    if (scanResultList.size() == 0) {
-//                        alertTitle = "НАСТРОЙКИ НЕ СОХРАНЕНЫ";
-//                        alertMessage = "НЕТ СВЯЗИ!               ВКЛЮЧИТЬ GPS";
-//                        txtLog.setText(alertMessage);
-//                        txtLog.setBackgroundColor(Color.RED);
-//                        break;
-//                    }
-//                    Integer numPositionSpinner = spinNumMag.getSelectedItemPosition();
-//                    List ResultConnect = wifis.SelectIPMask(this, "", numPositionSpinner, spinNumMag);
-//                    // последнего сканирования точки доступа.cv
-//                    Integer iFor = 0;
-//                    if (ResultConnect.get(5) == null) {
-//                        // null пустое поле имени SSID wifi
-//                        txtLog.setText("НЕТ ИМЕНИ SSID в IPtable! ДОБАВИТЬ!");
-//                        txtLog.setBackgroundColor(Color.RED);
-//                        alertTitle = "НАСТРОЙКИ НЕ СОХРАНЕНЫ";
-//                        alertMessage = "НЕТ ИМЕНИ SSID в IPtable!        ДОБАВИТЬ!";
-//                        break;
-//                    }
-//                    Boolean connectWiFi = false;
-//                    //оставить если понадобится
-//                    String IPadrr = null;
-//                    String IPMask = null;
-//                    IPadrr = "";//ResultConnect.get(1).toString() + "." + ResultConnect.get(4).toString(); оставить если понадобится
-//                    IPMask = "";//ResultConnect.get(1).toString() + "." + ResultConnect.get(3).toString(); оставить если понадобится
-//
-//                    for (Object scanResult : scanResultList) {
-//
-//                        if (scanResultList.get(iFor).SSID.equals(ResultConnect.get(5).toString())) {
-//                            //настроить WIFI
-////                        IPadrr = ResultConnect.get(1).toString() + "." + ResultConnect.get(4).toString();
-////                        IPMask = ResultConnect.get(1).toString() + "." + ResultConnect.get(3).toString();
-//                            //   startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)); //вызов диалогово окна WIFI подключения
-//                            try {
-//                                if (wifis.CreateWIFIConnect(this, ResultConnect.get(5).toString(), "WTy_74Ag", IPadrr, IPMask, "8.8.8.8")) {
-//                                    connectWiFi = true;
-//                                    break;
-//                                } else {
-//
-//                                }
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                        } else {
-//                            iFor++;
-//                        }
-//                    }
-//                    if (!connectWiFi) {
-//                        //
-//                        //   startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-//                        try {
-//                            if (wifis.CreateWIFIConnect(this, ResultConnect.get(5).toString(), "WTy_74Ag", IPadrr, IPMask, "8.8.8.8")) {
-//                                connectWiFi = true;
-//                                break;
-//                            } else {
-//
-//                            }
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                    //   save setting
-//                    DBHelper dbHelper = new DBHelper(this);
-//                    ArrayList<String> list = new ArrayList<String>();
-//                    list.addAll(dbHelper.getSelectIPName(this, spinNumMag.getSelectedItem().toString()));
-//// сохраняем в файл setting.csv изменения настроек нового магазина
-//                    String IPAdress = list.get(1).toString() + "." + list.get(2).toString();
-//                    try {
-//                        if (!setting.saveSetting(this, IPAdress, setting.sUserFTP, setting.sPasswordFTP,
-//                                setting.sPortFTP, setting.sPathFile, setting.sModeWorking)) {             //(!setting.saveSetting(this)){
-//                            alertTitle = "НАСТРОЙКИ НЕ СОХРАНЕНЫ";
-//                            alertMessage = "Обновление сетевых настроек подразделения не произошло!";
-//                            Toast.makeText(getApplicationContext(), alertTitle,
-//                                    Toast.LENGTH_SHORT).show();
-//                            //  break;
-//                        } else {
-//                            alertTitle = "НАСТРОЙКИ СОХРАНЕНЫ";
-//                            alertMessage = "Обновление сетевых настроек подразделения произведены успешно!";
-//                            Toast.makeText(getApplicationContext(), alertTitle,
-//                                    Toast.LENGTH_SHORT).show();
-//                            //break;
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    // получаем статус WIFI (вкл-откл)
-//                    //    enableWifi();// Включаем WIFI
-//
-//                    try {
-//                        wifis = new WIFIService(this);
-//                    } catch (SocketException e) {
-//                        e.printStackTrace();
-//                    } catch (UnknownHostException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    if (wifis.ipNameSSID.equals(list.get(5).toString())) {//Ищем соотвествие имени WIFI  с магазином
-//                        // есть соотвествие
-//                        txtLog.setText("       ...       ");
-//                        txtLog.setBackgroundColor(Color.WHITE);
-//                        //enableWifi();// Включаем WIFI
-//                    }
-//
-                } finally {
-
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//                    builder.setTitle(wifis.alertTitleWIFI)
-//                            .setMessage(wifis.alertMessageWIFI)
-//                            .setIcon(R.mipmap.ic_launcher_vesta)
-//                            .setCancelable(false)
-//                            .setNegativeButton("ОК",
-//                                    new DialogInterface.OnClickListener() {
-//                                        public void onClick(DialogInterface dialog, int id) {
-//
-//                                            dialog.cancel();
-//                                        }
-//                                    });
-//                    AlertDialog alert = builder.create();
-//                    alert.show();
-                    //alert.cancel();
+                 } finally {
                 }
                 // Создаем новое подключение если отсутствует
                 break;
