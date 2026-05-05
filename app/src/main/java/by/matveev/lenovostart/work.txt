@@ -1,0 +1,24 @@
+Шаг 1: Скачать Android Platform Tools (ADB)
+Перейдите на официальный сайт Google:
+👉 https://developer.android.com/studio/releases/platform-tools
+
+Скачайте Windows-версию Platform Tools.
+
+Распакуйте архив (например, в папку d:\AndroidStudio\platform-tools).
+=========================================================
+🔧 Шаг 2: Добавить ADB в системную переменную PATH
+Нажмите Win + R, введите sysdm.cpl, нажмите Enter.
+
+Перейдите на вкладку "Дополнительно" → "Переменные среды…"
+
+В разделе "Системные переменные" найдите переменную Path, выберите её → Изменить.
+
+Нажмите Создать и вставьте путь к распакованной папке, например:
+
+d:\AndroidStudio\platform-tools
+Нажмите ОК → ОК → ОК, чтобы закрыть все окна.
+
+
+
+
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {}

@@ -242,13 +242,13 @@ public class StartElectronDocument extends AppCompatActivity implements View.OnC
                 }
 
                 //подключаемся к FTP серверу
-                FTPModel mymodel = new FTPModel();
+                FTPModel mymodel = new FTPModel(this);
                 File sdPath = Environment.getExternalStorageDirectory();
                 // добавляем свой каталог устройства к пути
                 sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD + "/" + FILENAME_CSV);
                 // загрузка csv файла с FTP сервера
                 boolean ko = mymodel.downloadAndSaveFile(sAdressServer,Integer.parseInt(sPortFTP),
-                        sUserFTP,sPasswordFTP,  FILENAME_CSV, sdPath);
+                        sUserFTP,sPasswordFTP,  FILENAME_CSV, sdPath.toString());
                 if(ko){
                     // Toast.makeText(context, "Файл данных загружен", Toast.LENGTH_LONG).show();
                     txtLogMessege.setText("ДАННЫЕ ЗАГРУЖЕНЫ");

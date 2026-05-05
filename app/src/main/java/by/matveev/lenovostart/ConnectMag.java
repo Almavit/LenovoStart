@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -154,8 +155,8 @@ public class ConnectMag extends AppCompatActivity implements View.OnClickListene
                     txtlogConnect.setBackgroundColor(Color.RED);
                     txtIpmag.setText("");
                 }
-                if (list.get(3).toString() != null && !list.get(3).toString().isEmpty() && !list.get(3).toString().equals("null")){
-                    txtIpmodem.setText(list.get(3).toString());
+                if (list.get(5).toString() != null && !list.get(5).toString().isEmpty() && !list.get(5).toString().equals("null")){
+                    txtIpmodem.setText(list.get(5).toString());
                 }else{
                     txtlogConnect.setText("НЕТ IP модема wifi.csv");
                     txtlogConnect.setBackgroundColor(Color.RED);
@@ -292,58 +293,69 @@ public class ConnectMag extends AppCompatActivity implements View.OnClickListene
                     return;
                 }
 // добавить в текстовые поля параметры настроек
-            list = wifis.NameSSIDcsv(this, spinMag);// список настроек с DB SqlLite IPTable
-                if (0 != list.size()){
-                    if (list.get(1).toString() != null && !list.get(1).toString().isEmpty() && !list.get(1).toString().equals("null")){
-                        txtIPmask.setText(list.get(1).toString());
-                    }else{
-                        txtlogConnect.setText("НЕТ МАСКИ СЕТИ wifi.csv");
-                        txtlogConnect.setBackgroundColor(Color.RED);
-                        txtIPmask.setText("");
-                    }
-                    if (list.get(2).toString() != null && !list.get(2).toString().isEmpty() && !list.get(2).toString().equals("null")){
-                        txtIpmag.setText(list.get(2).toString());
-                    }else{
-                        txtlogConnect.setText("НЕТ IP магазина wifi.csv");
-                        txtlogConnect.setBackgroundColor(Color.RED);
-                        txtIpmag.setText("");
-                    }
-                    if (list.get(3).toString() != null && !list.get(3).toString().isEmpty() && !list.get(3).toString().equals("null")){
-                        txtIpmodem.setText(list.get(3).toString());
-                    }else{
-                        txtlogConnect.setText("НЕТ IP модема wifi.csv");
-                        txtlogConnect.setBackgroundColor(Color.RED);
-                        txtIpmodem.setText("");
-                    }
-                    if (list.get(4).toString() != null && !list.get(4).toString().isEmpty() && !list.get(4).toString().equals("null")){
-                        txtIpscaner.setText(list.get(4).toString());
-                    }else{
-                        txtIpscaner.setText("");
-                        txtlogConnect.setText("НЕТ IP сканера wifi.csv");
-                        txtlogConnect.setBackgroundColor(Color.RED);
-                    }
-                    if (list.get(5).toString() != null && !list.get(5).toString().isEmpty() && !list.get(5).toString().equals("null")){
-                        //sNameWifi = list.get(5).toString();
-                    }else{
-                        txtlogConnect.setText("НЕТ имени SSID wifi.csv");
-                        txtlogConnect.setBackgroundColor(Color.RED);
-                    }
-                    txtIPmask.setText(list.get(1).toString());
-                    txtIpmag.setText(list.get(2).toString());
-                    txtIpmodem.setText(list.get(3).toString());
-                    txtIpscaner.setText(list.get(4).toString());
-                    txtIpmodem.setText(list.get(5).toString());
+                try {
 
-                    txtlogConnect.setText("ДАННЫЕ ОБНОВЛЕНЫ");
-                    Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);
-                    txtlogConnect.setBackgroundColor(Color.GREEN);
+                    list = wifis.NameSSIDcsv(this, spinMag);// список настроек с DB SqlLite IPTable
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+if (list == null){
+
+}else{
+    if (0 != list.size()){
+        if (list.get(1).toString() != null && !list.get(1).toString().isEmpty() && !list.get(1).toString().equals("null")){
+            txtIPmask.setText(list.get(1).toString());
+        }else{
+            txtlogConnect.setText("НЕТ МАСКИ СЕТИ wifi.csv");
+            txtlogConnect.setBackgroundColor(Color.RED);
+            txtIPmask.setText("");
+        }
+        if (list.get(2).toString() != null && !list.get(2).toString().isEmpty() && !list.get(2).toString().equals("null")){
+            txtIpmag.setText(list.get(2).toString());
+        }else{
+            txtlogConnect.setText("НЕТ IP магазина wifi.csv");
+            txtlogConnect.setBackgroundColor(Color.RED);
+            txtIpmag.setText("");
+        }
+        if (list.get(5).toString() != null && !list.get(5).toString().isEmpty() && !list.get(5).toString().equals("null")){
+            txtIpmodem.setText(list.get(5).toString());
+        }else{
+            txtlogConnect.setText("НЕТ IP модема wifi.csv");
+            txtlogConnect.setBackgroundColor(Color.RED);
+            txtIpmodem.setText("");
+        }
+        if (list.get(4).toString() != null && !list.get(4).toString().isEmpty() && !list.get(4).toString().equals("null")){
+            txtIpscaner.setText(list.get(4).toString());
+        }else{
+            txtIpscaner.setText("");
+            txtlogConnect.setText("НЕТ IP сканера wifi.csv");
+            txtlogConnect.setBackgroundColor(Color.RED);
+        }
+        if (list.get(5).toString() != null && !list.get(5).toString().isEmpty() && !list.get(5).toString().equals("null")){
+            //sNameWifi = list.get(5).toString();
+        }else{
+            txtlogConnect.setText("НЕТ имени SSID wifi.csv");
+            txtlogConnect.setBackgroundColor(Color.RED);
+        }
+        txtIPmask.setText(list.get(1).toString());
+        txtIpmag.setText(list.get(2).toString());
+        txtIpmodem.setText(list.get(5).toString());
+        txtIpscaner.setText(list.get(4).toString());
+      //  txtIpmodem.setText(list.get(5).toString());
+
+        txtlogConnect.setText("ДАННЫЕ ОБНОВЛЕНЫ");
+        Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);
+        txtlogConnect.setBackgroundColor(Color.GREEN);
 
 
-                } else {
-                            txtlogConnect.setText("НЕТ ДАННЫХ ИЗ ФАЙЛА wifi.csv");
-                            txtlogConnect.setBackgroundColor(Color.RED);
-                        }
+    } else {
+        txtlogConnect.setText("НЕТ ДАННЫХ ИЗ ФАЙЛА wifi.csv");
+        txtlogConnect.setBackgroundColor(Color.RED);
+    }
 //
+}
+
                 if (wifis.addAdapterWiFi(this, spinMag)) {
                     if (!wifis.ipNameSSID.equals("null")){
                         list = wifis.SelectIPMask(this, wifis.ipMaskAddress, 0,spinMag);
@@ -363,8 +375,8 @@ public class ConnectMag extends AppCompatActivity implements View.OnClickListene
                                 txtlogConnect.setBackgroundColor(Color.RED);
                                 txtIpmag.setText("");
                             }
-                            if (list.get(3).toString() != null && !list.get(3).toString().isEmpty() && !list.get(3).toString().equals("null")){
-                                txtIpmodem.setText(list.get(3).toString());
+                            if (list.get(5).toString() != null && !list.get(5).toString().isEmpty() && !list.get(5).toString().equals("null")){
+                                txtIpmodem.setText(list.get(5).toString());
                             }else{
                                 txtlogConnect.setText("НЕТ IP модема wifi.csv");
                                 txtlogConnect.setBackgroundColor(Color.RED);
@@ -385,7 +397,7 @@ public class ConnectMag extends AppCompatActivity implements View.OnClickListene
                             }
                             txtIPmask.setText(list.get(1).toString());
                             txtIpmag.setText(list.get(2).toString());
-                            txtIpmodem.setText(list.get(3).toString());
+                            txtIpmodem.setText(list.get(5).toString());
                             txtIpscaner.setText(list.get(4).toString());
                             txtIpmodem.setText(list.get(5).toString());
 
@@ -427,9 +439,9 @@ public class ConnectMag extends AppCompatActivity implements View.OnClickListene
 
                         txtIPmask.setText(list.get(1).toString());
                         txtIpmag.setText(list.get(2).toString());
-                        txtIpmodem.setText(list.get(3).toString());
-                        txtIpscaner.setText(list.get(4).toString());
                         txtIpmodem.setText(list.get(5).toString());
+                        txtIpscaner.setText(list.get(4).toString());
+                      //  txtIpmodem.setText(list.get(5).toString());
 
                         txtlogConnect.setText("ДАННЫЕ ОБНОВЛЕНЫ");
                         Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);

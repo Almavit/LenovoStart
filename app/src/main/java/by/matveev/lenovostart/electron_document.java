@@ -305,7 +305,7 @@ public class electron_document extends AppCompatActivity  implements View.OnClic
                 loadSetting();
                 if (executeCommand(sAdressServer)){
                     try{
-                        FTPModel mymodel = new FTPModel();
+                        FTPModel mymodel = new FTPModel(this);
 
                         boolean co = mymodel.connect(sAdressServer,sUserFTP,sPasswordFTP,Integer.parseInt(sPortFTP));
                         if(co){

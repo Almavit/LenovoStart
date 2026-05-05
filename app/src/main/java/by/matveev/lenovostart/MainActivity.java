@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSuggestion;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnLoadPrice;
     Button btnQrBarcode;
     Button btnRefreshMag;
+    Button btnQRCodeS;
 
     TextView txtLog;
     TextView textview;
@@ -157,6 +159,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnQrBarcode = (Button) findViewById(R.id.btnQrBarcode);
         btnQrBarcode.setOnClickListener(this);
+
+        btnQRCodeS = (Button) findViewById(R.id.btnQRCodeS);
+        btnQRCodeS.setOnClickListener(this);
 
         btnRefreshMag = (Button) findViewById(R.id.btnRefreshMag);
         btnRefreshMag.setOnClickListener(this);
@@ -268,7 +273,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 ActivityCompat.requestPermissions(this, new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_FINE_LOCATION
                 }, REQUEST_CODE_STORAGE);
             } else {
                 Toast.makeText(this, "Разрешения уже получены", Toast.LENGTH_SHORT).show();
@@ -295,37 +301,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Разрешения НЕ предоставлены", Toast.LENGTH_SHORT).show();
             }
         }
-//        boolean allowed = true;
-//
-//        switch (requestCode) {
-//            case PERMISSION_REQUEST_CODE:
-//
-//                for (int res : grantResults) {
-//                    // if user granted all permissions.
-//                    allowed = allowed && (res == PackageManager.PERMISSION_GRANTED);
-//                }
-//                break;
-//            default:
-//                // if user not granted permissions.
-//                allowed = false;
-//                break;
-//        }
-//        if (allowed) {
-//            //user granted all permissions we can perform our task.
-//            filealmat.makeFolder(this, "");
-//
-//
-//        } else {
-//            // we will give warning to user that they haven't granted permissions.
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                    Toast.makeText(this, "Storage Permissions denied.", Toast.LENGTH_SHORT).show();
-//
-//                } else {
-//                    showNoStoragePermissionSnackbar();
-//                }
-//            }
-//        }
     }
 
     public void showNoStoragePermissionSnackbar() {
@@ -379,6 +354,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, ScanerActivity.class);
 
         ContentValues contentValues = new ContentValues();
+        intent.putExtra("VisibleTxtQRCodey", View.VISIBLE);
+        intent.putExtra("VisibleStrQRCode", View.VISIBLE);
+
         intent.putExtra("VisibleTxtQuantity", View.VISIBLE);
         intent.putExtra("VisibleIntQuantity", View.VISIBLE);
         intent.putExtra("VisibleTxtPrice", View.VISIBLE);
@@ -430,6 +408,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                             } else {
 
                                             }
+
                                             dialog.cancel();
                                         }
                                     })
@@ -452,6 +431,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.btnTwoField:
+                intent.putExtra("VisibleTxtQRCodey", View.INVISIBLE);
+                intent.putExtra("VisibleStrQRCode", View.INVISIBLE);
                 intent.putExtra("VisibleTxtQuantity", View.INVISIBLE);
                 intent.putExtra("VisibleIntQuantity", View.INVISIBLE);
                 intent.putExtra("VisibleTxtNumber", View.INVISIBLE);
@@ -460,9 +441,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(MainActivity.this, getString(R.string.action_item2), Toast.LENGTH_SHORT).show();
                 startActivity(intent);
                 break;
+            case R.id.btnQRCodeS:
+                intent.putExtra("visibletxtnBarcode", View.INVISIBLE);
+                intent.putExtra("visibletxtvBarcode", View.INVISIBLE);
+
+                intent.putExtra("VisibleIntPrice", View.INVISIBLE);
+                intent.putExtra("VisibleTxtPrice", View.INVISIBLE);
+                intent.putExtra("VisibleTxtNumber", View.INVISIBLE);
+                intent.putExtra("VisibleIntNumber", View.INVISIBLE);
+                intent.putExtra("VisibleTxtQuantity", View.INVISIBLE);
+                intent.putExtra("VisibleIntQuantity", View.INVISIBLE);
+
+                Toast.makeText(MainActivity.this, getString(R.string.action_item6), Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+                break;
             case R.id.btnOneField:
              //   intent.putExtra("VisibleTxtPrice", View.INVISIBLE);
+
+
+                intent.putExtra("VisibleTxtQRCodey", View.INVISIBLE);
+                intent.putExtra("VisibleStrQRCode", View.INVISIBLE);
                 intent.putExtra("VisibleIntPrice", View.INVISIBLE);
+                intent.putExtra("VisibleTxtPrice", View.INVISIBLE);
                 intent.putExtra("VisibleTxtNumber", View.INVISIBLE);
                 intent.putExtra("VisibleIntNumber", View.INVISIBLE);
                 intent.putExtra("VisibleTxtQuantity", View.INVISIBLE);
@@ -475,7 +475,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //btnTwoFieldQuan
             case R.id.btnTwoFieldQuan:
                 //intent.putExtra("VisibleTxtPrice", View.INVISIBLE);
+                intent.putExtra("VisibleTxtQRCodey", View.INVISIBLE);
+                intent.putExtra("VisibleStrQRCode", View.INVISIBLE);
                 intent.putExtra("VisibleIntPrice", View.INVISIBLE);
+                intent.putExtra("VisibleTxtPrice", View.INVISIBLE);
                 intent.putExtra("VisibleTxtNumber", View.INVISIBLE);
                 intent.putExtra("VisibleIntNumber", View.INVISIBLE);
                 //intent.putExtra("VisibleTxtQuantity", View.INVISIBLE);
@@ -487,7 +490,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnTwoFieldNum:
      //           intent.putExtra("VisibleTxtPrice", View.INVISIBLE);
+                intent.putExtra("VisibleTxtQRCodey", View.INVISIBLE);
+                intent.putExtra("VisibleStrQRCode", View.INVISIBLE);
                 intent.putExtra("VisibleIntPrice", View.INVISIBLE);
+                intent.putExtra("VisibleTxtPrice", View.INVISIBLE);
                 intent.putExtra("VisibleTxtQuantity", View.INVISIBLE);
                 intent.putExtra("VisibleIntQuantity", View.INVISIBLE);
                 Toast.makeText(MainActivity.this, getString(R.string.action_item5), Toast.LENGTH_SHORT).show();
@@ -598,58 +604,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         });
                         AlertDialog alert = builder.create();
                         alert.show();
-                        //alert.cancel();
 
-//                        txtLog.setText("       ...       ");
-//                        txtLog.setBackgroundColor(Color.WHITE);
-//                        // запускаем длительную операцию
-//
-//                        Toast.makeText(this, "ЖДИТЕ! ИДЕТ ЗАГРУЗКА ДАННЫХ", Toast.LENGTH_LONG);
-//                        if (filealmat.LoadSaveCsvToDB(this, DIR_SD, "price.csv",
-//                                "select * from " + DBSampleHelper.DBPrice.TABLE_DOCUMENT_PRICE, DBSampleHelper.DBPrice.TABLE_DOCUMENT_PRICE)) {
-//                            txtLog.setText("ДАННЫЕ ОБНОВЛЕНЫ");
-//                            alertTitle = "ДАННЫЕ ОБНОВЛЕНЫ";
-//                            alertMessage = "Проверьте данные";
-//                            Toast.makeText(this, "ДАННЫЕ ОБНОВЛЕНЫ", Toast.LENGTH_LONG);
-//                            txtLog.setBackgroundColor(Color.GREEN);
-//
-//                            //    textview.setBackgroundColor(Color.WHITE);
-//                            //    btnLoadAll.getBackground().setColorFilter(Color.parseColor("Данные обновлены"), PorterDuff.Mode.DARKEN);
-//                        } else {
-//                            txtLog.setText("ДАННЫЕ НЕ СОХРАНЕНЫ!");
-//                            txtLog.setBackgroundColor(Color.RED);
-//                            alertTitle = "ДАННЫЕ НЕ СОХРАНЕНЫ!";
-//                            alertMessage = "Возможно данные отсутствуют или произошла ошибка загрузки";
-//                        }
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    } catch (UnsupportedEncodingException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
 
 
 
 
                 } finally {
 
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//                    builder.setTitle(alertTitle)
-//                            .setMessage(alertMessage)
-//                            .setIcon(R.mipmap.ic_launcher_vesta)
-//                            .setCancelable(false)
-//                            .setNegativeButton("ОК",
-//                                    new DialogInterface.OnClickListener() {
-//                                        public void onClick(DialogInterface dialog, int id) {
-//
-//                                            dialog.cancel();
-//                                        }
-//                                    });
-//                    AlertDialog alert = builder.create();
-//                    alert.show();
+
                 }
                 break;
             default:
@@ -702,33 +664,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-//    private void bindToNetwork() {
-//        final ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkRequest.Builder builder;
-//        // Log.d(TAG, "All OK 123 !!!!!!!!!!!!!!!");
-//        Toast.makeText(this, "All OK !!!!!!!!!!!!!!!", Toast.LENGTH_LONG).show();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            builder = new NetworkRequest.Builder();
-//            builder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
-//            connectivityManager.requestNetwork(builder.build(), new ConnectivityManager.NetworkCallback() {
-//
-//                @Override
-//                public void onAvailable(Network network) {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        connectivityManager.bindProcessToNetwork(network);
-//                        //Log.d(TAG, "All OK !!!!!!!!!!!!!!!");
-//                    } else {
-//                        ConnectivityManager.setProcessDefaultNetwork(network);
-//                    }
-//                    try {
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                    connectivityManager.unregisterNetworkCallback(this);
-//                }
-//            });
-//        }
-//    }
 
 
     class WiFiMonitor extends BroadcastReceiver {
@@ -759,9 +694,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(context, "isWiFi: " + isWiFi, Toast.LENGTH_LONG).show();
             if (!isWiFi)
                 return;
-            WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
-            // параметры WIFI сканера
-            List<ScanResult> wifiScanList = wifiManager.getScanResults();
+            WifiManager wifiManager = (WifiManager) context.getSystemService(context.WIFI_SERVICE);
+
             WifiInfo connectionInfo = wifiManager.getConnectionInfo();
 
             try {
@@ -776,75 +710,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-//
-//    protected String wifiIpAddress(Context context) {
-//        String ipAddressString;
-//        String ipGatewayString;
-//        String ipServerString;
-//        String ipNetmaskString;
-//        String s_dns1;
-//        String s_dns2;
-//        String s_gateway;
-//        String s_ipAddress;
-//        String s_leaseDuration;
-//        String s_netmask;
-//        String s_serverAddress;
-//        TextView info;
-//        DhcpInfo d;
-//        WifiManager wifii;
-//
-//        wifii = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-//
-//        d = wifii.getDhcpInfo();
-//        String sss = d.toString();
-//        s_dns1 = "DNS 1: " + String.valueOf(d.dns1);
-//        s_dns2 = "DNS 2: " + String.valueOf(d.dns2);
-//        s_gateway = "Default Gateway: " + String.valueOf(d.gateway);
-//        s_ipAddress = "IP Address: " + String.valueOf(d.ipAddress);
-//        s_leaseDuration = "Lease Time: " + String.valueOf(d.leaseDuration);
-//        s_netmask = "Subnet Mask: " + String.valueOf(d.netmask);
-//        s_serverAddress = "Server IP: " + String.valueOf(d.serverAddress);
-//
-//        //////
-//
-//        WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
-//        int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
-//        int ipGateway = d.gateway;
-//        int ipServer = d.serverAddress;
-//        int ipNetmask = d.netmask;
-//        // Convert little-endian to big-endianif needed
-//        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
-//            ipAddress = Integer.reverseBytes(ipAddress);
-//            ipGateway = Integer.reverseBytes(ipGateway);
-//            ipServer = Integer.reverseBytes(ipServer);
-//            ipNetmask = Integer.reverseBytes(ipNetmask);
-//        }
-//
-//        byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
-//        byte[] ipByteGateway = BigInteger.valueOf(ipGateway).toByteArray();
-//        // byte[] ipByteServer = BigInteger.valueOf(ipServer).toByteArray();
-//        byte[] ipByteNetmask = BigInteger.valueOf(ipNetmask).toByteArray();
-//
-//        try {
-//            ipAddressString = InetAddress.getByAddress(ipByteArray).getHostAddress();
-//            ipGatewayString = InetAddress.getByAddress(ipByteGateway).getHostAddress();
-//            // ipServerString = InetAddress.getByAddress(ipByteServer).getHostAddress();
-//            //  ipNetmaskString = InetAddress.getByAddress(ipByteNetmask).getHostAddress();
-//        } catch (UnknownHostException ex) {
-//            Log.e("WIFIIP", "Unable to get host address.");
-//            ipAddressString = null;
-//        }
-//
-//
-//////////////////////////////////////
-//////////////////////////////////
-//        return ipAddressString;
-//    }
-//
-////////////////////////==========================/////////////////////////////////
-
-
-    /////////////////////////////////
     public void Update(final Integer lastAppVersion, Context context) {
         runOnUiThread(new Runnable() {
             @Override
@@ -992,6 +857,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         txtLog.setText("НЕТ СВЯЗИ С СЕРВЕРОМ! Отсутствует WIFI имя");
                         txtLog.setBackgroundColor(Color.RED);
                     }
+                }else{
+                    txtLog.setText("НЕТ СВЯЗИ С WIFI!");
+                    txtLog.setBackgroundColor(Color.RED);
                 }
             } catch (SocketException e) {
                 e.printStackTrace();
@@ -1069,6 +937,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                             //// пустые строки
                                                             //                                            } else {
                                                             try {
+//                                                                if (!setting.saveSetting(this, sIPAdressServer, setting.sUserFTP, setting.sPasswordFTP,
+//                                                                if (!setting.saveSetting(this, setting.sAdressServer, setting.sUserFTP, setting.sPasswordFTP,
                                                                 if (!setting.saveSetting(this, sIPAdressServer, setting.sUserFTP, setting.sPasswordFTP,
                                                                         setting.sPortFTP, setting.sPathFile, setting.sModeWorking)) {
                                                                     Toast.makeText(getApplicationContext(), "НАСТРОЙКИ НЕ СОХРАНЕНЫ",

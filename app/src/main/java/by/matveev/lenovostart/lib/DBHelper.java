@@ -29,6 +29,7 @@ import java.util.List;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
@@ -61,6 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList getSelectIPMask(Context contex, String sIPMask){
+        int asd;
         ArrayList<String> list = new ArrayList<String>();
         DBHelper dbHelper = new DBHelper(contex);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -78,6 +80,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         DBSampleHelper.DBConnectIP.IP_SCANER, DBSampleHelper.DBConnectIP.IP_WIFI},
                 DBSampleHelper.DBConnectIP.IP_MASK + " = ?",
                 new String[]{sIPMask}, null, null, null, null);
+
+
         if ((cursor != null) && (cursor.getCount() > 0)) {
 
             cursor.moveToFirst();
