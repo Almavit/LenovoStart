@@ -42,6 +42,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import by.matveev.lenovostart.lib.DBHelper;
 import by.matveev.lenovostart.lib.DBSampleHelper;
@@ -54,10 +56,12 @@ import by.matveev.lenovostart.lib.Setting;
 public class ScanerActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText txtnBarcode;
+    EditText txtsQRcode;
     EditText txtdPrice;
     EditText txtdQuantity;
     EditText txtnNumber;
     TextView txtvBarcode;
+    TextView txtvQRcode;
     TextView txtvPrice;
     TextView txtvQuantity;
     TextView txtvNumber;
@@ -114,6 +118,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
 
         txtnBarcode = (EditText) findViewById(R.id.txtnBarcode);
         txtvBarcode = (TextView) findViewById(R.id.txtvBarcode);
+
+        txtvQRcode = (TextView) findViewById(R.id.txtvQRcode);
+        txtsQRcode = (EditText) findViewById(R.id.txtsQRcode);
+
         txtvPrice = (TextView) findViewById(R.id.txtvPrice);
         txtdPrice = (EditText) findViewById(R.id.txtdPrice);
         txtvQuantity = (TextView) findViewById(R.id.txtvQuantity);
@@ -140,6 +148,38 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         hideKeyboard(txtnBarcode);
 
         Intent intent = getIntent();
+
+
+        int visibletxtnBarcode = intent.getIntExtra("visibletxtnBarcode", View.VISIBLE);
+        txtnBarcode.setVisibility(visibletxtnBarcode);
+        int visibletxtvBarcode = intent.getIntExtra("visibletxtvBarcode", View.VISIBLE);
+        txtvBarcode.setVisibility(visibletxtvBarcode);
+
+
+        //  QRCode
+        int VisibleTxtQRCode = intent.getIntExtra("VisibleTxtQRCodey", View.VISIBLE);
+        txtvQRcode.setVisibility(VisibleTxtQRCode);
+        int VisibleStrQRCode = intent.getIntExtra("VisibleStrQRCode", View.VISIBLE);
+        txtsQRcode.setVisibility(VisibleStrQRCode);
+        if (txtsQRcode.getVisibility() == View.INVISIBLE) {
+
+            // 1. Просим EditText стать активным для ввода
+            txtnBarcode.requestFocus();
+
+            // 2. Выполняем действия чуть позже, после того как система реально даст фокус.
+            txtnBarcode.post(() -> {
+                // 3. Выделяем весь текст внутри EditText
+                txtnBarcode.selectAll();
+
+                // 4. Получаем доступ к системе ввода (клавиатура, IME)
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if (imm != null) {
+                    // 5. Открываем клавиатуру и показываем её для нашего EditText
+                    imm.showSoftInput(txtnBarcode, InputMethodManager.SHOW_IMPLICIT);
+                }
+            });
+        }
 
         //txtIpConnection.setVisibility(VisibleTxtNumber);
 // barcode visible
@@ -191,6 +231,58 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                 // ToastMessageCenter("txtnBarcode - afterTextChanged");
             }
         });
+        txtsQRcode.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Integer asdddd = event.getAction();
+                if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                    String sQcode = txtsQRcode.getText().toString();
+                    if(sQcode.length() == 0) return
+                            false;
+
+                    //////////
+                    String barcode = extractEanFromQcode(sQcode);// определение и выделение штрихкода из qcode
+                    try {
+                        FocusView();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // 1. Просим EditText стать активным для ввода
+                    txtsQRcode.requestFocus();
+
+                    // 2. Выполняем действия чуть позже, после того как система реально даст фокус.
+                    txtsQRcode.post(() -> {
+                        // 3. Выделяем весь текст внутри EditText
+                        txtsQRcode.selectAll();
+
+                        // 4. Получаем доступ к системе ввода (клавиатура, IME)
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                        if (imm != null) {
+                            // 5. Открываем клавиатуру и показываем её для нашего EditText
+                            imm.showSoftInput(txtsQRcode, InputMethodManager.SHOW_IMPLICIT);
+                        }
+                    });
+                    //////////  Неправильно. ( нужны знания как строится структура строки q кода. и на основе этого извлекать штрихкод. Штрихкод бывает EAN13 EAN8
+//                    sQcode = txtsQRcode.getText().toString().replaceAll("\n", "");// очистить от символа \n
+//                    sQcode = txtsQRcode.getText().toString().replaceAll("\u001D", "");// очистить от символа \u001D
+//                    if (txtnBarcode.getVisibility() == View.VISIBLE) {
+//                        txtnBarcode.setText(barcode);
+//                        txtnBarcode.setFocusable(true);
+//                        txtnBarcode.selectAll();
+//                        //showKeyboard(txtnBarcode);
+//                    }
+
+                }
+
+                return false;
+            }
+            }
+
+        );
+
 
         txtnBarcode.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -207,7 +299,8 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                     sBarcode = txtnBarcode.getText().toString().replaceAll("\n", "");// очистить от символа \n
                     sBarcode = txtnBarcode.getText().toString().replaceAll("\u001D", "");// очистить от символа \u001D
 
-
+                    if (sBarcode.length() < 8 )return
+                        false;
                     String ddd = sBarcode.substring(0, 2);
                     if (ddd.equals("22")) {
                         ddd = sBarcode.substring(0,7) + "00000";
@@ -257,6 +350,10 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                         txtvBarcode.setText(sTextView);
                         txtvBarcode.setBackgroundColor(Color.GREEN);
                         //float sizeText = txtvPrice.getTextSize();
+                        if (txtvPrice.getVisibility() == View.INVISIBLE) {
+
+                            txtvPrice.setVisibility(View.VISIBLE);
+                        }
                         txtvPrice.setTextSize(70);
                         txtvPrice.setGravity(Gravity.CENTER);
                         txtvPrice.setBackgroundColor(Color.GREEN);
@@ -443,15 +540,24 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     void FocusView() throws IOException {
-        if (txtnBarcode.length() > 0) {
+        if (txtnBarcode.length() > 0 && txtnBarcode.getVisibility() == View.VISIBLE){
             writeFileSD();
-
         } else {
+            if (txtsQRcode.length() > 0 && txtsQRcode.getVisibility() == View.VISIBLE){
+                writeFileSD();
+            } else {
+                ToastMessageCenter("Отсутствуют данные по Q-коду. В файл не записано.");
+                return;
+            }
             ToastMessageCenter("Отсутствуют данные по штрихкоду. В файл не записано.");
             return;
         }
-        if (txtnBarcode.length() > 0)
+
+        if (txtsQRcode.length() > 0 && txtsQRcode.getVisibility() == View.VISIBLE)
+            txtsQRcode.getText().clear();
+        if (txtnBarcode.length() > 0 && txtnBarcode.getVisibility() == View.VISIBLE)
             txtnBarcode.getText().clear();
+
         if (txtnNumber.length() > 0 && txtnNumber.getVisibility() == View.VISIBLE)
             txtnNumber.getText().clear();
         if (txtdPrice.length() > 0 && txtdPrice.getVisibility() == View.VISIBLE)
@@ -459,48 +565,38 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         if (txtdQuantity.length() > 0 && txtdQuantity.getVisibility() == View.VISIBLE)
             txtdQuantity.getText().clear();
         if (txtvPrice.length() > 0 && txtvPrice.getVisibility() == View.VISIBLE){
-//            txtvPrice.setText("Цена");
-//
-//            txtvBarcode.setText("Штрих-код");
-//            txtvBarcode.setBackgroundColor(Color.WHITE);
-//            setTitle("Сканирование");
-//            txtLogScaner.setText("...");
-//            txtvPrice.setBackgroundColor(Color.WHITE);
-//            //txtvPrice.setText("");
-//            txtvPrice.setGravity(Gravity.LEFT);
-//            txtvPrice.setTextSize(22);
+
         }
-
-
 
         txtnBarcode.selectAll();
     }
 
     void writeFileSD() throws IOException {// запись на SD диск  // подготавливаем переменные
 
-        String txtBarcode = txtnBarcode.getText().toString();
+        String txtQR = "";
+//        String txtBarcode = txtnBarcode.getText().toString();
+        String txtBarcode = "";
         String txtNumber = "";
         String txtQuantity = "";
         String txtPrice = "";
-//        String textAdd = "";
-//        String line = "";
-//        Integer NumberOfRecords = 0;
         StringBuilder addText = new StringBuilder();
 
 
         setting.loadSetting(this);
+        if (txtnBarcode.length() > 0 && txtnBarcode.getVisibility() == View.VISIBLE)
+            txtBarcode = txtnBarcode.getText().toString();
+        if (txtsQRcode.length() > 0 && txtsQRcode.getVisibility() == View.VISIBLE)
+            txtNumber = txtsQRcode.getText().toString();
         if (txtnNumber.length() > 0 && txtnNumber.getVisibility() == View.VISIBLE)
             txtNumber = txtnNumber.getText().toString();
         if (txtdQuantity.length() > 0 && txtdQuantity.getVisibility() == View.VISIBLE)
             txtQuantity = txtdQuantity.getText().toString();
         if (txtdPrice.length() > 0 && txtdPrice.getVisibility() == View.VISIBLE)
             txtPrice = txtdPrice.getText().toString();
-        String text = txtBarcode + ";" + txtPrice + ";" + txtQuantity + ";" + txtNumber + ";";
-        if (text.length() <= 4) {
+        String text = txtBarcode + ";" + txtPrice + ";" + txtQuantity + ";" + txtNumber + ";" + txtQR + ";";
+        if (text.length() <= 5) {
             text = "";
         }
-        ;
-
 
         addText.insert(0, text);
         Filealmat filealmat = new Filealmat();
@@ -988,7 +1084,7 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
                         e.printStackTrace();
                     }
                     try {
-                        FTPModel mymodel = new FTPModel();
+                        FTPModel mymodel = new FTPModel(this);
                         boolean co = mymodel.connect(setting.sAdressServer, setting.sUserFTP, setting.sPasswordFTP, Integer.parseInt(setting.sPortFTP));
                         if (co) {
                             txtLogScaner.setText("ДАННЫЕ СОХРАНЕНЫ");
@@ -1007,4 +1103,67 @@ public class ScanerActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
     ///////////////////////////////
+
+
+    /**
+     * Извлекает EAN (13 или 8) из строки qcode (поддерживает ASCII GS \u001D и варианты с/без скобок).
+     * Возвращает строку EAN (8 или 13 символов) или null, если не найдено.
+     */
+    public static String extractEanFromQcode(String qcode) {
+        if (qcode == null) return null;
+
+        // Нормализуем: убираем скобки, оставляем разделитель \u001D (если он есть)
+        String s = qcode.replace("(", "").replace(")", "");
+
+        // 1) Ищем AI 01 + 14 цифр (GTIN-14)
+        Pattern p01 = Pattern.compile("01(\\d{14})");
+        Matcher m01 = p01.matcher(s);
+        if (m01.find()) {
+            String gtin14 = m01.group(1);
+            String ean = gtin14ToEan(gtin14);
+            if (ean != null) return ean;
+        }
+
+        // 2) Если AI 01 не найден — как резерв: ищем standalone 13- или 8-значные числа,
+        //    но убедимся, что они не часть более длинной цифровой строки
+        Matcher m13 = Pattern.compile("(?<!\\d)(\\d{13})(?!\\d)").matcher(s);
+        if (m13.find()) return m13.group(1);
+
+        Matcher m8 = Pattern.compile("(?<!\\d)(\\d{8})(?!\\d)").matcher(s);
+        if (m8.find()) return m8.group(1);
+
+        return null;
+    }
+
+    /** Конвертирует GTIN-14 в EAN-13 или EAN-8 при наличии ведущих нулей. */
+    private static String gtin14ToEan(String gtin14) {
+        if (gtin14 == null || gtin14.length() != 14) return null;
+        // убираем ведущие нули
+        String trimmed = gtin14.replaceFirst("^0+", "");
+        if (trimmed.length() == 13 || trimmed.length() == 8) {
+            // валидируем контрольную цифру — если не прошёл, всё равно возвращаем, но можно отклонить
+            if (isValidEan(trimmed)) return trimmed;
+            // если контрольная цифра не прошла, всё равно возвращаем (по необходимости можно вернуть null)
+            return trimmed;
+        }
+        // как запасной вариант: вернуть правые 13 цифр (обычная практика для GTIN->EAN13)
+        return gtin14.substring(1);
+    }
+
+    /** Проверка контрольной цифры EAN-8 / EAN-13 */
+    public static boolean isValidEan(String ean) {
+        if (ean == null) return false;
+        int len = ean.length();
+        if (!(len == 8 || len == 13)) return false;
+        int sum = 0;
+        for (int i = 0; i < len - 1; i++) {
+            int d = ean.charAt(i) - '0';
+            int weight = (i % 2 == 0) ? 1 : 3; // слева: 1,3,1,3...
+            sum += d * weight;
+        }
+        int check = (10 - (sum % 10)) % 10;
+        int last = ean.charAt(len - 1) - '0';
+        return check == last;
+    }
+
 }

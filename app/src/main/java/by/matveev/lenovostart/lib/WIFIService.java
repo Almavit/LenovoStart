@@ -3,6 +3,7 @@ package by.matveev.lenovostart.lib;
 import static android.system.OsConstants.AF_INET;
 
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
+import android.net.MacAddress;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
@@ -23,9 +25,14 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
+import android.net.wifi.WifiNetworkSuggestion;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -82,12 +89,6 @@ public class WIFIService extends Service {
         if (enableWifi(context)) {
             wifiIpAddress(context);
         }
-        //bindToNetwork();
-
-        // intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);    //Произошло изменение сетевого подключения. IntentFilter должен содержать событие.
-
-        // registerReceiver(mWiFiMonitor, intentFilter);
-
     }
 
     @Override
@@ -100,16 +101,12 @@ public class WIFIService extends Service {
     @Override
     public void onCreate() {//The new Service was Created
         Toast.makeText(this, "Сервис создан", Toast.LENGTH_LONG).show();
-//        String ipAdressScaner;
-//        ipAdressScaner = "asas";
     }
 
     @Override
     public void onStart(Intent intent, int startId) {//Service Started
         // For time consuming an long tasks you can launch a new thread here...
         Toast.makeText(this, " Сервис запущен", Toast.LENGTH_LONG).show();
-//        String ipAdressScaner;
-//        ipAdressScaner = "asas";
     }
 
     @Override
@@ -120,25 +117,21 @@ public class WIFIService extends Service {
 
     public boolean enableWifi(Context context) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
-        // if (!wifiManager.isWifiEnabled()) {
+
         while (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
         }
         return true;
     }
+
 //новая процедура создания подключения
     public Integer CreateWIFI(Context context,TextView textView, Spinner spinner){
         Integer codeError = 0;
-        //Integer countConnectWIFI;
         Integer numberPosition;
         String networkSSID;
         ArrayList<String> list = new ArrayList<String>();
         Setting setting = new Setting();
 
-//        DBHelper db = new DBHelper(context);
-//        if(!db.DeleteDB("Price")){
-//            codeError = 0;
-//        }
         if (ScanListWifi(context) == 0){// получить список активных видимых wifi подключений
             alertTitleWIFI = "НАСТРОЙКИ НЕ СОХРАНЕНЫ";
             alertMessageWIFI = "НЕТ СВЯЗИ!               ВКЛЮЧИТЬ GPS";
@@ -148,8 +141,6 @@ public class WIFIService extends Service {
         }
         list = NameSSIDcsv(context, spinner);// список настроек с DB SqlLite IPTable
         if (list == null){
-            //      alertTitleWIFI = "НАСТРОЙКИ НЕ СОХРАНЕНЫ";
-            //alertMessageWIFI = "НЕТ ИМЕНИ SSID в IPtable!        ДОБАВИТЬ!";
             codeError = -2;
         }
 
@@ -169,6 +160,7 @@ public class WIFIService extends Service {
                     // проверяем соотвествие активного имени SSID
                     try {
                         if (wifiIpAddress(context)){
+                    String sdsdsdsd = list.get(5).toString();
                             if (ipNameSSID.equals(list.get(5).toString())) {//Ищем соотвествие имени WIFI  с магазином
                                 // есть соотвествие
                                 // alertTitleWIFI = "       ...       ";
@@ -195,6 +187,11 @@ public class WIFIService extends Service {
             }
         }
         textView.setText(alertTitleWIFI);
+        // This works both in tethering and when connected to an Access Point
+        if (enableWifi(context)) {
+//            wifiIpAddress(context);
+
+        }
         if(codeError != 0){
             textView.setBackgroundColor(Color.RED);
         }else{
@@ -219,17 +216,31 @@ public class WIFIService extends Service {
     }
     // список настроек с DB SqlLite IPTable
     public ArrayList<String> NameSSIDcsv(Context context, Spinner spinner){
-        ArrayList<String> list = new ArrayList<String>();
-        list = SelectIPMask(context, "", spinner.getSelectedItemPosition(), spinner);
-        if ((list.get(5) == null)&&(list.get(5).equals(""))) {
-            // null пустое поле имени SSID wifi
-            alertTitleWIFI = "НАСТРОЙКИ НЕ СОХРАНЕНЫ";
-            alertMessageWIFI = "НЕТ ИМЕНИ SSID в IPtable!        ДОБАВИТЬ!";
-            return null;
-        }else{
+        Integer idPosition;
+        Integer countSpiner;
 
+        ArrayList<String> list = new ArrayList<String>();
+        idPosition = spinner.getSelectedItemPosition();
+        countSpiner = spinner.getCount();
+        if ((idPosition > -1) && (countSpiner > 0)) {
+            list = SelectIPMask(context, "", spinner.getSelectedItemPosition(), spinner);
+            if ((list.get(5) == null)&&(list.get(5).equals(""))) {
+                // null пустое поле имени SSID wifi
+                alertTitleWIFI = "НАСТРОЙКИ НЕ СОХРАНЕНЫ";
+                alertMessageWIFI = "НЕТ ИМЕНИ SSID в IPtable!        ДОБАВИТЬ!";
+                return null;
+            }else{
+
+            }
+            return list;
+        }else{
+            if(addAdapterWiFi(context, spinner)){
+                return null;
+            } else {
+                return null; // или другой возврат
+            }
         }
-        return list;
+
     }
     // сохраняем полученные настройки в файл настроек setting.csv
     private boolean SaveSettingCSV(Context context, String ipAdress){
@@ -332,12 +343,193 @@ public class WIFIService extends Service {
         return  true;
     }
 
+    //=====================================================================
+    //=====================================================================
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void connectSpecifier(Context context,
+                                  String ssid,
+                                  String pass,
+                                  boolean hidden) {
 
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        WifiNetworkSpecifier.Builder builder =
+                new WifiNetworkSpecifier.Builder()
+                        .setSsid(ssid)
+                        .setWpa2Passphrase(pass);
+
+        if (hidden) {
+            builder.setIsHiddenSsid(true);
+        }
+
+        WifiNetworkSpecifier specifier = builder.build();
+
+        NetworkRequest request =
+                new NetworkRequest.Builder()
+                        .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                        .setNetworkSpecifier(specifier)
+                        .build();
+
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        cm.requestNetwork(request, new ConnectivityManager.NetworkCallback() {
+
+            @Override
+            public void onAvailable(Network network) {
+                cm.bindProcessToNetwork(network);
+                Log.d("WIFI", "Connected hidden=" + hidden);
+            }
+
+            @Override
+            public void onUnavailable() {
+                Log.d("WIFI", "Failed hidden=" + hidden);
+
+                // retry через 3 сек
+                handler.postDelayed(() -> {
+                    if (!hidden) {
+                        connectSpecifier(context, ssid, pass, true);
+                    } else {
+                        connectSpecifier(context, ssid, pass, true);
+                    }
+                }, 3000);
+            }
+        });
+    }
+    //=============================
 
     // Создаем wifi подключение
     public boolean AddConnectWIFI(Context context, String nameSSID, String pass){
 
         //==================================================================
+        //==================================================================
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // ================= ANDROID 10+ =================
+
+//            WifiManager wifiManager =
+//                    (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+//
+//            // ❗ очистка старых suggestions
+//            wifiManager.removeNetworkSuggestions(new ArrayList<>());
+//
+//            List<WifiNetworkSuggestion> list = new ArrayList<>();
+//
+//
+//            // обычная сеть
+//            list.add(new WifiNetworkSuggestion.Builder()
+//                    .setSsid(nameSSID)
+//                    .setWpa2Passphrase(pass)
+//                    .setIsAppInteractionRequired(false)
+//                    .setIsUserInteractionRequired(false)
+//                    .build());
+//
+//            // скрытая сеть (без BSSID!)
+//            list.add(new WifiNetworkSuggestion.Builder()
+//                    .setSsid(nameSSID)
+//                    .setWpa2Passphrase(pass)
+//                    .setIsHiddenSsid(true)
+//                    .build());
+//
+//            int status = wifiManager.addNetworkSuggestions(list);
+//
+//            if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+//                Log.d("WIFI", "Suggestion error: " + status);
+//                return false;
+//            }
+//
+//            // ❗ КЛЮЧ: триггер сети
+//            wifiManager.disconnect();
+//
+//            Handler handler = new Handler(Looper.getMainLooper());
+//
+//            handler.postDelayed(() -> {
+//                wifiManager.startScan();
+//            }, 1500);
+//
+//            // fallback → если система не подключила
+//            handler.postDelayed(() -> {
+//                connectSpecifier(context, nameSSID, pass, false);
+//            }, 4000);
+
+            return true;
+            //================ end ================
+//            // ---------- 1. Сохраняем сеть (Suggestion) ----------
+//            WifiNetworkSuggestion suggestion =
+//                    new WifiNetworkSuggestion.Builder()
+//                            .setSsid(nameSSID)
+//                            .setWpa2Passphrase(pass)
+//                            .setIsAppInteractionRequired(false)
+//                            .setIsUserInteractionRequired(false)
+//                            .build();
+//
+//            List<WifiNetworkSuggestion> list = new ArrayList<>();
+//
+//            list.add(new WifiNetworkSuggestion.Builder()
+//                    .setSsid(nameSSID)
+//                    .setWpa2Passphrase(pass)
+//                    .build());
+//
+//            list.add(new WifiNetworkSuggestion.Builder()
+//                    .setSsid(nameSSID)
+//                    .setWpa2Passphrase(pass)
+//                    .setIsHiddenSsid(true)
+//                            // .setBssid(MacAddress.fromString("AA:BB:CC:DD:EE:FF")) // ОБЯЗАТЕЛЬНО для hidden
+//                    .build());
+//
+//            int status = wifiManager.addNetworkSuggestions(list);
+//
+//            wifiManager.disconnect();      // триггер пересоединения
+//            wifiManager.startScan();       // принудительный скан
+//
+//            if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+//                Log.d("WIFI", "Suggestion error: " + status);
+//                return false;
+//            }else{
+//                // 2. подключиться сразу
+//                connectSpecifier(context, nameSSID, pass, false);
+//                return true;
+//            }
+
+
+            // ---------- 2. Пробуем подключиться сразу (Specifier) ----------
+
+
+//            WifiNetworkSpecifier wifiSpecifier =
+//                    new WifiNetworkSpecifier.Builder()
+//                            .setSsid(nameSSID)
+//                            .setWpa2Passphrase(pass)
+//                            //.setIsHiddenSsid(true) // КРИТИЧНО
+//                            .build();
+
+//            NetworkRequest request =
+//                    new NetworkRequest.Builder()
+//                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+//                            .setNetworkSpecifier(wifiSpecifier)
+//                            .build();
+
+//            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//            try{
+//                cm.requestNetwork(request, new ConnectivityManager.NetworkCallback() {
+//                    @Override
+//                    public void onAvailable(Network network) {
+//                        super.onAvailable(network);
+//                        cm.bindProcessToNetwork(network);
+//                        // Сеть подключена
+//                    }
+//                    @Override
+//                    public void onUnavailable() {
+//                        super.onUnavailable();
+//                        Log.d("WIFI", "Network unavailable");
+//                        // ошибка подключения
+//                    }
+//                });
+//            } catch (Exception e){
+//                return false;
+//            }
+//
+//            return true;
+        }
+
 
         WifiManager wifis = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiConfiguration wc = new WifiConfiguration();
@@ -346,29 +538,15 @@ public class WIFIService extends Service {
         wc.hiddenSSID = true;
 
         wc.status = WifiConfiguration.Status.ENABLED;
-//        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-//        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
         wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-//        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-//        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-//        wc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
 
         int res = wifis.addNetwork(wc);
+        if (res < 0 ){
+            return false;
+        }
         Log.d("WifiPreference", "add Network returned " + res );
         boolean b = wifis.enableNetwork(res, true);
         Log.d("WifiPreference", "enableNetwork returned " + b );
-//        WifiConfiguration wifiConfig = new WifiConfiguration();
-//        wifiConfig.SSID = String.format("\"%s\"","dd" );
-//        wifiConfig.preSharedKey = String.format("\"%s\"", "ll");
-//        wifiConfig.allowedProtocols
-//
-//        WifiManager wifiManagers = (WifiManager)getApplicationContext().getSystemService(WIFI_SERVICE);
-////remember id
-//        int netId = wifiManagers.addNetwork(wifiConfig);
-//        wifiManagers.disconnect();
-//        wifiManagers.enableNetwork(netId, true);
-//        wifiManagers.reconnect();
-
         try {
             Thread.sleep(21000); // пауза на 1 секунду
         } catch (InterruptedException e) {
@@ -500,49 +678,6 @@ public class WIFIService extends Service {
         wifii = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         d = wifii.getDhcpInfo();
 
-//        String sss = d.toString();
-//        s_dns1 = "DNS 1: " + String.valueOf(d.dns1);
-//        s_dns2 = "DNS 2: " + String.valueOf(d.dns2);
-//        s_gateway = "Default Gateway: " + String.valueOf(d.gateway);
-//        s_ipAddress = "IP Address: " + String.valueOf(d.ipAddress);
-//        s_leaseDuration = "Lease Time: " + String.valueOf(d.leaseDuration);
-//        s_netmask = "Subnet Mask: " + String.valueOf(d.netmask);
-//        s_serverAddress = "Server IP: " + String.valueOf(d.serverAddress);
-
-        //////
-//        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-//        Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-
-
-//        while (interfaces.hasMoreElements()) {
-//            NetworkInterface networkInterface = interfaces.nextElement();
-//
-//            if (networkInterface.isLoopback())
-//                continue; // Don't want to broadcast to the loopback interface
-//
-//            for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-//                InetAddress broadcast = interfaceAddress.getBroadcast();
-//
-//                // Android seems smart enough to set to null broadcast to
-//                //  the external mobile network. It makes sense since Android
-//                //  silently drop UDP broadcasts involving external mobile network.
-//                if (broadcast == null)
-//                    continue;
-//                else {
-//                    //     InetAddress ip = interfaceAddress.getAddress();
-//                    //      ipAdressScaner = ip.toString().replaceAll("/", "");
-//                    short subnetmask = interfaceAddress.getNetworkPrefixLength(); //is another way to express subnet mask
-//
-//                    ipMaskScaner = Short.toString(subnetmask);
-//
-//                }
-//
-//                // Use the broadcast
-//            }
-//        }
-
-      //  WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
-
         try{
             connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         }catch (Exception ex){
@@ -556,8 +691,8 @@ public class WIFIService extends Service {
             WifiInfo wifiInfo = wifii.getConnectionInfo();
             wifiInfo.getSSID();
             String ssid = networkInfo.getExtraInfo();
-//            ssid = wifiInfo.getSSID();
-//            ssid.replaceAll("^\"|\"$", "");
+            ssid = wifiInfo.getSSID();
+            //ssid.replaceAll("^\"|\"$", "");
             ipNameSSID = ssid.replaceAll("^\"|\"$", "");
 
 
@@ -590,12 +725,6 @@ public class WIFIService extends Service {
                 ipAdressScaner = InetAddress.getByAddress(ipByteArray).getHostAddress();
                 long longAddr = ipAddress;
                 ipMaskAddress = IpMaskAdresThree(longAddr);
-
-//                  ipGatewayScaner = InetAddress.getByAddress(ipByteGateway).getHostAddress();
-//                  ipDNS1Scaner = InetAddress.getByAddress(ipByteDNS1).getHostAddress();
-                //  ipDNS2Scaner = InetAddress.getByAddress(ipByteDNS2).getHostAddress();
-                //  ipServerScaner = InetAddress.getByAddress(ipByteServer).getHostAddress();
-                //  ipNetmaskString = InetAddress.getByAddress(ipByteNetmask).getHostAddress();
                 return true;
             } catch (UnknownHostException ex) {
                 Log.e("WIFIIP", "Unable to get host address.");

@@ -372,14 +372,14 @@ public class Filealmat {
         }
         //SQLiteDatabase db;
         //подключаемся к FTP серверу
-        FTPModel mymodel = new FTPModel();
+        FTPModel mymodel = new FTPModel(context.getApplicationContext());
         // получает корневой каталог
         File sdPath = Environment.getExternalStorageDirectory();
         // добавляем свой каталог устройства к пути куда загружаем файл с сервера
         sdPath = new File(sdPath.getAbsolutePath() + "/" + DirName + "/" + FileName);
         // загрузка csv файла с FTP сервера
         boolean ko = mymodel.downloadAndSaveFile(setting.sAdressServer, Integer.parseInt(setting.sPortFTP),
-                setting.sUserFTP, setting.sPasswordFTP, FileName, sdPath);
+                setting.sUserFTP, setting.sPasswordFTP, FileName, sdPath.toString());
         if (ko) {
 
         } else {

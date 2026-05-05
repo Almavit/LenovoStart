@@ -158,8 +158,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="LoadSetting"
-                    android:text="Загрузить"
-                    android:textSize="20sp" />
+                    android:text="Из csv в базу"
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/btnSaveConnect"

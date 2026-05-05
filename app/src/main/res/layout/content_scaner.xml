@@ -22,7 +22,24 @@
         <TextView
             android:id="@+id/textView11"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="4dp" />
+
+        <TextView
+            android:id="@+id/txtvQRcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="QRCode"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/txtsQRcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="QRCode"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/txtvBarcode"
@@ -30,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="@string/text_barcode"
             android:textColor="#000000"
-            android:textSize="34sp" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/txtnBarcode"
@@ -72,7 +89,7 @@
             android:layout_height="wrap_content"
             android:text="@string/text_quantity"
             android:textColor="#000000"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:visibility="visible" />
 
         <EditText
@@ -84,7 +101,7 @@
             android:inputType="numberDecimal"
             android:maxLength="6"
             android:textColor="#000000"
-            android:textSize="20sp"
+            android:textSize="18sp"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <TextView
@@ -94,7 +111,7 @@
 
             android:text="@string/text_number"
             android:textColor="#000000"
-            android:textSize="20sp"
+            android:textSize="18sp"
             tools:text="Порядковый номер" />
 
         <EditText
@@ -106,7 +123,7 @@
             android:inputType="number"
             android:maxLength="3"
             android:textColor="#000000"
-            android:textSize="20sp"
+            android:textSize="18sp"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <Button
@@ -119,7 +136,7 @@
             android:text="Добавить позицию"
 
             android:textColor="#000000"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btnSaveToServer"
@@ -127,7 +144,7 @@
             android:layout_height="wrap_content"
             android:text="ЗАГРУЗИТЬ НА СЕРВЕР"
             android:textColor="#000000"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/btnDeleteFile"
@@ -144,7 +161,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="РЕДАКТИРОВАНИЕ"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/txtLogScaner"

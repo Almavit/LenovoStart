@@ -180,14 +180,14 @@
             android:id="@+id/btnUpdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ОБНОВЛЕНИЕ"
+            android:text="ОБНОВИТЬ ПРОГРАММУ"
             android:textSize="24sp" />
 
         <Button
             android:id="@+id/btnConnectWIFI"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Связь WIFI"
+            android:text="Настройка WIFI"
             android:textSize="24sp" />
 
 
